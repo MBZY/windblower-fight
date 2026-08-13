@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dq1n43t1qafvl"]
+
+[ext_resource type="Texture2D" uid="uid://br5lh4tiqbvwx" path="res://assets/Character.png" id="1_3vyb7"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_u8vuu"]
+
+[node name="Player" type="CharacterBody2D" unique_id=2017514565]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=104225447]
+replication_config = SubResource("SceneReplicationConfig_u8vuu")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=185967866]
+position_smoothing_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1499263407]
+texture = ExtResource("1_3vyb7")

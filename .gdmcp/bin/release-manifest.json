@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "package": "gdmcp",
+  "version": "1.0.8",
+  "target": "x86_64-pc-windows-msvc",
+  "executable": "gdmcp.exe"
+}

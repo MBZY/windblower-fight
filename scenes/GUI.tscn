@@ -1,0 +1,352 @@
+[gd_scene format=3 uid="uid://dfquvgr5up80m"]
+
+[ext_resource type="PackedScene" uid="uid://rstvody2ho11" path="res://scenes/gacha_option.tscn" id="1_jbthi"]
+[ext_resource type="Texture2D" uid="uid://br5lh4tiqbvwx" path="res://assets/Character.png" id="2_5j4t3"]
+[ext_resource type="Texture2D" uid="uid://crkdbvfldjgdg" path="res://assets/button/ButtonNormal.png" id="3_shsct"]
+[ext_resource type="Texture2D" uid="uid://du56bckj8txdb" path="res://assets/button/ButtonDown.png" id="4_tqy5q"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atrmx"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovrkh"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0.3882353)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_atrmx"]
+atlas = ExtResource("2_5j4t3")
+region = Rect2(23, 16, 17, 32)
+
+[sub_resource type="Curve" id="Curve_i4lqn"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_jficc"]
+
+[sub_resource type="Curve" id="Curve_xsifw"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1e-05, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_ovrkh"]
+curve_x = SubResource("Curve_i4lqn")
+curve_y = SubResource("Curve_jficc")
+curve_z = SubResource("Curve_xsifw")
+
+[sub_resource type="Curve" id="Curve_xpv3r"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_xyq0g"]
+
+[sub_resource type="Curve" id="Curve_yg60b"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_1sxap"]
+curve_x = SubResource("Curve_xpv3r")
+curve_y = SubResource("Curve_xyq0g")
+curve_z = SubResource("Curve_yg60b")
+
+[node name="Control" type="Control" unique_id=1794550821]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VirtualJoystick" type="VirtualJoystick" parent="." unique_id=1619658484]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+offset_transform_enabled = true
+offset_transform_visual_only = false
+joystick_mode = 2
+joystick_size = 128.0
+
+[node name="GachaPanel" type="MarginContainer" parent="." unique_id=127268958]
+visible = false
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="GachaPanel" unique_id=1458503838]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_atrmx")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GachaPanel/PanelContainer" unique_id=1390952805]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GachaPanel/PanelContainer/VBoxContainer" unique_id=90715344]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GachaOption1" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=297633718 instance=ExtResource("1_jbthi")]
+layout_mode = 2
+
+[node name="GachaOption2" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=924842280 instance=ExtResource("1_jbthi")]
+layout_mode = 2
+
+[node name="GachaOption3" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=1044337968 instance=ExtResource("1_jbthi")]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="GachaPanel/PanelContainer/VBoxContainer" unique_id=1102124815]
+layout_mode = 2
+text = "跳过"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2002082546]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 45.0
+grow_horizontal = 2
+
+[node name="RestTime" type="Label" parent="VBoxContainer" unique_id=624785290]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
+text = "180s"
+
+[node name="RestTimeProgress" type="ProgressBar" parent="VBoxContainer" unique_id=832808112]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+show_percentage = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=445384178]
+layout_mode = 2
+
+[node name="PlayerListA" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1735224342]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+
+[node name="PlayerDisplayUnit" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListA" unique_id=72134479]
+custom_minimum_size = Vector2(96, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit" unique_id=1528936845]
+layout_mode = 2
+size_flags_horizontal = 0
+texture = SubResource("AtlasTexture_atrmx")
+expand_mode = 3
+
+[node name="PlayerName" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit" unique_id=1154048828]
+layout_mode = 2
+size_flags_vertical = 8
+text = "玩家1"
+
+[node name="PlayerMoney" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit" unique_id=1802827052]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+text = "50$"
+horizontal_alignment = 2
+
+[node name="PlayerDisplayUnit2" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListA" unique_id=1592428032]
+custom_minimum_size = Vector2(96, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit2" unique_id=1905509043]
+layout_mode = 2
+size_flags_horizontal = 0
+texture = SubResource("AtlasTexture_atrmx")
+expand_mode = 3
+
+[node name="PlayerName" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit2" unique_id=68077459]
+layout_mode = 2
+size_flags_vertical = 8
+text = "玩家1"
+
+[node name="PlayerMoney" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit2" unique_id=748783984]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+text = "50$"
+horizontal_alignment = 2
+
+[node name="PlayerDisplayUnit3" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListA" unique_id=892285449]
+custom_minimum_size = Vector2(96, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit3" unique_id=728746630]
+layout_mode = 2
+size_flags_horizontal = 0
+texture = SubResource("AtlasTexture_atrmx")
+expand_mode = 3
+
+[node name="PlayerName" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit3" unique_id=1815628100]
+layout_mode = 2
+size_flags_vertical = 8
+text = "玩家1"
+
+[node name="PlayerMoney" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit3" unique_id=1007958678]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+text = "50$"
+horizontal_alignment = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=314103299]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="Control" parent="VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1687316828]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="WiningProgress" type="TextureProgressBar" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer" unique_id=1996488489]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+value = 50.0
+rounded = true
+nine_patch_stretch = true
+texture_under = SubResource("CurveXYZTexture_ovrkh")
+texture_progress = SubResource("CurveXYZTexture_1sxap")
+
+[node name="PlayerListB" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1483668952]
+custom_minimum_size = Vector2(64, 500)
+layout_mode = 2
+
+[node name="PlayerDisplayUnit" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListB" unique_id=896931532]
+custom_minimum_size = Vector2(96, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit" unique_id=1806895755]
+layout_mode = 2
+size_flags_horizontal = 8
+texture = SubResource("AtlasTexture_atrmx")
+expand_mode = 3
+flip_h = true
+
+[node name="PlayerName" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit" unique_id=395688502]
+layout_mode = 2
+size_flags_vertical = 8
+text = "玩家1"
+horizontal_alignment = 2
+
+[node name="PlayerMoney" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit" unique_id=958703924]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+text = "50$"
+
+[node name="PlayerDisplayUnit2" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListB" unique_id=93918745]
+custom_minimum_size = Vector2(96, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit2" unique_id=1486984041]
+layout_mode = 2
+size_flags_horizontal = 8
+texture = SubResource("AtlasTexture_atrmx")
+expand_mode = 3
+flip_h = true
+
+[node name="PlayerName" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit2" unique_id=1221603923]
+layout_mode = 2
+size_flags_vertical = 8
+text = "玩家1"
+horizontal_alignment = 2
+
+[node name="PlayerMoney" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit2" unique_id=756417272]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+text = "50$"
+
+[node name="PlayerDisplayUnit3" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListB" unique_id=634382633]
+custom_minimum_size = Vector2(96, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit3" unique_id=552909430]
+layout_mode = 2
+size_flags_horizontal = 8
+texture = SubResource("AtlasTexture_atrmx")
+expand_mode = 3
+flip_h = true
+
+[node name="PlayerName" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit3" unique_id=1793094342]
+layout_mode = 2
+size_flags_vertical = 8
+text = "玩家1"
+horizontal_alignment = 2
+
+[node name="PlayerMoney" type="Label" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit3" unique_id=899794712]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+text = "50$"
+
+[node name="Gacha" type="VBoxContainer" parent="." unique_id=1320212017]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -62.0
+offset_top = -37.0
+offset_bottom = 37.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_constants/separation = -10
+
+[node name="GachaAlarm" type="Label" parent="Gacha" unique_id=715195825]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "200$"
+horizontal_alignment = 1
+
+[node name="GachaButton" type="TextureButton" parent="Gacha" unique_id=64498175]
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("3_shsct")
+texture_pressed = ExtResource("4_tqy5q")
+texture_hover = ExtResource("4_tqy5q")
+
+[node name="GachaAlarm2" type="Label" parent="Gacha" unique_id=301209291]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "抽奖!!!"
+horizontal_alignment = 1

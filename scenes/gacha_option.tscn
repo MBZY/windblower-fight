@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://rstvody2ho11"]
+
+[ext_resource type="Texture2D" uid="uid://oya8wpn6jmc8" path="res://icon.svg" id="1_gq75b"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovrkh"]
+
+[node name="GachaOption" type="PanelContainer" unique_id=297633718]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1848187866]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=344941595]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer" unique_id=1940127288]
+custom_maximum_size = Vector2(200, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("1_gq75b")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer" unique_id=1755344780]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 8
+theme_override_font_sizes/bold_font_size = 8
+bbcode_enabled = true
+text = "[b]加强电机/重塑风的形状/加入沙子/修改出风口[/b]
+提高风速/风力衰减/提高对实体冲击力/提高风力角度
+[color=red][+10][/color]"
