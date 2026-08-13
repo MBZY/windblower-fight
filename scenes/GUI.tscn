@@ -11,6 +11,16 @@ content_margin_top = 5.0
 content_margin_right = 5.0
 content_margin_bottom = 5.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqy5q"]
+bg_color = Color(9.62615e-07, 0.6694189, 0.7945624, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shsct"]
+bg_color = Color(0, 0.40392157, 0.8156863, 1)
+border_width_right = 2
+border_color = Color(9.62615e-07, 0.6694189, 0.7945624, 1)
+border_blend = true
+shadow_offset = Vector2(-1, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovrkh"]
 content_margin_left = 5.0
 content_margin_top = 5.0
@@ -51,6 +61,8 @@ point_count = 2
 curve_x = SubResource("Curve_xpv3r")
 curve_y = SubResource("Curve_xyq0g")
 curve_z = SubResource("Curve_yg60b")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1sxap"]
 
 [node name="Control" type="Control" unique_id=1794550821]
 layout_mode = 3
@@ -121,6 +133,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 45.0
 grow_horizontal = 2
+theme_override_constants/separation = 4
 
 [node name="RestTime" type="Label" parent="VBoxContainer" unique_id=624785290]
 layout_mode = 2
@@ -129,9 +142,12 @@ theme_override_font_sizes/font_size = 32
 text = "180s"
 
 [node name="RestTimeProgress" type="ProgressBar" parent="VBoxContainer" unique_id=832808112]
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_tqy5q")
+theme_override_styles/fill = SubResource("StyleBoxFlat_shsct")
+value = 61.39
 show_percentage = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=445384178]
@@ -233,6 +249,28 @@ rounded = true
 nine_patch_stretch = true
 texture_under = SubResource("CurveXYZTexture_ovrkh")
 texture_progress = SubResource("CurveXYZTexture_1sxap")
+
+[node name="HBoxContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer" unique_id=70548935]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_1sxap")
+
+[node name="GroupMoney" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1966197996]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "150$"
+horizontal_alignment = 2
+
+[node name="GroupMoney2" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1816494854]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "150$"
+horizontal_alignment = 2
 
 [node name="PlayerListB" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1483668952]
 custom_minimum_size = Vector2(64, 500)
