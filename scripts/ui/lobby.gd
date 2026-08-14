@@ -29,7 +29,16 @@ func set_host(value: bool) -> void:
 		host_badge.visible = value
 
 func set_room_snapshot(room: Dictionary, players: Array) -> void:
-	room_status.text = "%s  |  %s  |  %s" % [String(room.get("room_name", "LAN Room")), String(room.get("state", "waiting")).capitalize(), "%d players" % players.size()]
+	var state := String(room.get("state", "waiting"))
+	var state_text: String = String({
+		"waiting": "等待中",
+		"lobby": "准备中",
+		"countdown": "倒计时",
+		"playing": "游戏中",
+		"score_lock": "结算中",
+		"results": "已结束",
+	}.get(state, state.capitalize()))
+	room_status.text = "%s  ·  %s  ·  %d 名玩家" % [String(room.get("room_name", "局域网房间")), state_text, players.size()]
 	set_map_id(StringName(String(room.get("map_id", "medium"))))
 	var red: Array[String] = []
 	var blue: Array[String] = []
@@ -42,8 +51,8 @@ func set_room_snapshot(room: Dictionary, players: Array) -> void:
 			red.append(line)
 		else:
 			blue.append(line)
-	red_roster.text = "\n".join(red) if not red.is_empty() else "Waiting for players"
-	blue_roster.text = "\n".join(blue) if not blue.is_empty() else "Waiting for players"
+	red_roster.text = "\n".join(red) if not red.is_empty() else "等待玩家加入…"
+	blue_roster.text = "\n".join(blue) if not blue.is_empty() else "等待玩家加入…"
 
 func set_map_id(map_id: StringName) -> void:
 	var index := _map_ids.find(map_id)

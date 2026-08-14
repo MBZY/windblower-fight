@@ -17,3 +17,9 @@ monitoring = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FallBoundary" unique_id=1945785746]
 position = Vector2(200, 400)
 shape = SubResource("RectangleShape2D_xq383")
+
+[node name="IslandShadow" type="Polygon2D" parent="." unique_id=549066374]
+z_index = -11
+position = Vector2(10, 14)
+color = Color(0.025, 0.16, 0.22, 0.38)
+polygon = PackedVector2Array(8, 50, 392, 50, 400, 95, 400, 735, 370, 780, 30, 780, 0, 735, 0, 95)

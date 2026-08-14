@@ -2,6 +2,177 @@
 
 [ext_resource type="Script" uid="uid://cajif44bc6g5c" path="res://scripts/ui/lobby.gd" id="1_6oakf"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6oakf"]
+bg_color = Color(0.02, 0.13, 0.2, 0.3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_efll3"]
+bg_color = Color(0.52, 0.12, 0.18, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.46, 0.5, 0.78)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5t5el"]
+bg_color = Color(0.68, 0.16, 0.23, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.46, 0.5, 0.78)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2rbxb"]
+bg_color = Color(1, 0.78, 0.25, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.92, 0.58, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rqagm"]
+content_margin_left = 10.0
+content_margin_right = 10.0
+bg_color = Color(0.025, 0.13, 0.19, 0.78)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.38, 0.75, 0.86, 0.55)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bthuv"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.03, 0.16, 0.22, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.73, 0.83, 0.65)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bnidf"]
+bg_color = Color(0.91, 0.97, 1, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.43, 0.8, 0.9, 0.75)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kghoh"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.31, 0.055, 0.095, 0.91)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.34, 0.42, 0.82)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+shadow_color = Color(0.15, 0.01, 0.03, 0.35)
+shadow_size = 8
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfpwc"]
+bg_color = Color(0.76, 0.12, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_24obi"]
+bg_color = Color(0.9, 0.18, 0.27, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cyxd6"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.035, 0.13, 0.3, 0.91)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.24, 0.68, 1, 0.85)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+shadow_color = Color(0.01, 0.05, 0.15, 0.35)
+shadow_size = 8
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7vhxf"]
+bg_color = Color(0.05, 0.43, 0.78, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vild7"]
+bg_color = Color(0.08, 0.55, 0.94, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b3ko0"]
+bg_color = Color(0.07, 0.62, 0.4, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.46, 1, 0.72, 0.72)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_id02d"]
+bg_color = Color(0.1, 0.74, 0.48, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.46, 1, 0.72, 0.72)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [node name="lobby" type="Control" unique_id=202601119]
 layout_mode = 3
 anchors_preset = 15
@@ -12,61 +183,78 @@ grow_vertical = 2
 script = ExtResource("1_6oakf")
 
 [node name="Background" type="Panel" parent="." unique_id=925328969]
-modulate = Color(0.0627451, 0.15686275, 0.22745098, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_6oakf")
 
 [node name="SafeMargin" type="MarginContainer" parent="." unique_id=353266413]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 20.0
-offset_right = -16.0
-offset_bottom = -20.0
+offset_left = 14.0
+offset_top = 16.0
+offset_right = -14.0
+offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Content" type="VBoxContainer" parent="SafeMargin" unique_id=1230788544]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 
 [node name="Header" type="HBoxContainer" parent="SafeMargin/Content" unique_id=193408213]
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="LeaveButton" type="Button" parent="SafeMargin/Content/Header" unique_id=376656226]
-custom_minimum_size = Vector2(68, 36)
+custom_minimum_size = Vector2(68, 40)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_efll3")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5t5el")
 text = "离开"
 
 [node name="Title" type="Label" parent="SafeMargin/Content/Header" unique_id=1915580479]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.96, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.14, 0.2, 0.9)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 27
 text = "准备大厅"
 horizontal_alignment = 1
 
 [node name="HostBadge" type="Label" parent="SafeMargin/Content/Header" unique_id=561087320]
-custom_minimum_size = Vector2(68, 36)
+custom_minimum_size = Vector2(68, 40)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.16, 0.18, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_2rbxb")
 text = "房主"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="RoomStatus" type="Label" parent="SafeMargin/Content" unique_id=114997881]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-text = "房间：Sky Leaf Room  |  等待玩家"
+theme_override_colors/font_color = Color(0.86, 0.97, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_rqagm")
+text = "房间准备中"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MapPanel" type="PanelContainer" parent="SafeMargin/Content" unique_id=290774700]
-visible = false
+custom_minimum_size = Vector2(0, 76)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bthuv")
 
 [node name="MapContents" type="VBoxContainer" parent="SafeMargin/Content/MapPanel" unique_id=1275091950]
 layout_mode = 2
@@ -74,17 +262,22 @@ theme_override_constants/separation = 6
 
 [node name="MapTitle" type="Label" parent="SafeMargin/Content/MapPanel/MapContents" unique_id=1781313972]
 layout_mode = 2
-text = "地图"
+theme_override_colors/font_color = Color(0.76, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "选择浮岛"
 
 [node name="MapSelect" type="OptionButton" parent="SafeMargin/Content/MapPanel/MapContents" unique_id=1367035806]
+custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.04, 0.17, 0.22, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_bnidf")
 selected = 1
 item_count = 3
-popup/item_0/text = "Small Island | 300 Leaves"
+popup/item_0/text = "小型浮岛 · 300 叶"
 popup/item_0/id = 0
-popup/item_1/text = "Medium Island | 500 Leaves"
+popup/item_1/text = "中型浮岛 · 500 叶"
 popup/item_1/id = 1
-popup/item_2/text = "Large Island | 800 Leaves"
+popup/item_2/text = "大型浮岛 · 800 叶"
 popup/item_2/id = 2
 
 [node name="Teams" type="HBoxContainer" parent="SafeMargin/Content" unique_id=629037634]
@@ -95,6 +288,7 @@ theme_override_constants/separation = 10
 [node name="RedTeam" type="PanelContainer" parent="SafeMargin/Content/Teams" unique_id=301914798]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_kghoh")
 
 [node name="Contents" type="VBoxContainer" parent="SafeMargin/Content/Teams/RedTeam" unique_id=1130456703]
 layout_mode = 2
@@ -102,21 +296,29 @@ theme_override_constants/separation = 8
 
 [node name="Header" type="Label" parent="SafeMargin/Content/Teams/RedTeam/Contents" unique_id=767266705]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 19
 text = "红队"
 horizontal_alignment = 1
 
 [node name="Roster" type="Label" parent="SafeMargin/Content/Teams/RedTeam/Contents" unique_id=414943279]
 layout_mode = 2
 size_flags_vertical = 3
-text = "玩家 1\\n\\n等待加入"
+theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "等待玩家加入…"
 
 [node name="JoinButton" type="Button" parent="SafeMargin/Content/Teams/RedTeam/Contents" unique_id=1802217228]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_vfpwc")
+theme_override_styles/hover = SubResource("StyleBoxFlat_24obi")
 text = "加入红队"
 
 [node name="BlueTeam" type="PanelContainer" parent="SafeMargin/Content/Teams" unique_id=1326895294]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_cyxd6")
 
 [node name="Contents" type="VBoxContainer" parent="SafeMargin/Content/Teams/BlueTeam" unique_id=55470653]
 layout_mode = 2
@@ -124,26 +326,39 @@ theme_override_constants/separation = 8
 
 [node name="Header" type="Label" parent="SafeMargin/Content/Teams/BlueTeam/Contents" unique_id=1697097281]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.67, 0.86, 1, 1)
+theme_override_font_sizes/font_size = 19
 text = "蓝队"
 horizontal_alignment = 1
 
 [node name="Roster" type="Label" parent="SafeMargin/Content/Teams/BlueTeam/Contents" unique_id=1502285754]
 layout_mode = 2
 size_flags_vertical = 3
-text = "玩家 2\\n\\n等待加入"
+theme_override_colors/font_color = Color(0.94, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "等待玩家加入…"
 
 [node name="JoinButton" type="Button" parent="SafeMargin/Content/Teams/BlueTeam/Contents" unique_id=131186006]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_7vhxf")
+theme_override_styles/hover = SubResource("StyleBoxFlat_vild7")
 text = "加入蓝队"
 
 [node name="Hint" type="Label" parent="SafeMargin/Content" unique_id=1863234932]
 layout_mode = 2
-text = "房主可选择地图并手动开局"
+theme_override_colors/font_color = Color(0.73, 0.9, 0.95, 1)
+theme_override_font_sizes/font_size = 13
+text = "房主选择地图后即可开始"
 horizontal_alignment = 1
 
 [node name="StartButton" type="Button" parent="SafeMargin/Content" unique_id=1998976474]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_b3ko0")
+theme_override_styles/hover = SubResource("StyleBoxFlat_id02d")
 text = "开始对局"
 
 [connection signal="pressed" from="SafeMargin/Content/Header/LeaveButton" to="." method="_on_leave_button_pressed"]

@@ -2,16 +2,136 @@
 
 [ext_resource type="Script" uid="uid://b2wj1uyl2milu" path="res://scripts/ui/main_menu.gd" id="1_menu"]
 
-[sub_resource type="StyleBoxFlat" id="Panel"]
-content_margin_left = 18.0
-content_margin_top = 18.0
-content_margin_right = 18.0
-content_margin_bottom = 18.0
-bg_color = Color(0.06, 0.12, 0.18, 0.94)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sd5it"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(0.025, 0.11, 0.17, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.61, 0.91, 1, 0.68)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+shadow_color = Color(0.02, 0.08, 0.12, 0.42)
+shadow_size = 12
+shadow_offset = Vector2(0, 7)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5vafy"]
+content_margin_left = 12.0
+content_margin_right = 12.0
+bg_color = Color(0.94, 0.98, 1, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.48, 0.78, 0.88, 0.82)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_byqcc"]
+content_margin_left = 12.0
+content_margin_right = 12.0
+bg_color = Color(0.94, 0.98, 1, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.16, 0.78, 0.92, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w6ykx"]
+bg_color = Color(0.08, 0.64, 0.42, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.48, 1, 0.75, 0.75)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hiibk"]
+bg_color = Color(0.05, 0.48, 0.32, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.48, 1, 0.75, 0.75)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_swlpu"]
+bg_color = Color(0.11, 0.75, 0.5, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.48, 1, 0.75, 0.75)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nm0l4"]
+bg_color = Color(0.07, 0.25, 0.34, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.31, 0.72, 0.86, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bxtry"]
+bg_color = Color(0.09, 0.34, 0.45, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.31, 0.72, 0.86, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_75pso"]
+bg_color = Color(0.04, 0.49, 0.68, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.31, 0.72, 0.86, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cnht7"]
+bg_color = Color(0.05, 0.6, 0.79, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.31, 0.72, 0.86, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="MainMenu" type="Control" unique_id=1081692987]
 layout_mode = 3
@@ -27,51 +147,163 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -28.0
+offset_bottom = -28.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="CenterContainer" unique_id=1572595307]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(330, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("Panel")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sd5it")
 
 [node name="Contents" type="VBoxContainer" parent="CenterContainer/Panel" unique_id=1981126303]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="CenterContainer/Panel/Contents" unique_id=1863333372]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Sky Leaf Clash"
+theme_override_colors/font_color = Color(0.96, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.18, 0.25, 0.9)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 32
+text = "天空叶岛大乱斗"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="CenterContainer/Panel/Contents" unique_id=656804945]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.9, 0.96, 1)
+theme_override_font_sizes/font_size = 14
+text = "云端竞技场"
 horizontal_alignment = 1
 
 [node name="NameInput" type="LineEdit" parent="CenterContainer/Panel/Contents" unique_id=1020136957]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
-placeholder_text = "Player name"
+theme_override_colors/font_color = Color(0.04, 0.15, 0.2, 1)
+theme_override_colors/caret_color = Color(0.05, 0.55, 0.72, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_5vafy")
+theme_override_styles/focus = SubResource("StyleBoxFlat_byqcc")
+placeholder_text = "玩家名称"
 max_length = 16
 
 [node name="CreateRoom" type="Button" parent="CenterContainer/Panel/Contents" unique_id=30148731]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
-text = "Create LAN Room"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_w6ykx")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hiibk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_swlpu")
+text = "创建局域网房间"
 
 [node name="FindRooms" type="Button" parent="CenterContainer/Panel/Contents" unique_id=1602175335]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
-text = "Find LAN Rooms"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_nm0l4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bxtry")
+text = "查找附近房间"
 
 [node name="IpInput" type="LineEdit" parent="CenterContainer/Panel/Contents" unique_id=937065464]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.04, 0.15, 0.2, 1)
+theme_override_colors/caret_color = Color(0.05, 0.55, 0.72, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_5vafy")
+theme_override_styles/focus = SubResource("StyleBoxFlat_byqcc")
 text = "127.0.0.1"
-placeholder_text = "Host IP or IP:port"
+placeholder_text = "主机 IP 或 IP:端口"
 
 [node name="JoinIp" type="Button" parent="CenterContainer/Panel/Contents" unique_id=1090968891]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
-text = "Join by IP"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_75pso")
+theme_override_styles/hover = SubResource("StyleBoxFlat_cnht7")
+text = "加入房间"
+
+[node name="Sky" type="ColorRect" parent="." unique_id=385722367]
+z_index = -20
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.27, 0.72, 0.96, 1)
+
+[node name="Sun" type="Polygon2D" parent="." unique_id=1169979091]
+z_index = -15
+position = Vector2(328, 112)
+color = Color(1, 0.86, 0.34, 0.94)
+polygon = PackedVector2Array(0, -38, 15, -35, 27, -27, 35, -15, 38, 0, 35, 15, 27, 27, 15, 35, 0, 38, -15, 35, -27, 27, -35, 15, -38, 0, -35, -15, -27, -27, -15, -35)
+
+[node name="FarClouds" type="Parallax2D" parent="." unique_id=1887372308]
+z_index = -14
+repeat_size = Vector2(480, 0)
+autoscroll = Vector2(7, 0)
+repeat_times = 4
+ignore_camera_scroll = true
+
+[node name="CloudA" type="Polygon2D" parent="FarClouds" unique_id=1671404196]
+position = Vector2(62, 180)
+scale = Vector2(0.65, 0.65)
+color = Color(0.88, 0.96, 1, 0.58)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="CloudB" type="Polygon2D" parent="FarClouds" unique_id=702448868]
+position = Vector2(292, 286)
+scale = Vector2(0.48, 0.48)
+color = Color(0.88, 0.96, 1, 0.58)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="CloudC" type="Polygon2D" parent="FarClouds" unique_id=2079394747]
+position = Vector2(452, 510)
+scale = Vector2(0.58, 0.58)
+color = Color(0.88, 0.96, 1, 0.58)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="NearClouds" type="Parallax2D" parent="." unique_id=116183219]
+z_index = -13
+repeat_size = Vector2(560, 0)
+autoscroll = Vector2(16, 0)
+repeat_times = 4
+ignore_camera_scroll = true
+
+[node name="CloudA" type="Polygon2D" parent="NearClouds" unique_id=1328680891]
+position = Vector2(98, 590)
+scale = Vector2(1.05, 1.05)
+color = Color(1, 1, 1, 0.82)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="CloudB" type="Polygon2D" parent="NearClouds" unique_id=128488447]
+position = Vector2(365, 400)
+scale = Vector2(0.82, 0.82)
+color = Color(1, 1, 1, 0.82)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="IslandShadow" type="Polygon2D" parent="." unique_id=1010601091]
+z_index = -11
+position = Vector2(200, 724)
+color = Color(0.04, 0.24, 0.3, 0.34)
+polygon = PackedVector2Array(-118, 0, 118, 0, 108, 18, 82, 36, 42, 51, -8, 55, -58, 42, -96, 24)
+
+[node name="Island" type="Polygon2D" parent="." unique_id=1210278970]
+z_index = -10
+position = Vector2(200, 708)
+color = Color(0.12, 0.49, 0.3, 0.94)
+polygon = PackedVector2Array(-118, 0, 118, 0, 108, 18, 82, 36, 42, 51, -8, 55, -58, 42, -96, 24)
 
 [connection signal="focus_exited" from="CenterContainer/Panel/Contents/NameInput" to="." method="_on_name_input_focus_exited"]
 [connection signal="text_submitted" from="CenterContainer/Panel/Contents/NameInput" to="." method="_on_name_input_text_submitted"]
