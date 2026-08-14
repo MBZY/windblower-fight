@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ThermalWeaponDataC" load_steps=5 format=3 uid="uid://c6pp0otqr838f"]
+
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_buh44"]
+[ext_resource type="Texture2D" uid="uid://xhmedn6lq2g7" path="res://assets/assets/icons/M24_icon.png" id="1_cwhn1"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_0n8ty"]
+[ext_resource type="Script" uid="uid://dann640jxcy1j" path="res://scripts/item/subclass/thermal_weapon_data.gd" id="2_pe1cu"]
+
+[resource]
+script = ExtResource("2_pe1cu")
+ammo_count_per_magazine = 7
+now_ammo_count = 0
+ammo_damage_ratio = 1.0
+ammo_range_ratio = 1.0
+ammo_speed_ratio = 1.0
+ammo_penetration = 1.0
+ammo_repel_ratio = 1.0
+obj_weapon_path = "res://assets/scenes/weapon/M24.tscn"
+max_durability = 0
+now_durability = 0
+base_damage = 120.0
+damage_ratio = 1.0
+attack_speed = 1.5
+attack_speed_ratio = 1.0
+critical_rate = 20.0
+cultivation_requirement = 0
+internal_item = false
+item_id = 4
+item_name = ""
+item_description = "射速慢，贯穿力强，单发伤害高的狙击步枪"
+item_icon = ExtResource("1_cwhn1")
+item_weight = 12.0
+stackable = false
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_buh44")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_0n8ty")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_0n8ty")]([])

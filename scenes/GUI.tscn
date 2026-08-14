@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://du56bckj8txdb" path="res://assets/button/ButtonDown.png" id="4_tqy5q"]
 [ext_resource type="AudioStream" uid="uid://cy7gjk82gkory" path="res://assets/audio/400soundspack/Items/air_pump.wav" id="7_gm6g3"]
 [ext_resource type="AudioStream" uid="uid://bi1xyj3m3ck6o" path="res://assets/audio/400soundspack/Musical Effects/synth_bass_chime_quick.wav" id="8_adr5q"]
-[ext_resource type="AudioStream" uid="uid://uimayr1ftxfb" path="res://assets/audio/400soundspack/Items/coin_collect.wav" id="9_ajnbq"]
+[ext_resource type="AudioStream" uid="uid://djlg052tkqlef" path="res://assets/audio/400soundspack/Items/coins_gather_medium.wav" id="9_gm6g3"]
 [ext_resource type="AudioStream" uid="uid://dj3rqn4dbocmr" path="res://assets/audio/400soundspack/Retro/fall_quick.wav" id="10_kdart"]
 [ext_resource type="AudioStream" uid="uid://b8gnge11ovq5t" path="res://assets/audio/400soundspack/Machines/hairdryer.wav" id="11_2yx18"]
 [ext_resource type="AudioStream" uid="uid://coqn6bcobxeof" path="res://assets/audio/400soundspack/Environment/clock_tick_only.wav" id="12_2o6e4"]
@@ -628,7 +628,7 @@ max_polyphony = 2
 
 [node name="CoinSfx" type="AudioStreamPlayer" parent="." unique_id=2014708787]
 unique_name_in_owner = true
-stream = ExtResource("9_ajnbq")
+stream = ExtResource("9_gm6g3")
 volume_db = -7.0
 max_polyphony = 2
 

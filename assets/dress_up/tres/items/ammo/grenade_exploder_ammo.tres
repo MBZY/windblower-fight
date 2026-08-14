@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="ExploderAmmoDataC" load_steps=4 format=3 uid="uid://l0wc0w5mhm1c"]
+
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_711wo"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_i12lk"]
+[ext_resource type="Script" uid="uid://0adhbvfpive8" path="res://scripts/item/subclass/explosive_ammo_data.gd" id="2_pnq1d"]
+
+[resource]
+script = ExtResource("2_pnq1d")
+FragmentCount = 100
+DamageRange = 100.0
+LethalAngle = 360.0
+base_damage = 50.0
+base_range = 300.0
+base_speed = 10.0
+penetration = 0.0
+base_repel = 1.0
+explosion_radius = 0.0
+obj_scene = "res://scenes/entity/ammo/subclass/grenade_exploder_ammo.tscn"
+internal_item = true
+item_id = 7777
+item_name = ""
+item_description = ""
+item_weight = 0.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_711wo")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_i12lk")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_i12lk")]([])

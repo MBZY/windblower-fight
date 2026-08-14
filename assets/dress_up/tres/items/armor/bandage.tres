@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="ArmorDataC" load_steps=5 format=3 uid="uid://bbd2jghq5xtd5"]
+
+[ext_resource type="Texture2D" uid="uid://c6ff72b50cejf" path="res://assets/assets/armor/bengdai.png" id="1_1g4bl"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_mf048"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_jhoho"]
+[ext_resource type="Script" uid="uid://6rfa1tjfvep1" path="res://scripts/item/subclass/armor_data.gd" id="2_xxrh3"]
+
+[resource]
+script = ExtResource("2_xxrh3")
+armor_type = 2
+obj_scene_path = "res://assets/scenes/armor/bandage.tscn"
+armor_defense = 10.0
+infection_resistance = 5.0
+qi_regen_bonus = 10.0
+movement_speed_modifier = 5.0
+inventory_capacity = 0
+durability = 100.0
+max_durability = 100.0
+cultivation_requirement = ""
+internal_item = false
+item_id = 1001
+item_name = "bandage"
+item_description = "缠在手上的绷带，是练功时用来保护手掌的。"
+item_icon = ExtResource("1_1g4bl")
+item_weight = 1.0
+stackable = false
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_mf048")]([])
+item_type = 6
+item_entries = Array[ExtResource("2_jhoho")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_jhoho")]([])

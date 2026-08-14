@@ -1,0 +1,81 @@
+[gd_scene format=3 uid="uid://bbu0th8lik0i8"]
+
+[sub_resource type="Animation" id="Animation_6fg8e"]
+resource_name = "bounce"
+length = 0.78
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.12, 0.29, 0.48, 0.78),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 2), Vector2(0, -5), Vector2(0, 1), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.12, 0.29, 0.48, 0.78),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.12, 0.82), Vector2(0.92, 1.14), Vector2(1.08, 0.93), Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual:rotation")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.18, 0.42, 0.62, 0.78),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-0.035, 0.04, -0.025, 0.02, -0.035]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pxkme"]
+_data = {
+&"bounce": SubResource("Animation_6fg8e")
+}
+
+[node name="GrassTuft" type="Node2D" unique_id=1754130971]
+
+[node name="Visual" type="Node2D" parent="." unique_id=2081945398]
+
+[node name="Blade1" type="Polygon2D" parent="Visual" unique_id=513386531]
+color = Color(0.12, 0.55, 0.24, 1)
+polygon = PackedVector2Array(-3, 0, -7, -13, -4, -24, 0, -13, 1, 0)
+
+[node name="Blade2" type="Polygon2D" parent="Visual" unique_id=112424250]
+color = Color(0.2, 0.68, 0.29, 1)
+polygon = PackedVector2Array(-1.5, 0, -2, -18, 2, -31, 4, -17, 3, 0)
+
+[node name="Blade3" type="Polygon2D" parent="Visual" unique_id=1258885263]
+color = Color(0.1, 0.48, 0.2, 1)
+polygon = PackedVector2Array(1, 0, 6, -14, 13, -22, 10, -10, 7, 0)
+
+[node name="Blade4" type="Polygon2D" parent="Visual" unique_id=1449227268]
+color = Color(0.27, 0.73, 0.32, 1)
+polygon = PackedVector2Array(-5, 0, -13, -10, -16, -19, -9, -12, -1, 0)
+
+[node name="Blade5" type="Polygon2D" parent="Visual" unique_id=1184448386]
+color = Color(0.22, 0.63, 0.25, 1)
+polygon = PackedVector2Array(4, 0, 12, -9, 18, -14, 13, -5, 8, 0)
+
+[node name="GroundShadow" type="Polygon2D" parent="." unique_id=761169906]
+z_index = -1
+position = Vector2(0, 1.5)
+color = Color(0.02, 0.16, 0.08, 0.24)
+polygon = PackedVector2Array(-17, 0, -9, -3, 9, -3, 17, 0, 9, 3, -9, 3)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=258562908]
+libraries/ = SubResource("AnimationLibrary_pxkme")
+autoplay = &"bounce"

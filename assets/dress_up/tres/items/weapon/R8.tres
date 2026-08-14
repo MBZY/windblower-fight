@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ThermalWeaponDataC" load_steps=5 format=3 uid="uid://cqou33lxhoo1"]
+
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_2aflg"]
+[ext_resource type="Texture2D" uid="uid://bnidnwa0hm6y7" path="res://assets/assets/icons/Revolver_icon.png" id="1_4l5b0"]
+[ext_resource type="Script" uid="uid://dann640jxcy1j" path="res://scripts/item/subclass/thermal_weapon_data.gd" id="2_gvne1"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_mjcc4"]
+
+[resource]
+script = ExtResource("2_gvne1")
+ammo_count_per_magazine = 8
+now_ammo_count = 0
+ammo_damage_ratio = 1.0
+ammo_range_ratio = 1.0
+ammo_speed_ratio = 1.0
+ammo_penetration = 1.0
+ammo_repel_ratio = 1.0
+obj_weapon_path = "res://assets/scenes/weapon/R8.tscn"
+max_durability = 0
+now_durability = 0
+base_damage = 30.0
+damage_ratio = 1.0
+attack_speed = 2.0
+attack_speed_ratio = 1.0
+critical_rate = 50.0
+cultivation_requirement = 0
+internal_item = false
+item_id = 7
+item_name = "R8"
+item_description = "射击间隔较长，但单发伤害较高的手枪"
+item_icon = ExtResource("1_4l5b0")
+item_weight = 3.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_2aflg")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_mjcc4")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_mjcc4")]([])

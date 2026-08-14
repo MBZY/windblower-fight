@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://dywpor5p2ltt6"]
+
+[ext_resource type="Script" uid="uid://cihe0avaow2p6" path="res://scripts/armor/armor.gd" id="1_d1mcw"]
+[ext_resource type="Texture2D" uid="uid://c6ff72b50cejf" path="res://assets/assets/armor/bengdai.png" id="2_qdfkq"]
+[ext_resource type="Resource" uid="uid://bbd2jghq5xtd5" path="res://assets/tres/items/armor/bandage.tres" id="2_qssa2"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kk1nr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_qdfkq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="ArmorC" type="Node2D" node_paths=PackedStringArray("armor_shape")]
+script = ExtResource("1_d1mcw")
+armor_data = ExtResource("2_qssa2")
+armor_shape = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-15, -3)
+sprite_frames = SubResource("SpriteFrames_kk1nr")

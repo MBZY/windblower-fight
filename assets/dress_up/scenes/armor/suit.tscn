@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3 uid="uid://43727fieoi6j"]
+
+[ext_resource type="Script" uid="uid://cihe0avaow2p6" path="res://scripts/armor/armor.gd" id="1_7fcbj"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="2_1jb61"]
+[ext_resource type="Texture2D" uid="uid://b45b8ddobuk62" path="res://assets/assets/armor/suit.png" id="2_irv7m"]
+[ext_resource type="Script" uid="uid://6rfa1tjfvep1" path="res://scripts/item/subclass/armor_data.gd" id="3_0rxjj"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="3_vxw0x"]
+
+[sub_resource type="Resource" id="Resource_gh2cs"]
+script = ExtResource("3_0rxjj")
+armor_type = 1
+obj_scene_path = "res://assets/scenes/armor/suit.tscn"
+armor_defense = 10.0
+infection_resistance = 0.0
+qi_regen_bonus = 0.0
+movement_speed_modifier = 0.0
+inventory_capacity = 0
+durability = 100.0
+max_durability = 100.0
+cultivation_requirement = ""
+internal_item = false
+item_id = 1013
+item_name = "suit"
+item_description = "一套很讲究的西装，出席过大大小小的正式场合，如今几乎没有用武之地。"
+item_icon = ExtResource("2_irv7m")
+item_weight = 2.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("2_1jb61")]([])
+item_type = 6
+item_entries = Array[ExtResource("3_vxw0x")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("3_vxw0x")]([])
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6qbb3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_irv7m")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="ArmorC" type="Node2D" node_paths=PackedStringArray("armor_shape")]
+script = ExtResource("1_7fcbj")
+armor_data = SubResource("Resource_gh2cs")
+armor_shape = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_6qbb3")

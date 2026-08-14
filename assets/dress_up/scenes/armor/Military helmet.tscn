@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://cw2qr34d7rx3h"]
+
+[ext_resource type="Script" uid="uid://cihe0avaow2p6" path="res://scripts/armor/armor.gd" id="1_ljaea"]
+[ext_resource type="Resource" uid="uid://dr7r7vi4vbqed" path="res://assets/tres/items/armor/Military helmet.tres" id="2_tb8bc"]
+[ext_resource type="Texture2D" uid="uid://kjyp8d2kg3rl" path="res://assets/assets/armor/junkui.png" id="2_vf5rt"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_drkmx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_vf5rt")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="ArmorC" type="Node2D" node_paths=PackedStringArray("armor_shape")]
+script = ExtResource("1_ljaea")
+armor_data = ExtResource("2_tb8bc")
+armor_shape = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_drkmx")

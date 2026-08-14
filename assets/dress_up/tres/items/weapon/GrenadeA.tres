@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="ExplosiveDataC" load_steps=6 format=3 uid="uid://c85fsisn5t2vg"]
+
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_nmtyh"]
+[ext_resource type="Script" uid="uid://pe2vrso0vs8q" path="res://scripts/item/subclass/explosive_data.gd" id="2_ie5aw"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_k4aub"]
+[ext_resource type="Texture2D" uid="uid://rp3hxgq14sa8" path="res://assets/assets/weapon/grenades.png" id="2_udrrs"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ut11g"]
+atlas = ExtResource("2_udrrs")
+region = Rect2(0, 0, 16, 16)
+
+[resource]
+script = ExtResource("2_ie5aw")
+ThrowStrengthRatio = 1.0
+ammo_count_per_magazine = 30
+now_ammo_count = 0
+ammo_damage_ratio = 1.0
+ammo_range_ratio = 1.0
+ammo_speed_ratio = 1.0
+ammo_penetration = 1.0
+ammo_repel_ratio = 1.0
+obj_weapon_path = "res://assets/scenes/weapon/grenade_a.tscn"
+max_durability = 0
+now_durability = 0
+base_damage = 0.0
+damage_ratio = 1.0
+attack_speed = 1.0
+attack_speed_ratio = 1.0
+critical_rate = 5.0
+cultivation_requirement = 0
+internal_item = false
+item_id = 12344
+item_name = "GrenadeA"
+item_description = ""
+item_icon = SubResource("AtlasTexture_ut11g")
+item_weight = 0.0
+stackable = true
+decomposition_items = Array[ExtResource("1_nmtyh")]([])
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_nmtyh")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_k4aub")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_k4aub")]([])

@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://b3s7jn7qw6p45"]
+
+[ext_resource type="Script" uid="uid://cihe0avaow2p6" path="res://scripts/armor/armor.gd" id="1_8rvug"]
+[ext_resource type="Texture2D" uid="uid://b70am0q3puu2c" path="res://assets/assets/armor/Sunglasses.png" id="2_ol48y"]
+[ext_resource type="Resource" uid="uid://dqkehebrj0opf" path="res://assets/tres/items/armor/sunglasses.tres" id="2_px03g"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g68sh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ol48y")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Sunglasses" type="Node2D" node_paths=PackedStringArray("armor_shape")]
+script = ExtResource("1_8rvug")
+armor_data = ExtResource("2_px03g")
+armor_shape = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_g68sh")

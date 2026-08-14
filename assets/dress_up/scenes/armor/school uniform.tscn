@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3 uid="uid://bvm70djqskg0m"]
+
+[ext_resource type="Script" uid="uid://cihe0avaow2p6" path="res://scripts/armor/armor.gd" id="1_gw1jw"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="2_hedw4"]
+[ext_resource type="Script" uid="uid://6rfa1tjfvep1" path="res://scripts/item/subclass/armor_data.gd" id="2_we4lg"]
+[ext_resource type="Texture2D" uid="uid://24vfhas4swjy" path="res://assets/assets/armor/xiaofu.png" id="3_srbnw"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="3_uoscy"]
+
+[sub_resource type="Resource" id="Resource_635yk"]
+script = ExtResource("2_we4lg")
+armor_type = 0
+obj_scene_path = "res://assets/scenes/armor/school uniform.tscn"
+armor_defense = 10.0
+infection_resistance = 5.0
+qi_regen_bonus = 0.0
+movement_speed_modifier = 15.0
+inventory_capacity = 0
+durability = 100.0
+max_durability = 100.0
+cultivation_requirement = ""
+internal_item = false
+item_id = 1014
+item_name = "school uniform"
+item_description = "一穿上这套衣服，似乎有什么力量正在涌现——这就是青春啊！"
+item_icon = ExtResource("3_srbnw")
+item_weight = 2.0
+stackable = false
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("2_hedw4")]([])
+item_type = 6
+item_entries = Array[ExtResource("3_uoscy")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("3_uoscy")]([])
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1psgg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_srbnw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="ArmorC" type="Node2D" node_paths=PackedStringArray("armor_shape")]
+script = ExtResource("1_gw1jw")
+armor_data = SubResource("Resource_635yk")
+armor_shape = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_1psgg")

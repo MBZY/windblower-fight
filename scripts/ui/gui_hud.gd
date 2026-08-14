@@ -24,6 +24,7 @@ const NEUTRAL := Color(0.86, 0.9, 0.94)
 @onready var fan_rotor: Node2D = %FanRotor
 @onready var tap_feedback_layer: Control = %TapFeedbackLayer
 @onready var broadcast_list: VBoxContainer = %KillingBroadcastList
+@onready var broadcast_board: PanelContainer = $KillingBroadcastBoard
 @onready var blow_tap_sfx: AudioStreamPlayer = %BlowTapSfx
 @onready var kill_sfx: AudioStreamPlayer = %KillSfx
 @onready var coin_sfx: AudioStreamPlayer = %CoinSfx
@@ -52,6 +53,7 @@ var _shake_tween: Tween
 var _camera_shake_tween: Tween
 var _countdown_tween: Tween
 var _countdown_pulse_tween: Tween
+var _gacha_pulse_tween: Tween
 var _countdown_kind: StringName = &""
 var _respawn_deadline_msec := 0
 var _last_center_count := -1
@@ -361,7 +363,6 @@ func _on_player_eliminated(killer_id: int, victim_id: int, reward: int) -> void:
 	kill_sfx.play()
 	if killer_id == _session.local_player_id() and reward > 0:
 		_show_coin_feedback(reward)
-		coin_sfx.play()
 	elif victim_id == _session.local_player_id():
 		fall_sfx.play()
 
@@ -386,9 +387,21 @@ func _show_kill_broadcast(killer_id: int, victim_id: int) -> void:
 func _show_coin_feedback(amount: int) -> void:
 	var feedback := COIN_REWARD_FEEDBACK_SCENE.instantiate() as CoinRewardFeedback
 	var layer_inverse := tap_feedback_layer.get_global_transform_with_canvas().affine_inverse()
-	feedback.position = layer_inverse * gacha_button.get_global_rect().get_center() + Vector2(-38.0, -30.0)
 	tap_feedback_layer.add_child(feedback)
-	feedback.configure(amount)
+	feedback.arrived.connect(_on_coin_feedback_arrived)
+	var start_position := layer_inverse * broadcast_board.get_global_rect().get_center()
+	var end_position := layer_inverse * gacha_button.get_global_rect().get_center()
+	feedback.configure(amount, start_position, end_position)
+
+func _on_coin_feedback_arrived() -> void:
+	coin_sfx.play()
+	if _gacha_pulse_tween != null:
+		_gacha_pulse_tween.kill()
+	gacha_button.pivot_offset = gacha_button.size * 0.5
+	gacha_button.scale = Vector2.ONE
+	_gacha_pulse_tween = create_tween()
+	_gacha_pulse_tween.tween_property(gacha_button, "scale", Vector2.ONE * 1.28, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_gacha_pulse_tween.tween_property(gacha_button, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 
 func _team_color(player: IslandPlayer) -> Color:
 	if player == null:

@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="ArmorDataC" load_steps=5 format=3 uid="uid://cd6y4j46axaey"]
+
+[ext_resource type="Texture2D" uid="uid://b1dyiaxpi5shb" path="res://assets/assets/armor/shufa.png" id="1_3d7j0"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_24le2"]
+[ext_resource type="Script" uid="uid://6rfa1tjfvep1" path="res://scripts/item/subclass/armor_data.gd" id="2_544fq"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_vryfb"]
+
+[resource]
+script = ExtResource("2_544fq")
+armor_type = 0
+obj_scene_path = "res://assets/scenes/armor/Hair strands.tscn"
+armor_defense = 5.0
+infection_resistance = 10.0
+qi_regen_bonus = 10.0
+movement_speed_modifier = 5.0
+inventory_capacity = 0
+durability = 100.0
+max_durability = 100.0
+cultivation_requirement = ""
+internal_item = false
+item_id = 1012
+item_name = "Hair strands"
+item_description = "对于修仙者，仪容仪表是非常重要的，束发可以减少头发方面带来的困扰，自然很受众人欢迎"
+item_icon = ExtResource("1_3d7j0")
+item_weight = 1.0
+stackable = false
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_24le2")]([])
+item_type = 6
+item_entries = Array[ExtResource("2_vryfb")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_vryfb")]([])

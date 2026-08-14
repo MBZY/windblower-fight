@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="ArmorDataC" load_steps=5 format=3 uid="uid://dr7r7vi4vbqed"]
+
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_2ln41"]
+[ext_resource type="Texture2D" uid="uid://kjyp8d2kg3rl" path="res://assets/assets/armor/junkui.png" id="1_ql48j"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_7oysn"]
+[ext_resource type="Script" uid="uid://6rfa1tjfvep1" path="res://scripts/item/subclass/armor_data.gd" id="2_yguon"]
+
+[resource]
+script = ExtResource("2_yguon")
+armor_type = 0
+obj_scene_path = "res://assets/scenes/armor/Military helmet.tscn"
+armor_defense = 15.0
+infection_resistance = 5.0
+qi_regen_bonus = 0.0
+movement_speed_modifier = 1.0
+inventory_capacity = 0
+durability = 100.0
+max_durability = 100.0
+cultivation_requirement = ""
+internal_item = false
+item_id = 1006
+item_name = "Military helmet"
+item_description = "传统军队使用的防弹头盔，非常坚固
+"
+item_icon = ExtResource("1_ql48j")
+item_weight = 2.0
+stackable = false
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_2ln41")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_7oysn")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_7oysn")]([])

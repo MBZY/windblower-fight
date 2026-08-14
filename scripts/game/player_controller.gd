@@ -44,6 +44,7 @@ var _wind_combo_window_sec := 0.5
 var _wind_combo_limit := 12
 var _last_wind_tap_at := -10.0
 var _display_name := "Player"
+var _visual_facing_left := false
 
 @onready var wind_blower: Node2D = $WindBlower
 @onready var wind_origin_marker: Marker2D = $WindBlower/WindOrigin
@@ -56,6 +57,8 @@ var _display_name := "Player"
 @onready var visual: Sprite2D = $Visual
 @onready var fall_animation_player: AnimationPlayer = %FallAnimationPlayer
 @onready var respawn_animation_player: AnimationPlayer = %RespawnAnimationPlayer
+@onready var movement_animation_player: AnimationPlayer = %MovementAnimationPlayer
+@onready var flip_animation_player: AnimationPlayer = %FlipAnimationPlayer
 @onready var player_shadow: Polygon2D = %PlayerShadow
 @onready var name_label: Label = %NameLabel
 @onready var fall_whoosh_sfx: AudioStreamPlayer2D = %FallWhooshSfx
@@ -71,6 +74,8 @@ func _ready() -> void:
 	_base_wind_force = wind_force
 	_base_push_force = push_force
 	_base_wind_falloff = wind_falloff
+	_visual_facing_left = facing.x < 0.0
+	visual.flip_h = _visual_facing_left
 	wind_blower.rotation = facing.angle()
 	_refresh_name_label()
 	_refresh_wind_visual()
@@ -86,10 +91,10 @@ func _physics_process(delta: float) -> void:
 	if not multiplayer.has_multiplayer_peer():
 		input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if input_vector.length_squared() > 0.0001:
-		facing = input_vector.normalized()
+		_set_facing_direction(input_vector)
 	velocity = input_vector * move_speed + _wind_velocity
-	wind_blower.rotation = facing.angle()
 	move_and_slide()
+	_update_movement_animation(input_vector.length_squared() > 0.0001, input_vector.length())
 	_wind_velocity = _wind_velocity.move_toward(Vector2.ZERO, maxf(push_force * 0.5, 1.0) * delta)
 
 func set_input(direction: Vector2, aim: Vector2 = Vector2.ZERO) -> void:
@@ -98,8 +103,61 @@ func set_input(direction: Vector2, aim: Vector2 = Vector2.ZERO) -> void:
 	input_vector = direction.limit_length(1.0)
 	var next_facing := aim if aim.length_squared() > 0.0001 else input_vector
 	if next_facing.length_squared() > 0.0001:
-		facing = next_facing.normalized()
+		_set_facing_direction(next_facing)
+
+func _set_facing_direction(direction: Vector2, animate_flip: bool = true) -> void:
+	if direction.length_squared() <= 0.0001:
+		return
+	facing = direction.normalized()
+	if wind_blower != null:
 		wind_blower.rotation = facing.angle()
+	if absf(facing.x) <= 0.08:
+		return
+	var next_facing_left := facing.x < 0.0
+	if next_facing_left == _visual_facing_left:
+		return
+	_visual_facing_left = next_facing_left
+	if animate_flip and is_node_ready() and is_active_in_match and not is_respawning and not is_landing:
+		_play_flip_animation(next_facing_left)
+	elif visual != null:
+		visual.flip_h = next_facing_left
+
+func _play_flip_animation(face_left: bool) -> void:
+	if flip_animation_player == null or visual == null:
+		return
+	flip_animation_player.stop()
+	visual.scale.x = 1.0
+	visual.skew = 0.0
+	visual.self_modulate = Color.WHITE
+	visual.flip_h = not face_left
+	var animation_name: StringName = &"flip_left" if face_left else &"flip_right"
+	flip_animation_player.play(animation_name)
+
+func _update_movement_animation(moving: bool, speed_ratio: float = 1.0) -> void:
+	if movement_animation_player == null or visual == null:
+		return
+	var can_animate := moving and is_active_in_match and not is_respawning and not is_landing
+	if can_animate:
+		movement_animation_player.speed_scale = lerpf(0.82, 1.28, clampf(speed_ratio, 0.0, 1.0))
+		if not movement_animation_player.is_playing() or movement_animation_player.current_animation != &"walk":
+			movement_animation_player.play(&"walk")
+		return
+	if movement_animation_player.is_playing():
+		movement_animation_player.stop()
+	visual.scale.y = 1.0
+	visual.rotation = 0.0
+
+func _stop_character_motion_animations() -> void:
+	if movement_animation_player != null:
+		movement_animation_player.stop()
+	if flip_animation_player != null:
+		flip_animation_player.stop()
+	if visual != null:
+		visual.scale = Vector2.ONE
+		visual.rotation = 0.0
+		visual.skew = 0.0
+		visual.self_modulate = Color.WHITE
+		visual.flip_h = _visual_facing_left
 
 func configure_wind_pulse(balance: BalanceConfig) -> void:
 	if balance == null:
@@ -246,7 +304,12 @@ func _process(delta: float) -> void:
 	if not is_active_in_match:
 		return
 	if multiplayer.has_multiplayer_peer() and not multiplayer.is_server() and _has_network_target:
+		var previous_position := global_position
 		global_position = global_position.lerp(_network_target_position, minf(delta * 16.0, 1.0))
+		if not is_respawning and not is_landing:
+			var moved_distance := global_position.distance_to(previous_position)
+			var remote_speed_ratio := clampf(moved_distance / maxf(delta * move_speed, 0.001), 0.0, 1.0)
+			_update_movement_animation(moved_distance > 0.04, remote_speed_ratio)
 	if invulnerability_time > 0.0:
 		invulnerability_time = maxf(0.0, invulnerability_time - delta)
 
@@ -256,8 +319,7 @@ func set_network_position(target: Vector2) -> void:
 
 func set_network_state(next_facing: Vector2, next_wind_intensity: float) -> void:
 	if next_facing.length_squared() > 0.0001:
-		facing = next_facing.normalized()
-		wind_blower.rotation = facing.angle()
+		_set_facing_direction(next_facing)
 	set_wind_intensity(next_wind_intensity if not is_respawning else 0.0)
 
 func apply_network_snapshot(target_position: Vector2, next_facing: Vector2, next_wind_intensity: float, respawning: bool) -> void:
@@ -278,6 +340,7 @@ func set_respawning_state(value: bool) -> void:
 	is_respawning = value
 	if value:
 		is_landing = false
+		_stop_character_motion_animations()
 		_reset_respawn_visual()
 		velocity = Vector2.ZERO
 		_wind_velocity = Vector2.ZERO
@@ -308,6 +371,7 @@ func _refresh_body_presence() -> void:
 func _play_fall_animation() -> void:
 	if not is_node_ready() or fall_animation_player == null:
 		return
+	_stop_character_motion_animations()
 	fall_whoosh_sfx.play()
 	fall_voice_sfx.pitch_scale = 0.94 + float(player_id % 4) * 0.03
 	fall_voice_sfx.play()
@@ -325,6 +389,7 @@ func _reset_fall_visual() -> void:
 func _play_respawn_animation() -> void:
 	if not is_node_ready() or respawn_animation_player == null:
 		return
+	_stop_character_motion_animations()
 	is_landing = true
 	_refresh_body_presence()
 	respawn_sfx.play()
@@ -365,7 +430,6 @@ func reset_match_state(at: Vector2) -> void:
 	_has_network_target = false
 	skill_points = 0
 	fall_count = 0
-	facing = Vector2.RIGHT
 	input_vector = Vector2.ZERO
 	invulnerability_time = 0.0
 	is_landing = false
@@ -381,10 +445,11 @@ func reset_match_state(at: Vector2) -> void:
 	wind_force = _base_wind_force
 	push_force = _base_push_force
 	wind_falloff = _base_wind_falloff
-	wind_blower.rotation = facing.angle()
 	set_respawning_state(false)
 	_reset_fall_visual()
 	_reset_respawn_visual()
+	_stop_character_motion_animations()
+	_set_facing_direction(Vector2.RIGHT, false)
 	_refresh_wind_visual()
 	state_changed.emit(player_id)
 
@@ -394,6 +459,7 @@ func set_active_in_match(value: bool) -> void:
 		player_camera.enabled = _is_local_view and value
 	if not value:
 		is_landing = false
+		_stop_character_motion_animations()
 		velocity = Vector2.ZERO
 		_wind_velocity = Vector2.ZERO
 		input_vector = Vector2.ZERO

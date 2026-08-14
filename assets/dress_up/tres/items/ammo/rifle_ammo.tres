@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="AmmoDataC" load_steps=5 format=3 uid="uid://cndq1hb33e5g5"]
+
+[ext_resource type="Texture2D" uid="uid://crkmei8ayf6ce" path="res://assets/assets/ammo/RifleAmmoBig.png" id="1_qs6iy"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_u2y5g"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_kieb2"]
+[ext_resource type="Script" uid="uid://d2tpanbh8pd3w" path="res://scripts/item/subclass/ammo_data.gd" id="2_xcfs4"]
+
+[resource]
+script = ExtResource("2_xcfs4")
+base_damage = 50.0
+base_range = 300.0
+base_speed = 10.0
+penetration = 0.0
+base_repel = 1.0
+explosion_radius = 0.0
+obj_scene = "res://assets/scenes/ammo/rifle_ammo.tscn"
+internal_item = false
+item_id = 10001
+item_name = "RifleAmmo"
+item_description = ""
+item_icon = ExtResource("1_qs6iy")
+item_weight = 1.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_u2y5g")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_kieb2")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_kieb2")]([])

@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ThermalWeaponDataC" load_steps=5 format=3 uid="uid://kqeo4ihgweju"]
+
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_rnoph"]
+[ext_resource type="Texture2D" uid="uid://r1hyildom0cf" path="res://assets/assets/icons/Luger_icon.png" id="1_sxdkn"]
+[ext_resource type="Script" uid="uid://dann640jxcy1j" path="res://scripts/item/subclass/thermal_weapon_data.gd" id="2_61sut"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_ju4x4"]
+
+[resource]
+script = ExtResource("2_61sut")
+ammo_count_per_magazine = 12
+now_ammo_count = 0
+ammo_damage_ratio = 1.0
+ammo_range_ratio = 1.0
+ammo_speed_ratio = 1.0
+ammo_penetration = 1.0
+ammo_repel_ratio = 1.0
+obj_weapon_path = "res://assets/scenes/weapon/Luger.tscn"
+max_durability = 0
+now_durability = 0
+base_damage = 15.0
+damage_ratio = 1.0
+attack_speed = 1.0
+attack_speed_ratio = 1.0
+critical_rate = 50.0
+cultivation_requirement = 0
+internal_item = false
+item_id = 2
+item_name = "Luger"
+item_description = "轻便的手枪，便于携带。"
+item_icon = ExtResource("1_sxdkn")
+item_weight = 3.0
+stackable = false
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_rnoph")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_ju4x4")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_ju4x4")]([])

@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3 uid="uid://b5jrwtfgpubyw"]
+
+[ext_resource type="Script" uid="uid://cihe0avaow2p6" path="res://scripts/armor/armor.gd" id="1_khhjb"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="2_j5fia"]
+[ext_resource type="Texture2D" uid="uid://cfsy1rvcuj0yt" path="res://assets/assets/armor/Buzzcut.png" id="2_lemu2"]
+[ext_resource type="Script" uid="uid://6rfa1tjfvep1" path="res://scripts/item/subclass/armor_data.gd" id="2_mh2kt"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="3_yxq2o"]
+
+[sub_resource type="Resource" id="Resource_q0lvb"]
+script = ExtResource("2_mh2kt")
+armor_type = 0
+obj_scene_path = "res://assets/scenes/armor/buzzcut.tscn"
+armor_defense = 5.0
+infection_resistance = 0.0
+qi_regen_bonus = 0.0
+movement_speed_modifier = 5.0
+inventory_capacity = 0
+durability = 100.0
+max_durability = 100.0
+cultivation_requirement = ""
+internal_item = false
+item_id = 1002
+item_name = "FakeHair"
+item_description = "一顶寸头假发。什么？你问为什么寸头还要假发？先别管这些有的没的了！"
+item_icon = ExtResource("2_lemu2")
+item_weight = 1.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("2_j5fia")]([])
+item_type = 6
+item_entries = Array[ExtResource("3_yxq2o")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("3_yxq2o")]([])
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vtbp6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_lemu2")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Buzzcut" type="Node2D" node_paths=PackedStringArray("armor_shape")]
+script = ExtResource("1_khhjb")
+armor_data = SubResource("Resource_q0lvb")
+armor_shape = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_vtbp6")

@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://dissr8ttutvmp"]
+
+[ext_resource type="Script" uid="uid://cihe0avaow2p6" path="res://scripts/armor/armor.gd" id="1_ibqwy"]
+[ext_resource type="Resource" uid="uid://b7r84jg2eudv8" path="res://assets/tres/items/armor/fake_hair.tres" id="2_twwju"]
+[ext_resource type="Texture2D" uid="uid://c2etseih4wg0k" path="res://assets/assets/armor/FakeHair.png" id="3_ahbsu"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hcm6f"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_ahbsu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="FakeHair" type="Node2D" node_paths=PackedStringArray("armor_shape")]
+script = ExtResource("1_ibqwy")
+armor_data = ExtResource("2_twwju")
+armor_shape = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_hcm6f")

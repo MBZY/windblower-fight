@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="MeleeWeaponDataC" load_steps=4 format=3 uid="uid://81x4qaxkgguq"]
+
+[ext_resource type="Script" uid="uid://d3ewilcaijfho" path="res://scripts/item/subclass/melee_weapon_data.gd" id="1_je4ef"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_l8oxy"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_17x0n"]
+
+[resource]
+script = ExtResource("1_je4ef")
+repel = 1.0
+obj_weapon_path = "res://assets/assets/weapon/hand_only.tscn"
+max_durability = 0
+now_durability = 0
+base_damage = 50.0
+damage_ratio = 1.0
+attack_speed = 1.0
+attack_speed_ratio = 1.0
+critical_rate = 5.0
+cultivation_requirement = 0
+internal_item = false
+item_id = 0
+item_name = "Empty"
+item_description = ""
+item_weight = 0.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_l8oxy")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_17x0n")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_17x0n")]([])

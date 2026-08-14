@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="ArmorDataC" load_steps=5 format=3 uid="uid://c6ochc4w8xp4b"]
+
+[ext_resource type="Texture2D" uid="uid://bdkvjtgwxj7e" path="res://assets/assets/armor/MuscleDress.png" id="1_k2gdm"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_rn7b0"]
+[ext_resource type="Script" uid="uid://6rfa1tjfvep1" path="res://scripts/item/subclass/armor_data.gd" id="2_1iuol"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_sa4ua"]
+
+[resource]
+script = ExtResource("2_1iuol")
+armor_type = 1
+obj_scene_path = "res://assets/scenes/armor/muscle_dress.tscn"
+armor_defense = 15.0
+infection_resistance = 0.0
+qi_regen_bonus = 0.0
+movement_speed_modifier = 5.0
+inventory_capacity = 0
+durability = 100.0
+max_durability = 100.0
+cultivation_requirement = ""
+internal_item = false
+item_id = 1011
+item_name = "MuscleDress"
+item_description = "沙滩当然要穿沙滩裤！在明媚的阳光下奔跑，这才是夏天！“你身上的黑色油彩是干嘛的？”“这是腹肌！”"
+item_icon = ExtResource("1_k2gdm")
+item_weight = 1.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_rn7b0")]([])
+item_type = 6
+item_entries = Array[ExtResource("2_sa4ua")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_sa4ua")]([])

@@ -22,6 +22,9 @@ var _network_signals_bound := false
 var _current_bgm: AudioStreamPlayer
 var _bgm_tween: Tween
 var _bgm_base_volumes: Dictionary = {}
+var _match_playlist: Array[AudioStreamPlayer] = []
+var _match_playlist_index := 0
+var _match_playlist_active := false
 
 func _ready() -> void:
 	_network_manager = get_node_or_null("NetworkManager") as NetworkManager
@@ -30,9 +33,11 @@ func _ready() -> void:
 		lobby_bgm: lobby_bgm.volume_db,
 		match_bgm: match_bgm.volume_db,
 	}
+	_match_playlist = [match_bgm, menu_bgm, lobby_bgm]
 	show_menu()
 
 func show_menu() -> void:
+	_match_playlist_active = false
 	_switch_bgm(menu_bgm)
 	_clear_flow_views()
 	if current_session:
@@ -82,6 +87,7 @@ func _start_session() -> GameSession:
 	return current_session
 
 func _show_browser() -> void:
+	_match_playlist_active = false
 	_switch_bgm(menu_bgm)
 	_clear_flow_views()
 	if current_menu:
@@ -98,6 +104,7 @@ func _show_browser() -> void:
 	_refresh_rooms()
 
 func _show_lobby(session: GameSession) -> void:
+	_match_playlist_active = false
 	_switch_bgm(lobby_bgm)
 	_clear_flow_views()
 	current_lobby = LOBBY.instantiate()
@@ -147,9 +154,13 @@ func _on_network_room_closed(_reason: String) -> void:
 
 func _on_session_phase_changed(next_phase: StringName) -> void:
 	if next_phase == &"lobby":
+		_match_playlist_active = false
 		_switch_bgm(lobby_bgm)
 	elif next_phase == &"countdown" or next_phase == &"playing" or next_phase == &"score_lock" or next_phase == &"results":
-		_switch_bgm(match_bgm)
+		if not _match_playlist_active:
+			_match_playlist_active = true
+			_match_playlist_index = 0
+			_switch_bgm(_match_playlist[_match_playlist_index])
 	if current_session and (current_session.phase == &"countdown" or current_session.phase == &"playing" or current_session.phase == &"score_lock" or current_session.phase == &"results"):
 		_clear_flow_views()
 	elif current_session and current_session.phase == &"lobby" and current_lobby == null:
@@ -300,8 +311,17 @@ func _switch_bgm(next_bgm: AudioStreamPlayer) -> void:
 		)
 
 func _replay_bgm(player: AudioStreamPlayer) -> void:
+	if _match_playlist_active:
+		_advance_match_bgm()
+		return
 	if player == _current_bgm:
 		player.play()
+
+func _advance_match_bgm() -> void:
+	if _match_playlist.is_empty():
+		return
+	_match_playlist_index = (_match_playlist_index + 1) % _match_playlist.size()
+	_switch_bgm(_match_playlist[_match_playlist_index])
 
 func _on_menu_bgm_finished() -> void:
 	_replay_bgm(menu_bgm)

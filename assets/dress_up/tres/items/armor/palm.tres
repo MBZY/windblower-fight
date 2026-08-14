@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="ArmorDataC" load_steps=5 format=3 uid="uid://d2vks6jjj66h0"]
+
+[ext_resource type="Texture2D" uid="uid://b8o7bh6dm26x" path="res://assets/assets/armor/zhang.png" id="1_774s4"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_vwjfr"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_ku5pg"]
+[ext_resource type="Script" uid="uid://6rfa1tjfvep1" path="res://scripts/item/subclass/armor_data.gd" id="2_ln2wl"]
+
+[resource]
+script = ExtResource("2_ln2wl")
+armor_type = 2
+obj_scene_path = "res://assets/scenes/armor/palm.tscn"
+armor_defense = 5.0
+infection_resistance = 0.0
+qi_regen_bonus = 0.0
+movement_speed_modifier = 1.0
+inventory_capacity = 0
+durability = 100.0
+max_durability = 100.0
+cultivation_requirement = ""
+internal_item = false
+item_id = 1015
+item_name = "palm"
+item_description = "把手掌摊开，你就拥有了拒绝一切的力量。“Fake News！”"
+item_icon = ExtResource("1_774s4")
+item_weight = 1.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_vwjfr")]([])
+item_type = 6
+item_entries = Array[ExtResource("2_ku5pg")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_ku5pg")]([])

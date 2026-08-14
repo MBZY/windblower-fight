@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="AmmoDataC" load_steps=5 format=3 uid="uid://dghvaikn0eb2y"]
+
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_83fy6"]
+[ext_resource type="Texture2D" uid="uid://cm20yr63t4lk8" path="res://assets/assets/ammo/exploder_fragment.png" id="2_8sej5"]
+[ext_resource type="Script" uid="uid://d2tpanbh8pd3w" path="res://scripts/item/subclass/ammo_data.gd" id="2_45vh8"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_fsmq6"]
+
+[resource]
+script = ExtResource("2_45vh8")
+base_damage = 50.0
+base_range = 300.0
+base_speed = 10.0
+penetration = 10.0
+base_repel = 1.0
+explosion_radius = 0.0
+obj_scene = "res://assets/scenes/ammo/exploder_fragment.tscn"
+internal_item = true
+item_id = 1077
+item_name = "exploder_fragment"
+item_description = ""
+item_icon = ExtResource("2_8sej5")
+item_weight = 0.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_83fy6")]([])
+item_type = 1
+item_entries = Array[ExtResource("2_fsmq6")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_fsmq6")]([])

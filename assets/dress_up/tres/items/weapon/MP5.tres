@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ThermalWeaponDataC" load_steps=5 format=3 uid="uid://ch7q3qtsobcsl"]
+
+[ext_resource type="Texture2D" uid="uid://k5xpg6lg7ul4" path="res://assets/assets/icons/MP5_icon.png" id="1_i30y4"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_wvjb0"]
+[ext_resource type="Script" uid="uid://dann640jxcy1j" path="res://scripts/item/subclass/thermal_weapon_data.gd" id="2_qu7gj"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_r3sak"]
+
+[resource]
+script = ExtResource("2_qu7gj")
+ammo_count_per_magazine = 35
+now_ammo_count = 0
+ammo_damage_ratio = 1.0
+ammo_range_ratio = 1.0
+ammo_speed_ratio = 1.0
+ammo_penetration = 1.0
+ammo_repel_ratio = 1.0
+obj_weapon_path = "res://assets/scenes/weapon/MP5.tscn"
+max_durability = 0
+now_durability = 0
+base_damage = 0.0
+damage_ratio = 1.0
+attack_speed = 88.0
+attack_speed_ratio = 1.0
+critical_rate = 5.0
+cultivation_requirement = 0
+internal_item = false
+item_id = 6
+item_name = "MP5"
+item_description = "射速快，伤害较低的冲锋枪，适合进距离使用"
+item_icon = ExtResource("1_i30y4")
+item_weight = 6.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_wvjb0")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_r3sak")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_r3sak")]([])

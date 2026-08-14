@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ThermalWeaponDataC" load_steps=5 format=3 uid="uid://b5yhn2bgx4go1"]
+
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_b4fv4"]
+[ext_resource type="Texture2D" uid="uid://vwl8uq0o67aw" path="res://assets/assets/icons/AK47_icon.png" id="1_xk13l"]
+[ext_resource type="Script" uid="uid://dann640jxcy1j" path="res://scripts/item/subclass/thermal_weapon_data.gd" id="2_31yvb"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_x68tk"]
+
+[resource]
+script = ExtResource("2_31yvb")
+ammo_count_per_magazine = 30
+now_ammo_count = 0
+ammo_damage_ratio = 1.0
+ammo_range_ratio = 1.0
+ammo_speed_ratio = 1.0
+ammo_penetration = 1.0
+ammo_repel_ratio = 1.0
+obj_weapon_path = "res://assets/scenes/weapon/ak47.tscn"
+max_durability = 0
+now_durability = 0
+base_damage = 30.0
+damage_ratio = 1.0
+attack_speed = 1.0
+attack_speed_ratio = 1.0
+critical_rate = 10.0
+cultivation_requirement = 0
+internal_item = false
+item_id = 1
+item_name = "ak47"
+item_description = "最经典的步枪，名声很大，适合新手使用。"
+item_icon = ExtResource("1_xk13l")
+item_weight = 8.0
+stackable = false
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_b4fv4")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_x68tk")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_x68tk")]([])

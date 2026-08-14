@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8wu5886tmw4y"]
+
+[ext_resource type="Script" uid="uid://cihe0avaow2p6" path="res://scripts/armor/armor.gd" id="1_jwfi6"]
+[ext_resource type="Texture2D" uid="uid://8uy10e27jpx7" path="res://assets/assets/armor/jixiebiao.png" id="2_6rvdk"]
+[ext_resource type="Resource" uid="uid://psdpkc8hnhne" path="res://assets/tres/items/armor/watch.tres" id="2_xocna"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_slc6p"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_6rvdk")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Watch" type="Node2D" node_paths=PackedStringArray("armor_shape")]
+script = ExtResource("1_jwfi6")
+armor_data = ExtResource("2_xocna")
+armor_shape = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-15, -3)
+sprite_frames = SubResource("SpriteFrames_slc6p")

@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ThermalWeaponDataC" load_steps=5 format=3 uid="uid://u8ebhf6dx080"]
+
+[ext_resource type="Texture2D" uid="uid://bym0yrhx8mqm5" path="res://assets/assets/icons/M92_icon.png" id="1_cjyrq"]
+[ext_resource type="Script" uid="uid://bn84xo4w24ag7" path="res://scripts/inventory/slot/slot_data.gd" id="1_etudl"]
+[ext_resource type="Script" uid="uid://7o56lsrljgug" path="res://scripts/item/item_entry.gd" id="2_fee66"]
+[ext_resource type="Script" uid="uid://dann640jxcy1j" path="res://scripts/item/subclass/thermal_weapon_data.gd" id="2_m5a12"]
+
+[resource]
+script = ExtResource("2_m5a12")
+ammo_count_per_magazine = 18
+now_ammo_count = 0
+ammo_damage_ratio = 1.0
+ammo_range_ratio = 1.0
+ammo_speed_ratio = 1.0
+ammo_penetration = 1.0
+ammo_repel_ratio = 1.0
+obj_weapon_path = "res://assets/scenes/weapon/M92.tscn"
+max_durability = 0
+now_durability = 0
+base_damage = 18.0
+damage_ratio = 1.0
+attack_speed = 1.0
+attack_speed_ratio = 1.0
+critical_rate = 40.0
+cultivation_requirement = 0
+internal_item = false
+item_id = 5
+item_name = "M92"
+item_description = "中规中矩的手枪，整体平均."
+item_icon = ExtResource("1_cjyrq")
+item_weight = 3.0
+stackable = true
+rarity = 0
+affix = 0
+can_use = false
+can_drop = true
+can_disassemble = false
+desemble_formula = Array[ExtResource("1_etudl")]([])
+item_type = 0
+item_entries = Array[ExtResource("2_fee66")]([])
+item_entries_waiting_adding_queue = Array[ExtResource("2_fee66")]([])
