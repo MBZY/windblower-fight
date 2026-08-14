@@ -310,6 +310,7 @@ theme_override_font_sizes/font_size = 14
 text = "等待玩家加入…"
 
 [node name="JoinButton" type="Button" parent="SafeMargin/Content/Teams/RedTeam/Contents" unique_id=1802217228]
+custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_vfpwc")
@@ -340,6 +341,7 @@ theme_override_font_sizes/font_size = 14
 text = "等待玩家加入…"
 
 [node name="JoinButton" type="Button" parent="SafeMargin/Content/Teams/BlueTeam/Contents" unique_id=131186006]
+custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_7vhxf")

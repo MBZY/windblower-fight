@@ -646,9 +646,10 @@ func _apply_players_wind(delta: float) -> void:
 			var other: IslandPlayer = players[other_id]
 			if not other.is_active_in_match or other.is_respawning or other.is_landing or other.invulnerability_time > 0.0:
 				continue
-			if not player.affects_point(other.global_position):
+			var target_point := other.be_blowed_position()
+			if not player.affects_point(target_point):
 				continue
-			var wind_velocity := player.wind_at(other.global_position) * (player.push_force / maxf(player.wind_force, 1.0))
+			var wind_velocity := player.wind_at(target_point) * (player.push_force / maxf(player.wind_force, 1.0))
 			if wind_velocity.length_squared() <= 0.0001:
 				continue
 			other.last_attacker_id = player.player_id

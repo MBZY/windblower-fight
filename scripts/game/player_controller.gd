@@ -49,6 +49,8 @@ var _display_name := "Player"
 @onready var wind_origin_marker: Marker2D = $WindBlower/WindOrigin
 @onready var wind_area: Polygon2D = $WindBlower/WindOrigin/WindArea
 @onready var wind_particles: GPUParticles2D = $WindBlower/WindOrigin/WindParticles
+@onready var be_blowed_area: Area2D = $BeBlowedArea
+@onready var be_blowed_shape: CollisionShape2D = $BeBlowedArea/CollisionShape2D
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var player_camera: Camera2D = $Camera2D
 @onready var visual: Sprite2D = $Visual
@@ -137,6 +139,13 @@ func apply_wind(force: Vector2, delta: float) -> void:
 
 func wind_origin() -> Vector2:
 	return wind_origin_marker.global_position
+
+func be_blowed_position() -> Vector2:
+	if be_blowed_shape != null:
+		return be_blowed_shape.global_position
+	if be_blowed_area == null:
+		return global_position
+	return be_blowed_area.global_position
 
 func affects_point(point: Vector2) -> bool:
 	var offset := point - wind_origin()

@@ -147,51 +147,59 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -28.0
-offset_bottom = -28.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="CenterContainer" unique_id=1572595307]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=417291870]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1863333372]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.96, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.18, 0.25, 0.9)
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/font_size = 48
+text = "鼓风机大乱斗"
+horizontal_alignment = 1
+
+[node name="Panel" type="PanelContainer" parent="CenterContainer/VBoxContainer" unique_id=1572595307]
 custom_minimum_size = Vector2(330, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_sd5it")
 
-[node name="Contents" type="VBoxContainer" parent="CenterContainer/Panel" unique_id=1981126303]
+[node name="Contents" type="VBoxContainer" parent="CenterContainer/VBoxContainer/Panel" unique_id=1981126303]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="CenterContainer/Panel/Contents" unique_id=1863333372]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0.02, 0.18, 0.25, 0.9)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 32
-text = "鼓风机大乱斗"
-horizontal_alignment = 1
-
-[node name="Subtitle" type="Label" parent="CenterContainer/Panel/Contents" unique_id=656804945]
+[node name="Subtitle" type="Label" parent="CenterContainer/VBoxContainer/Panel/Contents" unique_id=656804945]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.68, 0.9, 0.96, 1)
 theme_override_font_sizes/font_size = 14
 text = "云端竞技场"
 horizontal_alignment = 1
 
-[node name="NameInput" type="LineEdit" parent="CenterContainer/Panel/Contents" unique_id=1020136957]
+[node name="NameInput" type="LineEdit" parent="CenterContainer/VBoxContainer/Panel/Contents" unique_id=1020136957]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.04, 0.15, 0.2, 1)
+theme_override_colors/font_placeholder_color = Color(0, 0, 0, 1)
 theme_override_colors/caret_color = Color(0.05, 0.55, 0.72, 1)
 theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = SubResource("StyleBoxFlat_5vafy")
 theme_override_styles/focus = SubResource("StyleBoxFlat_byqcc")
 placeholder_text = "玩家名称"
+alignment = 1
 max_length = 16
 
-[node name="CreateRoom" type="Button" parent="CenterContainer/Panel/Contents" unique_id=30148731]
+[node name="CreateRoom" type="Button" parent="CenterContainer/VBoxContainer/Panel/Contents" unique_id=30148731]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
@@ -201,9 +209,9 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_hiibk")
 theme_override_styles/hover = SubResource("StyleBoxFlat_swlpu")
 text = "创建局域网房间"
 
-[node name="FindRooms" type="Button" parent="CenterContainer/Panel/Contents" unique_id=1602175335]
+[node name="FindRooms" type="Button" parent="CenterContainer/VBoxContainer/Panel/Contents" unique_id=1602175335]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
@@ -212,9 +220,9 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_nm0l4")
 theme_override_styles/hover = SubResource("StyleBoxFlat_bxtry")
 text = "查找附近房间"
 
-[node name="IpInput" type="LineEdit" parent="CenterContainer/Panel/Contents" unique_id=937065464]
+[node name="IpInput" type="LineEdit" parent="CenterContainer/VBoxContainer/Panel/Contents" unique_id=937065464]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.04, 0.15, 0.2, 1)
 theme_override_colors/caret_color = Color(0.05, 0.55, 0.72, 1)
@@ -223,10 +231,11 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_5vafy")
 theme_override_styles/focus = SubResource("StyleBoxFlat_byqcc")
 text = "127.0.0.1"
 placeholder_text = "主机 IP 或 IP:端口"
+alignment = 1
 
-[node name="JoinIp" type="Button" parent="CenterContainer/Panel/Contents" unique_id=1090968891]
+[node name="JoinIp" type="Button" parent="CenterContainer/VBoxContainer/Panel/Contents" unique_id=1090968891]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
@@ -305,8 +314,8 @@ position = Vector2(200, 708)
 color = Color(0.12, 0.49, 0.3, 0.94)
 polygon = PackedVector2Array(-118, 0, 118, 0, 108, 18, 82, 36, 42, 51, -8, 55, -58, 42, -96, 24)
 
-[connection signal="focus_exited" from="CenterContainer/Panel/Contents/NameInput" to="." method="_on_name_input_focus_exited"]
-[connection signal="text_submitted" from="CenterContainer/Panel/Contents/NameInput" to="." method="_on_name_input_text_submitted"]
-[connection signal="pressed" from="CenterContainer/Panel/Contents/CreateRoom" to="." method="_on_create_room_pressed"]
-[connection signal="pressed" from="CenterContainer/Panel/Contents/FindRooms" to="." method="_on_find_rooms_pressed"]
-[connection signal="pressed" from="CenterContainer/Panel/Contents/JoinIp" to="." method="_on_join_ip_pressed"]
+[connection signal="focus_exited" from="CenterContainer/VBoxContainer/Panel/Contents/NameInput" to="." method="_on_name_input_focus_exited"]
+[connection signal="text_submitted" from="CenterContainer/VBoxContainer/Panel/Contents/NameInput" to="." method="_on_name_input_text_submitted"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Panel/Contents/CreateRoom" to="." method="_on_create_room_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Panel/Contents/FindRooms" to="." method="_on_find_rooms_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Panel/Contents/JoinIp" to="." method="_on_join_ip_pressed"]
