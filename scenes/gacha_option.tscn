@@ -1,40 +1,105 @@
 [gd_scene format=3 uid="uid://rstvody2ho11"]
 
+[ext_resource type="Script" uid="uid://bd2rmgjrbe1lh" path="res://scripts/ui/gacha_option.gd" id="1_bek3j"]
 [ext_resource type="Texture2D" uid="uid://oya8wpn6jmc8" path="res://icon.svg" id="1_gq75b"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovrkh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bek3j"]
+content_margin_left = 8.0
+content_margin_top = 10.0
+content_margin_right = 8.0
+content_margin_bottom = 10.0
+bg_color = Color(0.055, 0.075, 0.085, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.67, 0.78, 0.75)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iseec"]
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8nhbg"]
+bg_color = Color(1, 0.72, 0.24, 0.18)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.78, 0.32, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nw5m6"]
+bg_color = Color(0.18, 0.7, 0.82, 0.16)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.88, 1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="GachaOption" type="PanelContainer" unique_id=297633718]
-anchors_preset = 15
+custom_minimum_size = Vector2(108, 250)
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bek3j")
+script = ExtResource("1_bek3j")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=1848187866]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=344941595]
 layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
 
 [node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer" unique_id=1940127288]
+visible = false
 custom_maximum_size = Vector2(200, 200)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
+mouse_filter = 2
 texture = ExtResource("1_gq75b")
 expand_mode = 3
 stretch_mode = 5
 
 [node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer" unique_id=1755344780]
+custom_minimum_size = Vector2(0, 210)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/normal_font_size = 8
-theme_override_font_sizes/bold_font_size = 8
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/bold_font_size = 16
 bbcode_enabled = true
 text = "[b]加强电机/重塑风的形状/加入沙子/修改出风口[/b]
 提高风速/风力衰减/提高对实体冲击力/提高风力角度
 [color=red][+10][/color]"
+scroll_active = false
+
+[node name="SelectButton" type="Button" parent="." unique_id=1556818120]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_iseec")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_8nhbg")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nw5m6")
+theme_override_styles/focus = SubResource("StyleBoxFlat_nw5m6")
+
+[connection signal="pressed" from="SelectButton" to="." method="_on_select_button_pressed"]

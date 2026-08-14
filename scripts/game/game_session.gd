@@ -49,8 +49,12 @@ var _last_fall_attacker: Dictionary = {}
 var _current_map: Node2D
 var _current_map_id: StringName = &""
 var _island_polygon: PackedVector2Array = PackedVector2Array()
+var _local_blowing := false
+var _spawn_rng := RandomNumberGenerator.new()
+var _network_match_time_left := 0.0
 
 func _ready() -> void:
+	_spawn_rng.randomize()
 	if balance == null:
 		balance = BalanceConfig.new()
 	if map_definition == null:
@@ -77,7 +81,8 @@ func _ready() -> void:
 	player_spawner.spawn_function = _spawn_player_node
 	player_spawner.spawned.connect(_on_player_spawned)
 	_apply_map_definition()
-	_ensure_local_players()
+	if auto_start_single_player:
+		_ensure_local_players()
 	_refresh_local_views()
 	hud.bind_session(self)
 	_set_hud_visible(false)
@@ -97,22 +102,30 @@ func _process(delta: float) -> void:
 		var network_connected := _network_ready and _network_manager != null and _network_manager.has_connection()
 		if network_connected and not _network_manager.is_host():
 			var local_input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-			_network_manager.submit_local_input(local_input, local_input)
+			_preview_local_input(local_input)
+			_network_manager.submit_local_input(local_input, local_input, _local_blowing)
 			return
 		_network_sync_due = false
 		if network_connected and _network_manager.is_host():
 			var host_input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-			_network_manager.submit_local_input(host_input, host_input)
+			_network_manager.submit_local_input(host_input, host_input, _local_blowing)
 			_network_state_accumulator += delta
 			var state_interval := 1.0 / maxf(balance.network_state_hz, 1.0)
 			if _network_state_accumulator >= state_interval:
 				_network_state_accumulator = fmod(_network_state_accumulator, state_interval)
 				_network_sync_due = true
 		_check_player_bounds()
-		_apply_players_wind()
 		if network_connected and _network_sync_due:
 			_network_tick += 1
 			_publish_network_state()
+
+func _physics_process(delta: float) -> void:
+	if phase != &"playing":
+		return
+	var network_connected := _network_ready and _network_manager != null and _network_manager.has_connection()
+	if network_connected and not _network_manager.is_host():
+		return
+	_apply_players_wind(delta)
 
 func _check_player_bounds() -> void:
 	for player_variant in players.values():
@@ -125,6 +138,44 @@ func _is_on_island(point: Vector2) -> bool:
 		return map_definition.island_rect.grow(4.0).has_point(point)
 	return Geometry2D.is_point_in_polygon(point, _island_polygon)
 
+func _random_respawn_point() -> Vector2:
+	if _island_polygon.size() < 3:
+		return map_definition.island_rect.get_center()
+	var safe_polygon := _island_polygon
+	if map_definition.respawn_edge_margin > 0.0:
+		var inset_regions := Geometry2D.offset_polygon(_island_polygon, -map_definition.respawn_edge_margin, Geometry2D.JOIN_ROUND)
+		var inset_polygon := _largest_polygon(inset_regions)
+		if inset_polygon.size() >= 3:
+			safe_polygon = inset_polygon
+	var bounds := Rect2(safe_polygon[0], Vector2.ZERO)
+	for point in safe_polygon:
+		bounds = bounds.expand(point)
+	for _attempt in range(64):
+		var candidate := Vector2(
+			_spawn_rng.randf_range(bounds.position.x, bounds.end.x),
+			_spawn_rng.randf_range(bounds.position.y, bounds.end.y)
+		)
+		if Geometry2D.is_point_in_polygon(candidate, safe_polygon):
+			return candidate
+	return bounds.get_center()
+
+func _largest_polygon(polygons: Array[PackedVector2Array]) -> PackedVector2Array:
+	var largest := PackedVector2Array()
+	var largest_area := 0.0
+	for polygon in polygons:
+		var area := 0.0
+		for index in range(polygon.size()):
+			area += polygon[index].cross(polygon[(index + 1) % polygon.size()])
+		area = absf(area * 0.5)
+		if area > largest_area:
+			largest = polygon
+			largest_area = area
+	return largest
+
+func _preferred_spawn_for(player: IslandPlayer) -> Vector2:
+	var preferred := map_definition.red_spawn if player.team == 0 else map_definition.blue_spawn
+	return preferred if _is_on_island(preferred) else _random_respawn_point()
+
 func _spawn_player_node(data: Variant) -> Node:
 	var info: Dictionary = data as Dictionary if data is Dictionary else {}
 	var player := PLAYER_SCENE.instantiate() as IslandPlayer
@@ -132,8 +183,8 @@ func _spawn_player_node(data: Variant) -> Node:
 	player.name = "Player_%d" % peer_id
 	player.player_id = peer_id
 	player.team = int(info.get("team", 0))
-	player.global_position = map_definition.red_spawn if player.team == 0 else map_definition.blue_spawn
-	player.set_multiplayer_authority(peer_id)
+	player.global_position = _preferred_spawn_for(player)
+	player.set_multiplayer_authority(NetworkManager.SERVER_PEER_ID)
 	return player
 
 func _on_player_spawned(node: Node) -> void:
@@ -161,6 +212,8 @@ func _ensure_local_players() -> void:
 func _register_spawned_player(peer_id: int, team: int) -> IslandPlayer:
 	if players.has(peer_id):
 		return players[peer_id]
+	if multiplayer.has_multiplayer_peer() and not multiplayer.is_server():
+		return null
 	var player := player_spawner.spawn({"peer_id": peer_id, "team": team}) as IslandPlayer
 	if player != null:
 		if not player.fell.is_connected(_on_player_fell):
@@ -245,7 +298,7 @@ func _apply_map_definition() -> void:
 	_replace_map(map_definition.map_id)
 	for player_variant in players.values():
 		var player: IslandPlayer = player_variant
-		player.global_position = map_definition.red_spawn if player.team == 0 else map_definition.blue_spawn
+		player.global_position = _preferred_spawn_for(player)
 
 func _replace_map(map_id: StringName) -> void:
 	if _current_map_id == map_id and _current_map != null:
@@ -267,7 +320,12 @@ func _read_island_polygon() -> PackedVector2Array:
 	if _current_map == null:
 		return PackedVector2Array()
 	var island := _current_map.get_node_or_null("Island") as Polygon2D
-	return island.polygon if island != null else PackedVector2Array()
+	if island == null:
+		return PackedVector2Array()
+	var world_polygon := PackedVector2Array()
+	for point in island.polygon:
+		world_polygon.append(island.to_global(point))
+	return world_polygon
 
 func _with_map_revision(payload: Dictionary) -> Dictionary:
 	var result := payload.duplicate(true)
@@ -315,10 +373,11 @@ func _on_network_start_requested(_peer_id: int) -> void:
 	if _network_manager != null and _network_manager.is_host():
 		begin_countdown()
 
-func _on_network_input_received(peer_id: int, movement: Vector2, aim: Vector2) -> void:
-	_remote_inputs[peer_id] = {"movement": movement, "aim": aim}
+func _on_network_input_received(peer_id: int, movement: Vector2, aim: Vector2, blowing: bool) -> void:
+	_remote_inputs[peer_id] = {"movement": movement, "aim": aim, "blowing": blowing}
 	if players.has(peer_id) and players[peer_id].is_active_in_match:
-		players[peer_id].set_input(movement)
+		players[peer_id].set_input(movement, aim)
+		players[peer_id].set_blowing(blowing)
 
 func _on_network_action_requested(peer_id: int, action: StringName, payload: Dictionary) -> void:
 	match action:
@@ -336,6 +395,7 @@ func _on_network_phase_received(network_phase: StringName, payload: Dictionary) 
 			_set_hud_visible(true)
 		&"playing":
 			match_timer.stop()
+			_network_match_time_left = float(payload.get("match_duration", balance.match_duration_sec))
 			_activate_lobby_players()
 			_set_hud_visible(true)
 		&"score_lock":
@@ -413,6 +473,7 @@ func _on_network_state_received(snapshot: Dictionary, _server_tick: int) -> void
 		return
 	var next_red_score := int(snapshot.get("red_score", red_score))
 	var next_blue_score := int(snapshot.get("blue_score", blue_score))
+	_network_match_time_left = maxf(float(snapshot.get("match_time_left", _network_match_time_left)), 0.0)
 	if next_red_score != red_score or next_blue_score != blue_score:
 		red_score = next_red_score
 		blue_score = next_blue_score
@@ -425,11 +486,15 @@ func _on_network_state_received(snapshot: Dictionary, _server_tick: int) -> void
 		var player := _ensure_network_player(player_id, int(player_data.get("team", 0)))
 		if player == null:
 			continue
-		player.set_network_position(Vector2(player_data.get("position", player.global_position)))
+		var target_position := Vector2(player_data.get("position", player.global_position))
+		var was_respawning := player.is_respawning
+		var respawning := bool(player_data.get("respawning", player.is_respawning))
 		player.team = int(player_data.get("team", player.team))
-		player.is_respawning = bool(player_data.get("respawning", player.is_respawning))
 		player.invulnerability_time = float(player_data.get("invulnerability", player.invulnerability_time))
 		player.fall_count = int(player_data.get("fall_count", player.fall_count))
+		player.apply_network_snapshot(target_position, Vector2(player_data.get("facing", player.facing)), bool(player_data.get("blowing", false)), respawning)
+		if was_respawning and not respawning:
+			_last_fall_attacker.erase(player_id)
 		var stacks: Variant = player_data.get("enhancement_stacks", player.enhancement_stacks)
 		if stacks is Dictionary:
 			player.enhancement_stacks = stacks.duplicate(true)
@@ -448,7 +513,10 @@ func _on_network_match_event(event_name: StringName, payload: Dictionary) -> voi
 			var victim_id := int(payload.get("victim_id", 0))
 			var attacker_id := int(payload.get("attacker_id", 0))
 			_apply_fall_scoring(victim_id, attacker_id)
-			_schedule_respawn_for(victim_id)
+			var victim := players.get(victim_id) as IslandPlayer
+			if victim != null:
+				victim.last_attacker_id = attacker_id
+				victim.set_respawning_state(true)
 			event_announced.emit("Player %d was blown off!" % victim_id)
 		&"skill_upgraded":
 			if not _has_current_map_revision(payload):
@@ -472,8 +540,8 @@ func _publish_network_state() -> void:
 	for player_variant in players.values():
 		var player: IslandPlayer = player_variant
 		if player.is_active_in_match:
-			state.append({"player_id": player.player_id, "position": player.global_position, "team": player.team, "respawning": player.is_respawning, "invulnerability": player.invulnerability_time, "coins": player.skill_points, "fall_count": player.fall_count, "enhancement_stacks": player.enhancement_stacks.duplicate(true), "skill_points": player.skill_points})
-	_network_manager.host_publish_player_state({"players": state, "red_score": red_score, "blue_score": blue_score, "phase": String(phase)}, _network_tick)
+			state.append({"player_id": player.player_id, "position": player.global_position, "facing": player.facing, "blowing": player.is_blowing, "team": player.team, "respawning": player.is_respawning, "invulnerability": player.invulnerability_time, "coins": player.skill_points, "fall_count": player.fall_count, "enhancement_stacks": player.enhancement_stacks.duplicate(true), "skill_points": player.skill_points})
+	_network_manager.host_publish_player_state({"players": state, "red_score": red_score, "blue_score": blue_score, "phase": String(phase), "match_time_left": match_timer.time_left}, _network_tick)
 
 func _on_countdown_timeout() -> void:
 	var network_connected := _network_ready and _network_manager != null and _network_manager.has_connection()
@@ -484,9 +552,10 @@ func _on_countdown_timeout() -> void:
 	_reset_match_state()
 	_activate_lobby_players()
 	match_timer.start(balance.match_duration_sec)
+	_network_match_time_left = balance.match_duration_sec
 	phase_changed.emit(phase)
 	if network_connected:
-		_network_manager.host_set_match_phase(&"playing")
+		_network_manager.host_set_match_phase(&"playing", {"match_duration": balance.match_duration_sec})
 
 func _on_beacon_timeout() -> void:
 	return
@@ -504,17 +573,29 @@ func _activate_lobby_players() -> void:
 	_refresh_local_views()
 
 func _refresh_local_views() -> void:
-	var local_player_id := 1
-	if _network_ready and _network_manager != null and _network_manager.has_connection():
-		local_player_id = _network_manager.local_peer_id()
+	var local_player_id := local_player_id()
 	for player_variant in players.values():
 		var player: IslandPlayer = player_variant
 		player.set_local_view(player.player_id == local_player_id)
 
-func _apply_players_wind() -> void:
+func local_player_id() -> int:
+	if _network_ready and _network_manager != null and _network_manager.has_connection():
+		return _network_manager.local_peer_id()
+	if multiplayer.has_multiplayer_peer():
+		return multiplayer.get_unique_id()
+	return 1
+
+func match_time_left() -> float:
+	if phase != &"playing":
+		return 0.0
+	if _network_ready and _network_manager != null and _network_manager.has_connection() and not _network_manager.is_host():
+		return _network_match_time_left
+	return match_timer.time_left
+
+func _apply_players_wind(delta: float) -> void:
 	for player_id in players:
 		var player: IslandPlayer = players[player_id]
-		if not player.is_active_in_match or player.is_respawning:
+		if not player.is_active_in_match or player.is_respawning or not player.is_blowing:
 			continue
 		for other_id in players:
 			if other_id == player_id:
@@ -524,15 +605,36 @@ func _apply_players_wind() -> void:
 				continue
 			if not player.affects_point(other.global_position):
 				continue
+			var wind_velocity := player.wind_at(other.global_position) * (player.push_force / maxf(player.wind_force, 1.0))
+			if wind_velocity.length_squared() <= 0.0001:
+				continue
 			other.last_attacker_id = player.player_id
-			other.velocity += player.wind_at(other.global_position) * (player.push_force / maxf(player.wind_force, 1.0)) * 0.02
+			other.apply_wind(wind_velocity, delta)
 			if not _is_on_island(other.global_position):
 				other.mark_fallen(player.player_id)
+
+func set_local_blowing(value: bool) -> void:
+	_local_blowing = value
+	var local_player_id := 1
+	if _network_ready and _network_manager != null and _network_manager.has_connection():
+		local_player_id = _network_manager.local_peer_id()
+	var local_player := players.get(local_player_id) as IslandPlayer
+	if local_player != null:
+		local_player.set_blowing(value)
+
+func _preview_local_input(direction: Vector2) -> void:
+	if _network_manager == null:
+		return
+	var local_player := players.get(_network_manager.local_peer_id()) as IslandPlayer
+	if local_player != null:
+		local_player.set_input(direction, direction)
+		local_player.set_blowing(_local_blowing)
 
 func _on_match_timeout() -> void:
 	if _network_ready and _network_manager != null and _network_manager.has_connection() and not _network_manager.is_host():
 		return
 	_score_locked = true
+	_network_match_time_left = 0.0
 	phase = &"score_lock"
 	score_lock_timer.start(balance.score_lock_sec)
 	phase_changed.emit(phase)
@@ -623,8 +725,9 @@ func _on_respawn_timeout() -> void:
 			continue
 		var player: IslandPlayer = players.get(player_id)
 		if player:
-			var spawn := map_definition.red_spawn if player.team == 0 else map_definition.blue_spawn
+			var spawn := _random_respawn_point()
 			player.respawn(spawn, balance.respawn_invulnerability_sec)
+			_last_fall_attacker.erase(player_id)
 			event_announced.emit("Player %d respawned" % player_id)
 		_pending_respawn.erase(player_id)
 	_schedule_next_respawn()
@@ -666,15 +769,17 @@ func request_skill_upgrade(player_id: int, entry_id: StringName) -> Dictionary:
 func _reset_match_state() -> void:
 	red_score = 0
 	blue_score = 0
+	_local_blowing = false
 	_score_locked = false
 	_spawn_accumulator = 0.0
 	_network_state_accumulator = 0.0
 	_network_sync_due = false
+	_network_match_time_left = balance.match_duration_sec
 	_pending_respawn.clear()
 	_last_fall_attacker.clear()
 	for player_variant in players.values():
 		var player: IslandPlayer = player_variant
-		var spawn := map_definition.red_spawn if player.team == 0 else map_definition.blue_spawn
+		var spawn := _preferred_spawn_for(player)
 		player.reset_match_state(spawn)
 		skill_points_changed.emit(player.player_id, player.skill_points)
 	score_changed.emit(red_score, blue_score)

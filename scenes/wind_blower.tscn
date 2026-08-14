@@ -1,24 +1,52 @@
 [gd_scene format=3 uid="uid://c4sbpujs70k0d"]
 
-[sub_resource type="StyleBoxFlat" id="WindGlow"]
-bg_color = Color(0.78, 0.93, 1, 0.28)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="Gradient" id="Gradient_ca2ny"]
+offsets = PackedFloat32Array(0, 0.65, 1)
+colors = PackedColorArray(0.9, 0.98, 1, 0, 0.75, 0.95, 1, 0.9, 0.55, 0.85, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ex2ju"]
+gradient = SubResource("Gradient_ca2ny")
+width = 18
+height = 4
+fill_from = Vector2(0, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_pd1gg"]
+resource_local_to_scene = true
+particle_flag_disable_z = true
+spread = 30.0
+initial_velocity_min = 165.0
+initial_velocity_max = 250.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.35
+scale_max = 0.9
+color = Color(0.72, 0.94, 1, 0.7)
 
 [node name="WindBlower" type="Node2D" unique_id=1311417212]
 
-[node name="Body" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-8, -6, 10, -6, 20, -3, 20, 3, 10, 6, -8, 6)
+[node name="Body" type="Polygon2D" parent="." unique_id=1983580887]
 color = Color(0.83, 0.9, 0.95, 1)
+polygon = PackedVector2Array(-8, -6, 10, -6, 20, -3, 20, 3, 10, 6, -8, 6)
 
-[node name="Nozzle" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(18, -4, 34, -3, 34, 3, 18, 4)
+[node name="Nozzle" type="Polygon2D" parent="." unique_id=1758340050]
 color = Color(0.42, 0.73, 0.88, 1)
+polygon = PackedVector2Array(18, -4, 34, -3, 34, 3, 18, 4)
 
-[node name="WindBand" type="Panel" parent="."]
-position = Vector2(34, -12)
-size = Vector2(92, 24)
-mouse_filter = 2
-theme_override_styles/panel = SubResource("WindGlow")
+[node name="WindOrigin" type="Marker2D" parent="." unique_id=1208652257]
+position = Vector2(34, 0)
+
+[node name="WindArea" type="Polygon2D" parent="WindOrigin" unique_id=1293095027]
+visible = false
+show_behind_parent = true
+z_index = -1
+color = Color(0.35, 0.82, 1, 0.08)
+polygon = PackedVector2Array(0, 0, 300, -173.2, 300, 173.2)
+
+[node name="WindParticles" type="GPUParticles2D" parent="WindOrigin" unique_id=1936295531]
+emitting = false
+amount = 96
+texture = SubResource("GradientTexture2D_ex2ju")
+lifetime = 1.36
+visibility_rect = Rect2(0, -200, 350, 400)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_pd1gg")

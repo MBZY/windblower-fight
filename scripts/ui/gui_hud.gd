@@ -28,13 +28,15 @@ func _ready() -> void:
 
 func bind_session(session: GameSession) -> void:
 	_session = session
-	_local_player_id = session.multiplayer.get_unique_id() if session.multiplayer.has_multiplayer_peer() else 1
+	_local_player_id = session.local_player_id()
 	_price = session.balance.skill_upgrade_price if session.balance != null else _price
 	session.score_changed.connect(_on_score_changed)
 	session.countdown_changed.connect(_on_countdown_changed)
 	session.skill_points_changed.connect(_on_skill_points_changed)
 	session.phase_changed.connect(_on_phase_changed)
 	session.match_finished.connect(_on_match_finished)
+	_on_score_changed(session.red_score, session.blue_score)
+	_on_phase_changed(session.phase)
 	_refresh_player_lists()
 	_update_money_labels()
 
@@ -42,7 +44,7 @@ func _process(_delta: float) -> void:
 	if _session == null:
 		return
 	if _session.phase == &"playing" and _session.match_timer != null:
-		var remaining := _session.match_timer.time_left
+		var remaining := _session.match_time_left()
 		rest_time_label.text = "%ds" % ceili(remaining)
 		rest_time_progress.value = 100.0 * (1.0 - remaining / maxf(_session.balance.match_duration_sec, 1.0))
 	elif _session.phase == &"countdown":
@@ -122,6 +124,7 @@ func _fill_player_list(list_container: VBoxContainer, team_players: Array) -> vo
 func _local_player() -> IslandPlayer:
 	if _session == null:
 		return null
+	_local_player_id = _session.local_player_id()
 	return _session.players.get(_local_player_id) as IslandPlayer
 
 func _open_gacha() -> void:
@@ -140,8 +143,7 @@ func _open_gacha() -> void:
 		var option: GachaOption = gacha_options[index]
 		if index < picks.size():
 			var entry: EnhancementEntry = picks[index]
-			option.entry = entry
-			option.get_node("PanelContainer/VBoxContainer/RichTextLabel").text = "[b]%s[/b]\n%s\n[color=red]%d$[/color]" % [entry.display_name, entry.description, _price]
+			option.configure(entry, _price, int(player.enhancement_stacks.get(entry.id, 0)))
 			option.visible = true
 		else:
 			option.visible = false
@@ -170,6 +172,7 @@ func _weighted_picks(pool: Array, count: int) -> Array:
 func _on_gacha_option_pressed(option: GachaOption) -> void:
 	if _session == null or option.entry == null:
 		return
+	_local_player_id = _session.local_player_id()
 	var result := _session.request_skill_upgrade(_local_player_id, option.entry.id)
 	if result.get("ok", false):
 		gacha_panel.visible = false
@@ -181,11 +184,9 @@ func _on_gacha_skip_pressed() -> void:
 	gacha_panel.visible = false
 
 func _on_blow_button_down() -> void:
-	var player := _local_player()
-	if player != null:
-		player.is_blowing = true
+	if _session != null:
+		_session.set_local_blowing(true)
 
 func _on_blow_button_up() -> void:
-	var player := _local_player()
-	if player != null:
-		player.is_blowing = false
+	if _session != null:
+		_session.set_local_blowing(false)

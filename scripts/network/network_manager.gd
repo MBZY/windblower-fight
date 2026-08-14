@@ -22,7 +22,7 @@ signal request_rejected(reason: String)
 
 ## These are host-only gameplay hooks. A GameSession subscribes to them and
 ## performs all simulation before publishing an authoritative result.
-signal host_input_received(peer_id: int, movement: Vector2, aim: Vector2)
+signal host_input_received(peer_id: int, movement: Vector2, aim: Vector2, blowing: bool)
 signal host_start_requested(peer_id: int)
 signal host_action_requested(peer_id: int, action: StringName, payload: Dictionary)
 
@@ -39,7 +39,7 @@ const DEFAULT_DISCOVERY_PORT := 47777
 const DEFAULT_MAX_PLAYERS := 8
 const DEFAULT_BEACON_INTERVAL_SEC := 1.0
 const DEFAULT_ROOM_TIMEOUT_SEC := 3.0
-const DEFAULT_PROTOCOL_VERSION := "1.0.0"
+const DEFAULT_PROTOCOL_VERSION := "1.2.0"
 
 const INPUT_CHANNEL := 1
 const STATE_CHANNEL := 2
@@ -287,14 +287,14 @@ func host_publish_match_event(event_name: StringName, payload: Dictionary, relia
 	return true
 
 
-func submit_local_input(movement: Vector2, aim: Vector2 = Vector2.ZERO) -> void:
+func submit_local_input(movement: Vector2, aim: Vector2 = Vector2.ZERO, blowing: bool = false) -> void:
 	var sanitized_movement := _sanitize_direction(movement)
 	var sanitized_aim := _sanitize_direction(aim)
 	_next_input_sequence += 1
 	if is_host():
-		_accept_input(SERVER_PEER_ID, sanitized_movement, sanitized_aim, _next_input_sequence)
+		_accept_input(SERVER_PEER_ID, sanitized_movement, sanitized_aim, blowing, _next_input_sequence)
 	elif _connection_state == ConnectionState.CONNECTED:
-		_submit_input.rpc_id(SERVER_PEER_ID, sanitized_movement, sanitized_aim, _next_input_sequence)
+		_submit_input.rpc_id(SERVER_PEER_ID, sanitized_movement, sanitized_aim, blowing, _next_input_sequence)
 
 
 func request_team_change(team: int) -> void:
@@ -367,10 +367,10 @@ func _request_game_action(action_text: String, payload: Dictionary) -> void:
 
 
 @rpc("any_peer", "call_remote", "unreliable_ordered", 1)
-func _submit_input(movement: Vector2, aim: Vector2, sequence: int) -> void:
+func _submit_input(movement: Vector2, aim: Vector2, blowing: bool, sequence: int) -> void:
 	if not is_host():
 		return
-	_accept_input(multiplayer.get_remote_sender_id(), movement, aim, sequence)
+	_accept_input(multiplayer.get_remote_sender_id(), movement, aim, blowing, sequence)
 
 
 @rpc("authority", "reliable")
@@ -463,14 +463,14 @@ func _on_incompatible_room_seen(room: Dictionary) -> void:
 	incompatible_room_seen.emit(room)
 
 
-func _accept_input(peer_id: int, movement: Vector2, aim: Vector2, sequence: int) -> void:
+func _accept_input(peer_id: int, movement: Vector2, aim: Vector2, blowing: bool, sequence: int) -> void:
 	if not _lobby_players.has(peer_id):
 		return
 	var previous_sequence := int(_last_input_sequence.get(peer_id, -1))
 	if sequence <= previous_sequence:
 		return
 	_last_input_sequence[peer_id] = sequence
-	host_input_received.emit(peer_id, _sanitize_direction(movement), _sanitize_direction(aim))
+	host_input_received.emit(peer_id, _sanitize_direction(movement), _sanitize_direction(aim), blowing)
 
 
 func _broadcast_lobby_snapshot() -> void:

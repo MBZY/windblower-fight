@@ -21,10 +21,11 @@ var input_vector: Vector2 = Vector2.ZERO
 var is_respawning: bool = false
 var is_host_authority: bool = true
 var is_active_in_match: bool = true
-var is_blowing: bool = true
+var is_blowing: bool = false
 var last_attacker_id: int = 0
 var enhancement_stacks: Dictionary = {}
 var _is_local_view: bool = false
+var _wind_velocity := Vector2.ZERO
 var _network_target_position := Vector2.ZERO
 var _has_network_target := false
 var _base_move_speed := 0.0
@@ -35,6 +36,9 @@ var _base_push_force := 0.0
 var _base_wind_falloff := 0.0
 
 @onready var wind_blower: Node2D = $WindBlower
+@onready var wind_origin_marker: Marker2D = $WindBlower/WindOrigin
+@onready var wind_area: Polygon2D = $WindBlower/WindOrigin/WindArea
+@onready var wind_particles: GPUParticles2D = $WindBlower/WindOrigin/WindParticles
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var player_camera: Camera2D = $Camera2D
 
@@ -47,35 +51,45 @@ func _ready() -> void:
 	_base_push_force = push_force
 	_base_wind_falloff = wind_falloff
 	wind_blower.rotation = facing.angle()
+	_refresh_wind_visual()
 	player_camera.enabled = false
 	if not is_multiplayer_authority() and multiplayer.has_multiplayer_peer():
 		is_host_authority = false
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if not is_active_in_match or not is_host_authority or is_respawning:
 		return
-	if multiplayer.has_multiplayer_peer() and not is_multiplayer_authority():
+	if multiplayer.has_multiplayer_peer() and (not multiplayer.is_server() or not is_multiplayer_authority()):
 		return
 	if not multiplayer.has_multiplayer_peer():
 		input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if input_vector.length_squared() > 0.0001:
 		facing = input_vector.normalized()
-		velocity = input_vector * move_speed
-	else:
-		velocity = Vector2.ZERO
+	velocity = input_vector * move_speed + _wind_velocity
 	wind_blower.rotation = facing.angle()
 	move_and_slide()
+	_wind_velocity = _wind_velocity.move_toward(Vector2.ZERO, maxf(push_force * 0.5, 1.0) * delta)
 
-func set_input(direction: Vector2) -> void:
+func set_input(direction: Vector2, aim: Vector2 = Vector2.ZERO) -> void:
 	if not is_active_in_match:
 		return
 	input_vector = direction.limit_length(1.0)
-	if input_vector.length_squared() > 0.0001:
-		facing = input_vector.normalized()
-	wind_blower.rotation = facing.angle()
+	var next_facing := aim if aim.length_squared() > 0.0001 else input_vector
+	if next_facing.length_squared() > 0.0001:
+		facing = next_facing.normalized()
+		wind_blower.rotation = facing.angle()
+
+func set_blowing(value: bool) -> void:
+	is_blowing = value and is_active_in_match and not is_respawning
+	_refresh_wind_visual()
+
+func apply_wind(force: Vector2, delta: float) -> void:
+	if force.length_squared() <= 0.0001 or is_respawning or not is_active_in_match:
+		return
+	_wind_velocity = (_wind_velocity + force * delta).limit_length(maxf(push_force, 1.0))
 
 func wind_origin() -> Vector2:
-	return global_position + facing * 16.0
+	return wind_origin_marker.global_position
 
 func affects_point(point: Vector2) -> bool:
 	var offset := point - wind_origin()
@@ -113,8 +127,31 @@ func apply_skill(entry: EnhancementEntry, price: int = 1) -> bool:
 		&"blower_push_force": push_force *= 1.0 + entry.value_per_stack
 		&"blower_falloff": wind_falloff = maxf(0.05, wind_falloff - entry.value_per_stack)
 		&"blower_angle_deg": wind_angle_deg += entry.value_per_stack
+	_refresh_wind_visual()
 	state_changed.emit(player_id)
 	return true
+
+func _refresh_wind_visual() -> void:
+	if not is_node_ready() or wind_area == null or wind_particles == null:
+		return
+	var safe_angle := clampf(wind_angle_deg, 1.0, 85.0)
+	var half_width := tan(deg_to_rad(safe_angle)) * wind_range
+	wind_area.polygon = PackedVector2Array([
+		Vector2.ZERO,
+		Vector2(wind_range, -half_width),
+		Vector2(wind_range, half_width),
+	])
+	var active := is_blowing and is_active_in_match and not is_respawning
+	wind_area.visible = active
+	wind_particles.emitting = active
+	wind_particles.lifetime = maxf(wind_range / 220.0, 0.35)
+	wind_particles.visibility_rect = Rect2(0.0, -half_width - 24.0, wind_range + 48.0, half_width * 2.0 + 48.0)
+	var particle_material := wind_particles.process_material as ParticleProcessMaterial
+	if particle_material != null:
+		particle_material.spread = safe_angle
+		var travel_speed := wind_range / wind_particles.lifetime
+		particle_material.initial_velocity_min = travel_speed * 0.75
+		particle_material.initial_velocity_max = travel_speed * 1.15
 
 func _catalog_entries() -> Array[EnhancementEntry]:
 	var catalog := load("res://resources/enhancements/catalog.tres") as EnhancementCatalog
@@ -125,14 +162,16 @@ func mark_fallen(attacker_id: int = 0) -> void:
 		return
 	last_attacker_id = attacker_id
 	fall_count += 1
-	is_respawning = true
-	velocity = Vector2.ZERO
+	set_respawning_state(true)
 	fell.emit(player_id, fall_count)
 	state_changed.emit(player_id)
 
 func respawn(at: Vector2, invulnerability_sec: float) -> void:
 	global_position = at
-	is_respawning = false
+	_network_target_position = at
+	_has_network_target = false
+	_wind_velocity = Vector2.ZERO
+	set_respawning_state(false)
 	invulnerability_time = invulnerability_sec
 	state_changed.emit(player_id)
 
@@ -148,16 +187,50 @@ func set_network_position(target: Vector2) -> void:
 	_network_target_position = target
 	_has_network_target = true
 
+func set_network_state(next_facing: Vector2, blowing: bool) -> void:
+	if next_facing.length_squared() > 0.0001:
+		facing = next_facing.normalized()
+		wind_blower.rotation = facing.angle()
+	set_blowing(blowing and not is_respawning)
+
+func apply_network_snapshot(target_position: Vector2, next_facing: Vector2, blowing: bool, respawning: bool) -> void:
+	var was_respawning := is_respawning
+	set_respawning_state(respawning)
+	if was_respawning and not respawning:
+		global_position = target_position
+		_network_target_position = target_position
+		_has_network_target = false
+	else:
+		set_network_position(target_position)
+	set_network_state(next_facing, blowing)
+
+func set_respawning_state(value: bool) -> void:
+	is_respawning = value
+	if value:
+		velocity = Vector2.ZERO
+		_wind_velocity = Vector2.ZERO
+		input_vector = Vector2.ZERO
+		is_blowing = false
+	_refresh_wind_visual()
+	_refresh_body_presence()
+
+func _refresh_body_presence() -> void:
+	var body_enabled := is_active_in_match and not is_respawning
+	visible = body_enabled
+	if collision_shape != null:
+		collision_shape.set_deferred("disabled", not body_enabled)
+
 func reset_match_state(at: Vector2) -> void:
 	global_position = at
+	_wind_velocity = Vector2.ZERO
 	_network_target_position = at
 	_has_network_target = false
 	skill_points = 0
 	fall_count = 0
 	facing = Vector2.RIGHT
 	input_vector = Vector2.ZERO
-	is_respawning = false
 	invulnerability_time = 0.0
+	is_blowing = false
 	last_attacker_id = 0
 	enhancement_stacks.clear()
 	move_speed = _base_move_speed
@@ -167,19 +240,22 @@ func reset_match_state(at: Vector2) -> void:
 	push_force = _base_push_force
 	wind_falloff = _base_wind_falloff
 	wind_blower.rotation = facing.angle()
+	set_respawning_state(false)
+	_refresh_wind_visual()
 	state_changed.emit(player_id)
 
 func set_active_in_match(value: bool) -> void:
 	is_active_in_match = value
-	visible = value
-	if collision_shape != null:
-		collision_shape.disabled = not value
 	if player_camera != null:
 		player_camera.enabled = _is_local_view and value
 	if not value:
 		velocity = Vector2.ZERO
+		_wind_velocity = Vector2.ZERO
 		input_vector = Vector2.ZERO
+		is_blowing = false
 		is_respawning = false
+	_refresh_wind_visual()
+	_refresh_body_presence()
 
 func set_local_view(value: bool) -> void:
 	_is_local_view = value

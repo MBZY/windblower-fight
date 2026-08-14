@@ -10,3 +10,4 @@ island_radius = 600.0
 island_rect = Rect2(36, 145, 328, 560)
 red_spawn = Vector2(95, 400)
 blue_spawn = Vector2(305, 400)
+respawn_edge_margin = 24.0
