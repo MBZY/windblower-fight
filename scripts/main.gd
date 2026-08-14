@@ -87,7 +87,6 @@ func _show_lobby(session: GameSession) -> void:
 	current_lobby.leave_requested.connect(show_menu)
 	current_lobby.start_requested.connect(_on_lobby_start)
 	current_lobby.team_requested.connect(_on_team_requested)
-	current_lobby.map_requested.connect(_on_map_requested)
 	if _network_manager != null:
 		_bind_network_signals()
 	if not session.phase_changed.is_connected(_on_session_phase_changed):
@@ -117,7 +116,7 @@ func _update_lobby() -> void:
 	for player in current_session.players.values():
 		if player is IslandPlayer:
 			roster.append({"peer_id": player.player_id, "display_name": "Player %d" % player.player_id, "team": player.team})
-	current_lobby.set_room_snapshot({"room_name": "Sky Leaf Room", "state": String(current_session.phase)}, roster)
+	current_lobby.set_room_snapshot({"room_name": "鼓风机大乱斗房间", "state": String(current_session.phase)}, roster)
 
 func _on_network_lobby_changed(_snapshot: Dictionary) -> void:
 	_update_lobby()
@@ -224,12 +223,4 @@ func _on_team_requested(team: int) -> void:
 	if current_session and current_session.players.has(1):
 		var player: IslandPlayer = current_session.players[1]
 		player.team = team
-		_update_lobby()
-
-func _on_map_requested(map_id: StringName) -> void:
-	if current_session == null:
-		return
-	if _network_manager != null and _network_manager.has_connection() and not _network_manager.is_host():
-		return
-	if current_session.select_map(map_id):
 		_update_lobby()

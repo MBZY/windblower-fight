@@ -98,6 +98,9 @@ scale = Vector2(1.25, 1.25)
 color = Color(1, 1, 1, 0.72)
 polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
 
+[node name="CountdownCamera" type="Camera2D" parent="." unique_id=324602977]
+enabled = false
+
 [connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timeout"]
 [connection signal="timeout" from="MatchTimer" to="." method="_on_match_timeout"]
 [connection signal="timeout" from="RespawnTimer" to="." method="_on_respawn_timeout"]

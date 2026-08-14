@@ -19,6 +19,7 @@ var fall_count: int = 0
 var facing: Vector2 = Vector2.RIGHT
 var input_vector: Vector2 = Vector2.ZERO
 var is_respawning: bool = false
+var is_landing: bool = false
 var is_host_authority: bool = true
 var is_active_in_match: bool = true
 var is_blowing: bool = false
@@ -42,6 +43,7 @@ var _wind_active_threshold := 0.04
 var _wind_combo_window_sec := 0.5
 var _wind_combo_limit := 12
 var _last_wind_tap_at := -10.0
+var _display_name := "Player"
 
 @onready var wind_blower: Node2D = $WindBlower
 @onready var wind_origin_marker: Marker2D = $WindBlower/WindOrigin
@@ -51,6 +53,9 @@ var _last_wind_tap_at := -10.0
 @onready var player_camera: Camera2D = $Camera2D
 @onready var visual: Sprite2D = $Visual
 @onready var fall_animation_player: AnimationPlayer = %FallAnimationPlayer
+@onready var respawn_animation_player: AnimationPlayer = %RespawnAnimationPlayer
+@onready var player_shadow: Polygon2D = %PlayerShadow
+@onready var name_label: Label = %NameLabel
 
 func _ready() -> void:
 	add_to_group("players")
@@ -61,13 +66,14 @@ func _ready() -> void:
 	_base_push_force = push_force
 	_base_wind_falloff = wind_falloff
 	wind_blower.rotation = facing.angle()
+	_refresh_name_label()
 	_refresh_wind_visual()
 	player_camera.enabled = false
 	if not is_multiplayer_authority() and multiplayer.has_multiplayer_peer():
 		is_host_authority = false
 
 func _physics_process(delta: float) -> void:
-	if not is_active_in_match or not is_host_authority or is_respawning:
+	if not is_active_in_match or not is_host_authority or is_respawning or is_landing:
 		return
 	if multiplayer.has_multiplayer_peer() and (not multiplayer.is_server() or not is_multiplayer_authority()):
 		return
@@ -99,7 +105,7 @@ func configure_wind_pulse(balance: BalanceConfig) -> void:
 	_wind_combo_limit = balance.blower_combo_limit
 
 func pump_wind(taps: int = 1) -> Dictionary:
-	if not is_active_in_match or is_respawning:
+	if not is_active_in_match or is_respawning or is_landing:
 		return {}
 	var now := Time.get_ticks_msec() * 0.001
 	wind_combo = mini(wind_combo + 1, _wind_combo_limit) if now - _last_wind_tap_at <= _wind_combo_window_sec else 1
@@ -121,11 +127,11 @@ func set_wind_intensity(value: float) -> void:
 	if is_equal_approx(wind_intensity, next_intensity):
 		return
 	wind_intensity = next_intensity
-	is_blowing = wind_intensity >= _wind_active_threshold and is_active_in_match and not is_respawning
+	is_blowing = wind_intensity >= _wind_active_threshold and is_active_in_match and not is_respawning and not is_landing
 	_refresh_wind_visual()
 
 func apply_wind(force: Vector2, delta: float) -> void:
-	if force.length_squared() <= 0.0001 or is_respawning or not is_active_in_match:
+	if force.length_squared() <= 0.0001 or is_respawning or is_landing or not is_active_in_match:
 		return
 	_wind_velocity = (_wind_velocity + force * delta).limit_length(maxf(push_force, 1.0))
 
@@ -182,7 +188,7 @@ func _refresh_wind_visual() -> void:
 		Vector2(wind_range, -half_width),
 		Vector2(wind_range, half_width),
 	])
-	var active := is_blowing and is_active_in_match and not is_respawning
+	var active := is_blowing and is_active_in_match and not is_respawning and not is_landing
 	wind_area.visible = active
 	wind_particles.emitting = active
 	var visual_strength := clampf(wind_intensity, 0.0, 1.0)
@@ -204,7 +210,7 @@ func _catalog_entries() -> Array[EnhancementEntry]:
 	return catalog.entries if catalog else []
 
 func mark_fallen(attacker_id: int = 0) -> void:
-	if not is_active_in_match or is_respawning:
+	if not is_active_in_match or is_respawning or is_landing:
 		return
 	last_attacker_id = attacker_id
 	fall_count += 1
@@ -220,6 +226,7 @@ func respawn(at: Vector2, invulnerability_sec: float) -> void:
 	set_respawning_state(false)
 	_reset_fall_visual()
 	invulnerability_time = invulnerability_sec
+	_play_respawn_animation()
 	state_changed.emit(player_id)
 
 func _process(delta: float) -> void:
@@ -247,6 +254,7 @@ func apply_network_snapshot(target_position: Vector2, next_facing: Vector2, next
 		global_position = target_position
 		_network_target_position = target_position
 		_has_network_target = false
+		_play_respawn_animation()
 	else:
 		set_network_position(target_position)
 	set_network_state(next_facing, next_wind_intensity)
@@ -256,6 +264,8 @@ func set_respawning_state(value: bool) -> void:
 		return
 	is_respawning = value
 	if value:
+		is_landing = false
+		_reset_respawn_visual()
 		velocity = Vector2.ZERO
 		_wind_velocity = Vector2.ZERO
 		input_vector = Vector2.ZERO
@@ -269,7 +279,7 @@ func set_respawning_state(value: bool) -> void:
 	_refresh_body_presence()
 
 func _refresh_body_presence() -> void:
-	var body_enabled := is_active_in_match and not is_respawning
+	var body_enabled := is_active_in_match and not is_respawning and not is_landing
 	visible = is_active_in_match
 	if collision_shape != null:
 		collision_shape.set_deferred("disabled", not body_enabled)
@@ -277,6 +287,10 @@ func _refresh_body_presence() -> void:
 		visual.visible = is_active_in_match
 	if wind_blower != null:
 		wind_blower.visible = is_active_in_match and not is_respawning
+	if player_shadow != null:
+		player_shadow.visible = is_active_in_match and not is_respawning
+	if name_label != null:
+		name_label.visible = is_active_in_match and not is_respawning
 
 func _play_fall_animation() -> void:
 	if not is_node_ready() or fall_animation_player == null:
@@ -292,6 +306,40 @@ func _reset_fall_visual() -> void:
 	fall_animation_player.advance(0.0)
 	fall_animation_player.stop()
 
+func _play_respawn_animation() -> void:
+	if not is_node_ready() or respawn_animation_player == null:
+		return
+	is_landing = true
+	_refresh_body_presence()
+	respawn_animation_player.stop()
+	respawn_animation_player.play(&"respawn_drop")
+
+func _reset_respawn_visual() -> void:
+	if not is_node_ready() or respawn_animation_player == null:
+		return
+	respawn_animation_player.stop()
+	respawn_animation_player.play(&"RESET")
+	respawn_animation_player.advance(0.0)
+	respawn_animation_player.stop()
+
+func _on_respawn_animation_finished(animation_name: StringName) -> void:
+	if animation_name != &"respawn_drop":
+		return
+	is_landing = false
+	_refresh_body_presence()
+	state_changed.emit(player_id)
+
+func set_display_name(value: String) -> void:
+	var cleaned := value.strip_edges().substr(0, 16)
+	_display_name = cleaned if not cleaned.is_empty() else "Player %d" % player_id
+	_refresh_name_label()
+
+func _refresh_name_label() -> void:
+	if not is_node_ready() or name_label == null:
+		return
+	name_label.text = _display_name
+	name_label.modulate = Color(1.0, 0.48, 0.54) if team == 0 else Color(0.48, 0.82, 1.0)
+
 func reset_match_state(at: Vector2) -> void:
 	global_position = at
 	_wind_velocity = Vector2.ZERO
@@ -302,6 +350,7 @@ func reset_match_state(at: Vector2) -> void:
 	facing = Vector2.RIGHT
 	input_vector = Vector2.ZERO
 	invulnerability_time = 0.0
+	is_landing = false
 	is_blowing = false
 	wind_intensity = 0.0
 	wind_combo = 0
@@ -317,6 +366,7 @@ func reset_match_state(at: Vector2) -> void:
 	wind_blower.rotation = facing.angle()
 	set_respawning_state(false)
 	_reset_fall_visual()
+	_reset_respawn_visual()
 	_refresh_wind_visual()
 	state_changed.emit(player_id)
 
@@ -325,6 +375,7 @@ func set_active_in_match(value: bool) -> void:
 	if player_camera != null:
 		player_camera.enabled = _is_local_view and value
 	if not value:
+		is_landing = false
 		velocity = Vector2.ZERO
 		_wind_velocity = Vector2.ZERO
 		input_vector = Vector2.ZERO
@@ -333,6 +384,7 @@ func set_active_in_match(value: bool) -> void:
 		wind_combo = 0
 		is_respawning = false
 		_reset_fall_visual()
+		_reset_respawn_visual()
 	_refresh_wind_visual()
 	_refresh_body_presence()
 

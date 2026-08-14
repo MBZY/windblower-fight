@@ -252,6 +252,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MapPanel" type="PanelContainer" parent="SafeMargin/Content" unique_id=290774700]
+visible = false
 custom_minimum_size = Vector2(0, 76)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bthuv")

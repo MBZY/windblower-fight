@@ -130,6 +130,21 @@ content_margin_bottom = 5.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovrkh"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tyhcs"]
+bg_color = Color(0.025, 0.09, 0.15, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.36, 0.86, 1, 0.96)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0.08, 0.15, 0.45)
+shadow_size = 10
+shadow_offset = Vector2(0, 5)
+
 [node name="Control" type="Control" unique_id=1794550821]
 layout_mode = 3
 anchors_preset = 15
@@ -613,6 +628,63 @@ unique_name_in_owner = true
 stream = ExtResource("10_dcyui")
 volume_db = -6.0
 max_polyphony = 2
+
+[node name="CountdownOverlay" type="Control" parent="." unique_id=1181920909]
+unique_name_in_owner = true
+visible = false
+z_index = 80
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="CountdownCard" type="PanelContainer" parent="CountdownOverlay" unique_id=1226938930]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(320, 156)
+layout_mode = 0
+offset_right = 320.0
+offset_bottom = 156.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tyhcs")
+
+[node name="Margin" type="MarginContainer" parent="CountdownOverlay/CountdownCard" unique_id=1015688917]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 16
+
+[node name="Contents" type="VBoxContainer" parent="CountdownOverlay/CountdownCard/Margin" unique_id=38962441]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="CountdownTitle" type="Label" parent="CountdownOverlay/CountdownCard/Margin/Contents" unique_id=1143308530]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.56, 0.92, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.06, 0.12, 0.95)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+text = "准备开战"
+horizontal_alignment = 1
+
+[node name="CountdownValue" type="Label" parent="CountdownOverlay/CountdownCard/Margin/Contents" unique_id=637164473]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 82)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.88, 0.34, 1)
+theme_override_colors/font_outline_color = Color(0, 0.04, 0.09, 0.98)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 64
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="button_down" from="ControlBar/BlowButton" to="." method="_on_blow_button_down"]
 [connection signal="button_up" from="ControlBar/BlowButton" to="." method="_on_blow_button_up"]

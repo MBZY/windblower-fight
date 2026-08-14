@@ -21,7 +21,7 @@ func profile_name() -> String:
 
 func _on_create_room_pressed() -> void:
 	_submit_profile()
-	create_room_requested.emit("Sky Leaf Room")
+	create_room_requested.emit("鼓风机大乱斗房间")
 
 func _on_find_rooms_pressed() -> void:
 	browse_rooms_requested.emit()

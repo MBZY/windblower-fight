@@ -12,6 +12,8 @@ signal phase_changed(phase: StringName)
 signal score_changed(red_score: int, blue_score: int)
 signal skill_points_changed(player_id: int, points: int)
 signal countdown_changed(seconds_left: int)
+signal respawn_countdown_started(player_id: int, seconds: float)
+signal player_respawned(player_id: int)
 signal match_finished(winner_team: int, red_score: int, blue_score: int)
 signal event_announced(message: String)
 signal player_eliminated(killer_id: int, victim_id: int, reward: int)
@@ -29,6 +31,7 @@ signal player_eliminated(killer_id: int, victim_id: int, reward: int)
 @onready var map_root: Node2D = $MapRoot
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
 @onready var network_players: Node2D = $NetworkPlayers
+@onready var countdown_camera: Camera2D = $CountdownCamera
 
 var phase: StringName = &"menu"
 var red_score: int = 0
@@ -134,7 +137,7 @@ func _physics_process(delta: float) -> void:
 func _check_player_bounds() -> void:
 	for player_variant in players.values():
 		var player: IslandPlayer = player_variant
-		if player.is_active_in_match and not player.is_respawning and not _is_on_island(player.global_position):
+		if player.is_active_in_match and not player.is_respawning and not player.is_landing and not _is_on_island(player.global_position):
 			player.mark_fallen(player.last_attacker_id)
 
 func _is_on_island(point: Vector2) -> bool:
@@ -187,6 +190,7 @@ func _spawn_player_node(data: Variant) -> Node:
 	player.name = "Player_%d" % peer_id
 	player.player_id = peer_id
 	player.team = int(info.get("team", 0))
+	player.set_display_name(player_display_name(peer_id))
 	player.global_position = _preferred_spawn_for(player)
 	player.set_multiplayer_authority(NetworkManager.SERVER_PEER_ID)
 	return player
@@ -202,6 +206,7 @@ func _on_player_spawned(node: Node) -> void:
 		register_player(player)
 	if _network_manager == null or not _network_manager.has_connection() or _network_manager.is_host():
 		player.is_host_authority = true
+	player.set_display_name(player_display_name(player.player_id))
 	player.set_active_in_match(phase == &"playing" or phase == &"score_lock")
 	_refresh_local_views()
 
@@ -239,10 +244,10 @@ func _ensure_network_player(peer_id: int, team: int) -> IslandPlayer:
 		return null
 	return _register_spawned_player(peer_id, team)
 
-func host_room(room_title: String = "Sky Leaf Room", map_id: String = "medium") -> bool:
-	select_map(StringName(map_id))
+func host_room(room_title: String = "鼓风机大乱斗房间", _map_id: String = "medium") -> bool:
+	select_map(&"medium")
 	if _network_ready:
-		var network_error := _network_manager.host_room(room_title, StringName(map_id), 8, _map_revision)
+		var network_error := _network_manager.host_room(room_title, &"medium", 8, _map_revision)
 		if network_error != OK:
 			return false
 		phase = &"lobby"
@@ -281,6 +286,8 @@ func join_room(host_ip: String, host_port: int = -1) -> bool:
 func select_map(map_id: StringName) -> bool:
 	if phase != &"menu" and phase != &"lobby":
 		return false
+	if map_id != &"medium":
+		return false
 	if _network_ready and _network_manager != null and _network_manager.has_connection() and not _network_manager.is_host():
 		return false
 	var map_path := "res://resources/maps/%s.tres" % String(map_id)
@@ -301,6 +308,7 @@ func select_map(map_id: StringName) -> bool:
 
 func _apply_map_definition() -> void:
 	_replace_map(map_definition.map_id)
+	_center_countdown_camera()
 	for player_variant in players.values():
 		var player: IslandPlayer = player_variant
 		player.global_position = _preferred_spawn_for(player)
@@ -354,6 +362,7 @@ func leave_room() -> void:
 	if multiplayer.has_multiplayer_peer():
 		multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	phase = &"menu"
+	_set_countdown_camera_active(false)
 	phase_changed.emit(phase)
 
 func start_match() -> void:
@@ -361,6 +370,7 @@ func start_match() -> void:
 		return
 	phase = &"countdown"
 	_set_hud_visible(true)
+	_set_countdown_camera_active(true)
 	countdown_timer.start(balance.countdown_sec)
 	countdown_changed.emit(ceili(balance.countdown_sec))
 	phase_changed.emit(phase)
@@ -370,6 +380,7 @@ func start_match() -> void:
 func _start_countdown_local() -> void:
 	phase = &"countdown"
 	_set_hud_visible(true)
+	_set_countdown_camera_active(true)
 	countdown_timer.start(balance.countdown_sec)
 	countdown_changed.emit(ceili(balance.countdown_sec))
 	phase_changed.emit(phase)
@@ -397,9 +408,13 @@ func _on_network_phase_received(network_phase: StringName, payload: Dictionary) 
 	match network_phase:
 		&"countdown":
 			_reset_match_state()
-			countdown_timer.start(float(payload.get("seconds", balance.countdown_sec)))
+			var countdown_seconds := float(payload.get("seconds", balance.countdown_sec))
+			countdown_timer.start(countdown_seconds)
+			countdown_changed.emit(ceili(countdown_seconds))
+			_set_countdown_camera_active(true)
 			_set_hud_visible(true)
 		&"playing":
+			_set_countdown_camera_active(false)
 			match_timer.stop()
 			_network_match_time_left = float(payload.get("match_duration", balance.match_duration_sec))
 			_activate_lobby_players()
@@ -407,12 +422,14 @@ func _on_network_phase_received(network_phase: StringName, payload: Dictionary) 
 		&"score_lock":
 			_score_locked = true
 		&"results":
+			_set_countdown_camera_active(false)
 			red_score = int(payload.get("red_score", red_score))
 			blue_score = int(payload.get("blue_score", blue_score))
 			score_changed.emit(red_score, blue_score)
 			match_finished.emit(int(payload.get("winner_team", -1)), red_score, blue_score)
 			_schedule_return_to_lobby()
 		&"lobby":
+			_set_countdown_camera_active(false)
 			_score_locked = false
 			_set_hud_visible(false)
 			for player_variant in players.values():
@@ -439,9 +456,10 @@ func _on_network_lobby_snapshot(snapshot: Dictionary) -> void:
 		if player == null:
 			continue
 		active_player_ids[player_id] = true
-		player.set_active_in_match(should_activate)
 		if players.has(player_id):
 			players[player_id].team = int(player_data.get("team", players[player_id].team))
+			players[player_id].set_display_name(String(player_data.get("display_name", player_display_name(player_id))))
+		player.set_active_in_match(should_activate)
 	for player_id_variant in players.keys():
 		var player_id := int(player_id_variant)
 		if not active_player_ids.has(player_id):
@@ -461,6 +479,7 @@ func _apply_network_map(map_id: StringName) -> void:
 func _on_network_peer_joined(peer_id: int, player_data: Dictionary) -> void:
 	var player := _ensure_network_player(peer_id, int(player_data.get("team", 1)))
 	if player != null:
+		player.set_display_name(String(player_data.get("display_name", player_display_name(peer_id))))
 		player.set_active_in_match(phase == &"playing" or phase == &"score_lock")
 
 func _on_network_peer_left(peer_id: int) -> void:
@@ -501,6 +520,7 @@ func _on_network_state_received(snapshot: Dictionary, _server_tick: int) -> void
 		player.apply_network_snapshot(target_position, Vector2(player_data.get("facing", player.facing)), float(player_data.get("wind_intensity", 0.0)), respawning)
 		if was_respawning and not respawning:
 			_last_fall_attacker.erase(player_id)
+			player_respawned.emit(player_id)
 		var stacks: Variant = player_data.get("enhancement_stacks", player.enhancement_stacks)
 		if stacks is Dictionary:
 			player.enhancement_stacks = stacks.duplicate(true)
@@ -523,6 +543,7 @@ func _on_network_match_event(event_name: StringName, payload: Dictionary) -> voi
 			if victim != null:
 				victim.last_attacker_id = attacker_id
 				victim.set_respawning_state(true)
+			respawn_countdown_started.emit(victim_id, float(payload.get("respawn_seconds", balance.respawn_base_sec)))
 			if bool(scoring.get("applied", false)):
 				player_eliminated.emit(attacker_id, victim_id, int(payload.get("reward", scoring.get("reward", 0))))
 			event_announced.emit("Player %d was blown off!" % victim_id)
@@ -557,6 +578,7 @@ func _on_countdown_timeout() -> void:
 		return
 	phase = &"playing"
 	_set_hud_visible(true)
+	_set_countdown_camera_active(false)
 	_reset_match_state()
 	_activate_lobby_players()
 	match_timer.start(balance.match_duration_sec)
@@ -600,6 +622,10 @@ func player_display_name(player_id: int) -> String:
 			var display_name := String(player_data.get("display_name", "")).strip_edges()
 			if not display_name.is_empty():
 				return display_name
+		if player_id == local_player_id():
+			var local_name := _network_manager.local_display_name.strip_edges()
+			if not local_name.is_empty():
+				return local_name
 	return "Player %d" % player_id
 
 func match_time_left() -> float:
@@ -612,13 +638,13 @@ func match_time_left() -> float:
 func _apply_players_wind(delta: float) -> void:
 	for player_id in players:
 		var player: IslandPlayer = players[player_id]
-		if not player.is_active_in_match or player.is_respawning or not player.is_blowing:
+		if not player.is_active_in_match or player.is_respawning or player.is_landing or not player.is_blowing:
 			continue
 		for other_id in players:
 			if other_id == player_id:
 				continue
 			var other: IslandPlayer = players[other_id]
-			if not other.is_active_in_match or other.is_respawning or other.invulnerability_time > 0.0:
+			if not other.is_active_in_match or other.is_respawning or other.is_landing or other.invulnerability_time > 0.0:
 				continue
 			if not player.affects_point(other.global_position):
 				continue
@@ -688,6 +714,7 @@ func _return_to_lobby(generation: int) -> void:
 		return
 	phase = &"lobby"
 	_score_locked = false
+	_set_countdown_camera_active(false)
 	_set_hud_visible(false)
 	for player_variant in players.values():
 		var player: IslandPlayer = player_variant
@@ -709,9 +736,9 @@ func _on_player_fell(player_id: int, fall_count: int) -> void:
 	if victim != null:
 		attacker_id = victim.last_attacker_id
 	var scoring := _apply_fall_scoring(player_id, attacker_id)
+	var respawn_wait := _schedule_respawn_for(player_id)
 	if _network_ready and _network_manager != null and _network_manager.has_connection() and _network_manager.is_host():
-		_network_manager.host_publish_match_event(&"player_fell", _with_map_revision({"victim_id": player_id, "attacker_id": attacker_id, "reward": int(scoring.get("reward", 0))}))
-	_schedule_respawn_for(player_id)
+		_network_manager.host_publish_match_event(&"player_fell", _with_map_revision({"victim_id": player_id, "attacker_id": attacker_id, "reward": int(scoring.get("reward", 0)), "respawn_seconds": respawn_wait}))
 	if bool(scoring.get("applied", false)):
 		player_eliminated.emit(attacker_id, player_id, int(scoring.get("reward", 0)))
 	event_announced.emit("Player %d was blown off!" % player_id)
@@ -741,13 +768,15 @@ func _apply_fall_scoring(victim_id: int, attacker_id: int) -> Dictionary:
 		event_announced.emit("Player %d scored!" % scorer_id)
 	return {"applied": true, "scorer_id": scorer_id, "reward": reward}
 
-func _schedule_respawn_for(player_id: int) -> void:
+func _schedule_respawn_for(player_id: int) -> float:
 	var player: IslandPlayer = players.get(player_id)
 	if player == null:
-		return
+		return 0.0
 	var wait := minf(balance.respawn_max_sec, balance.respawn_base_sec + balance.respawn_increment_sec * maxi(player.fall_count - 1, 0))
 	_pending_respawn[player_id] = Time.get_ticks_msec() + int(wait * 1000.0)
+	respawn_countdown_started.emit(player_id, wait)
 	_schedule_next_respawn()
+	return wait
 
 func _on_respawn_timeout() -> void:
 	var now := Time.get_ticks_msec()
@@ -759,6 +788,7 @@ func _on_respawn_timeout() -> void:
 			var spawn := _random_respawn_point()
 			player.respawn(spawn, balance.respawn_invulnerability_sec)
 			_last_fall_attacker.erase(player_id)
+			player_respawned.emit(player_id)
 			event_announced.emit("Player %d respawned" % player_id)
 		_pending_respawn.erase(player_id)
 	_schedule_next_respawn()
@@ -777,6 +807,24 @@ func _schedule_next_respawn() -> void:
 func _set_hud_visible(value: bool) -> void:
 	if hud != null:
 		hud.visible = value
+
+func _center_countdown_camera() -> void:
+	if countdown_camera == null:
+		return
+	if _island_polygon.size() < 3:
+		countdown_camera.position = map_definition.island_rect.get_center()
+		return
+	var bounds := Rect2(_island_polygon[0], Vector2.ZERO)
+	for point in _island_polygon:
+		bounds = bounds.expand(point)
+	countdown_camera.position = bounds.get_center()
+
+func _set_countdown_camera_active(value: bool) -> void:
+	if countdown_camera == null:
+		return
+	if value:
+		_center_countdown_camera()
+	countdown_camera.enabled = value
 
 func request_skill_upgrade(player_id: int, entry_id: StringName) -> Dictionary:
 	if _network_ready and _network_manager != null and _network_manager.has_connection() and not _network_manager.is_host():

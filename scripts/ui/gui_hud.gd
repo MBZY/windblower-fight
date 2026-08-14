@@ -28,6 +28,10 @@ const NEUTRAL := Color(0.86, 0.9, 0.94)
 @onready var kill_sfx: AudioStreamPlayer = %KillSfx
 @onready var coin_sfx: AudioStreamPlayer = %CoinSfx
 @onready var fall_sfx: AudioStreamPlayer = %FallSfx
+@onready var countdown_overlay: Control = %CountdownOverlay
+@onready var countdown_card: PanelContainer = %CountdownCard
+@onready var countdown_title: Label = %CountdownTitle
+@onready var countdown_value: Label = %CountdownValue
 var gacha_options: Array[GachaOption] = []
 
 var _session: GameSession
@@ -37,6 +41,11 @@ var _fan_rotation_speed := 0.0
 var _fan_boost_speed := 0.0
 var _shake_tween: Tween
 var _camera_shake_tween: Tween
+var _countdown_tween: Tween
+var _countdown_pulse_tween: Tween
+var _countdown_kind: StringName = &""
+var _respawn_deadline_msec := 0
+var _last_center_count := -1
 
 func _ready() -> void:
 	gacha_options.assign(get_tree().get_nodes_in_group("gacha_options"))
@@ -49,6 +58,8 @@ func bind_session(session: GameSession) -> void:
 	_price = session.balance.skill_upgrade_price if session.balance != null else _price
 	session.score_changed.connect(_on_score_changed)
 	session.countdown_changed.connect(_on_countdown_changed)
+	session.respawn_countdown_started.connect(_on_respawn_countdown_started)
+	session.player_respawned.connect(_on_player_respawned)
 	session.skill_points_changed.connect(_on_skill_points_changed)
 	session.phase_changed.connect(_on_phase_changed)
 	session.match_finished.connect(_on_match_finished)
@@ -62,6 +73,7 @@ func _process(_delta: float) -> void:
 	_update_fan(_delta)
 	if _session == null:
 		return
+	_update_center_countdown()
 	if _session.phase == &"playing" and _session.match_timer != null:
 		var remaining := _session.match_time_left()
 		rest_time_label.text = "%ds" % ceili(remaining)
@@ -79,12 +91,15 @@ func _on_score_changed(red: int, blue: int) -> void:
 func _on_countdown_changed(seconds_left: int) -> void:
 	rest_time_label.text = "%ds" % seconds_left
 	rest_time_progress.value = 100.0
+	_show_center_countdown(&"match", "准备开战", seconds_left)
 
 func _on_skill_points_changed(_player_id: int, _points: int) -> void:
 	_update_money_labels()
 	_refresh_player_lists()
 
 func _on_phase_changed(phase: StringName) -> void:
+	if phase != &"countdown" and _countdown_kind == &"match":
+		_hide_center_countdown()
 	match phase:
 		&"playing", &"countdown", &"score_lock":
 			gacha_panel.visible = false
@@ -98,6 +113,72 @@ func _on_phase_changed(phase: StringName) -> void:
 func _on_match_finished(_winner: int, red: int, blue: int) -> void:
 	rest_time_label.text = "结束"
 	rest_time_progress.value = 100.0
+	_hide_center_countdown()
+
+func _on_respawn_countdown_started(player_id: int, seconds: float) -> void:
+	if _session == null or player_id != _session.local_player_id():
+		return
+	_respawn_deadline_msec = Time.get_ticks_msec() + int(seconds * 1000.0)
+	_show_center_countdown(&"respawn", "即将复活", ceili(seconds))
+
+func _on_player_respawned(player_id: int) -> void:
+	if _session == null or player_id != _session.local_player_id():
+		return
+	_respawn_deadline_msec = 0
+	if _countdown_kind == &"respawn":
+		_hide_center_countdown()
+
+func _update_center_countdown() -> void:
+	var seconds_left := -1
+	if _countdown_kind == &"match" and _session.phase == &"countdown":
+		seconds_left = ceili(_session.countdown_timer.time_left)
+	elif _countdown_kind == &"respawn" and _respawn_deadline_msec > 0:
+		seconds_left = ceili(maxf(float(_respawn_deadline_msec - Time.get_ticks_msec()) / 1000.0, 0.0))
+	if seconds_left >= 0 and seconds_left != _last_center_count:
+		_set_center_count(seconds_left)
+
+func _show_center_countdown(kind: StringName, title: String, seconds_left: int) -> void:
+	_countdown_kind = kind
+	countdown_title.text = title
+	_set_center_count(seconds_left)
+	if _countdown_tween != null:
+		_countdown_tween.kill()
+	countdown_overlay.visible = true
+	countdown_card.visible = true
+	var viewport_size := countdown_overlay.size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		viewport_size = get_viewport_rect().size
+	var target := Vector2((viewport_size.x - countdown_card.size.x) * 0.5, (viewport_size.y - countdown_card.size.y) * 0.5)
+	countdown_card.position = Vector2(viewport_size.x + 32.0, target.y)
+	countdown_card.modulate.a = 0.0
+	_countdown_tween = create_tween().set_parallel(true)
+	_countdown_tween.tween_property(countdown_card, "position", target, 0.42).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_countdown_tween.tween_property(countdown_card, "modulate:a", 1.0, 0.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+func _hide_center_countdown() -> void:
+	if _countdown_kind == &"" or countdown_card == null:
+		return
+	_countdown_kind = &""
+	_last_center_count = -1
+	if _countdown_tween != null:
+		_countdown_tween.kill()
+	_countdown_tween = create_tween().set_parallel(true)
+	_countdown_tween.tween_property(countdown_card, "position:x", -countdown_card.size.x - 32.0, 0.34).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	_countdown_tween.tween_property(countdown_card, "modulate:a", 0.0, 0.22).set_delay(0.1)
+	_countdown_tween.chain().tween_callback(func() -> void:
+		countdown_card.visible = false
+		countdown_overlay.visible = false
+	)
+
+func _set_center_count(seconds_left: int) -> void:
+	_last_center_count = seconds_left
+	countdown_value.text = "GO!" if seconds_left <= 0 and _countdown_kind == &"match" else str(maxi(seconds_left, 0))
+	if _countdown_pulse_tween != null:
+		_countdown_pulse_tween.kill()
+	countdown_value.pivot_offset = countdown_value.size * 0.5
+	countdown_value.scale = Vector2(1.16, 1.16)
+	_countdown_pulse_tween = create_tween()
+	_countdown_pulse_tween.tween_property(countdown_value, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 func _update_money_labels() -> void:
 	var local := _local_player()
