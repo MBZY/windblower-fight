@@ -21,6 +21,7 @@ var input_vector: Vector2 = Vector2.ZERO
 var is_respawning: bool = false
 var is_host_authority: bool = true
 var is_active_in_match: bool = true
+var is_blowing: bool = true
 var last_attacker_id: int = 0
 var enhancement_stacks: Dictionary = {}
 var _is_local_view: bool = false
@@ -84,7 +85,7 @@ func affects_point(point: Vector2) -> bool:
 	return facing.dot(offset / distance) >= cos(deg_to_rad(wind_angle_deg))
 
 func wind_at(point: Vector2) -> Vector2:
-	if not affects_point(point):
+	if not is_blowing or not affects_point(point):
 		return Vector2.ZERO
 	var distance := maxf((point - wind_origin()).length(), 1.0)
 	var falloff := pow(maxf(0.0, 1.0 - distance / wind_range), wind_falloff)

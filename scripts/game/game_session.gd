@@ -2,6 +2,11 @@ class_name GameSession
 extends Node2D
 
 const PLAYER_SCENE := preload("res://scenes/player/player.tscn")
+const MAP_SCENES := {
+	&"small": preload("res://scenes/game/map_small.tscn"),
+	&"medium": preload("res://scenes/game/map_medium.tscn"),
+	&"large": preload("res://scenes/game/map_large.tscn"),
+}
 
 signal phase_changed(phase: StringName)
 signal score_changed(red_score: int, blue_score: int)
@@ -19,13 +24,10 @@ signal event_announced(message: String)
 @onready var match_timer: Timer = %MatchTimer
 @onready var respawn_timer: Timer = %RespawnTimer
 @onready var score_lock_timer: Timer = %ScoreLockTimer
-@onready var hud: Control = %GameHUD
-@onready var red_player: IslandPlayer = %RedPlayer
-@onready var blue_player: IslandPlayer = %BluePlayer
+@onready var hud: Control = $CanvasLayer/Control
+@onready var map_root: Node2D = $MapRoot
+@onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
 @onready var network_players: Node2D = $NetworkPlayers
-@onready var map_medium: Node2D = $MapMedium
-@onready var map_small: Node2D = $MapSmall
-@onready var map_large: Node2D = $MapLarge
 
 var phase: StringName = &"menu"
 var red_score: int = 0
@@ -44,6 +46,9 @@ var _network_state_accumulator := 0.0
 var _network_sync_due := false
 var _map_revision := 1
 var _last_fall_attacker: Dictionary = {}
+var _current_map: Node2D
+var _current_map_id: StringName = &""
+var _island_polygon: PackedVector2Array = PackedVector2Array()
 
 func _ready() -> void:
 	if balance == null:
@@ -69,10 +74,10 @@ func _ready() -> void:
 		_network_manager.peer_joined.connect(_on_network_peer_joined)
 		_network_manager.peer_left.connect(_on_network_peer_left)
 		_network_ready = true
+	player_spawner.spawn_function = _spawn_player_node
+	player_spawner.spawned.connect(_on_player_spawned)
 	_apply_map_definition()
-	register_player(red_player)
-	register_player(blue_player)
-	blue_player.set_active_in_match(false)
+	_ensure_local_players()
 	_refresh_local_views()
 	hud.bind_session(self)
 	_set_hud_visible(false)
@@ -112,8 +117,69 @@ func _process(delta: float) -> void:
 func _check_player_bounds() -> void:
 	for player_variant in players.values():
 		var player: IslandPlayer = player_variant
-		if player.is_active_in_match and not player.is_respawning and not map_definition.island_rect.grow(4.0).has_point(player.global_position):
+		if player.is_active_in_match and not player.is_respawning and not _is_on_island(player.global_position):
 			player.mark_fallen(player.last_attacker_id)
+
+func _is_on_island(point: Vector2) -> bool:
+	if _island_polygon.size() < 3:
+		return map_definition.island_rect.grow(4.0).has_point(point)
+	return Geometry2D.is_point_in_polygon(point, _island_polygon)
+
+func _spawn_player_node(data: Variant) -> Node:
+	var info: Dictionary = data as Dictionary if data is Dictionary else {}
+	var player := PLAYER_SCENE.instantiate() as IslandPlayer
+	var peer_id := int(info.get("peer_id", 1))
+	player.name = "Player_%d" % peer_id
+	player.player_id = peer_id
+	player.team = int(info.get("team", 0))
+	player.global_position = map_definition.red_spawn if player.team == 0 else map_definition.blue_spawn
+	player.set_multiplayer_authority(peer_id)
+	return player
+
+func _on_player_spawned(node: Node) -> void:
+	var player := node as IslandPlayer
+	if player == null:
+		return
+	if not player.fell.is_connected(_on_player_fell):
+		player.fell.connect(_on_player_fell)
+	if not players.has(player.player_id):
+		register_player(player)
+	if _network_manager == null or not _network_manager.has_connection() or _network_manager.is_host():
+		player.is_host_authority = true
+	player.set_active_in_match(phase == &"playing" or phase == &"score_lock")
+	_refresh_local_views()
+
+func _ensure_local_players() -> void:
+	if _network_ready and _network_manager != null and _network_manager.has_connection():
+		return
+	var local_peer_id := 1
+	if multiplayer.has_multiplayer_peer() and multiplayer.get_unique_id() != 1:
+		local_peer_id = multiplayer.get_unique_id()
+	if not players.has(local_peer_id):
+		_register_spawned_player(local_peer_id, 0)
+
+func _register_spawned_player(peer_id: int, team: int) -> IslandPlayer:
+	if players.has(peer_id):
+		return players[peer_id]
+	var player := player_spawner.spawn({"peer_id": peer_id, "team": team}) as IslandPlayer
+	if player != null:
+		if not player.fell.is_connected(_on_player_fell):
+			player.fell.connect(_on_player_fell)
+		if not players.has(player.player_id):
+			register_player(player)
+		if _network_manager == null or not _network_manager.has_connection() or _network_manager.is_host():
+			player.is_host_authority = true
+		player.set_active_in_match(phase == &"playing" or phase == &"score_lock")
+	return players.get(peer_id)
+
+func _ensure_network_player(peer_id: int, team: int) -> IslandPlayer:
+	if peer_id <= 0:
+		return null
+	if players.has(peer_id):
+		return players[peer_id]
+	if _network_manager != null and _network_manager.has_connection() and not _network_manager.is_host():
+		return null
+	return _register_spawned_player(peer_id, team)
 
 func host_room(room_title: String = "Sky Leaf Room", map_id: String = "medium") -> bool:
 	select_map(StringName(map_id))
@@ -176,14 +242,32 @@ func select_map(map_id: StringName) -> bool:
 	return true
 
 func _apply_map_definition() -> void:
-	red_player.position = map_definition.red_spawn
-	blue_player.position = map_definition.blue_spawn
-	map_medium.visible = map_definition.map_id == &"medium"
-	map_small.visible = map_definition.map_id == &"small"
-	map_large.visible = map_definition.map_id == &"large"
-	map_medium.get_node("FallBoundary").monitoring = map_medium.visible
-	map_small.get_node("FallBoundary").monitoring = map_small.visible
-	map_large.get_node("FallBoundary").monitoring = map_large.visible
+	_replace_map(map_definition.map_id)
+	for player_variant in players.values():
+		var player: IslandPlayer = player_variant
+		player.global_position = map_definition.red_spawn if player.team == 0 else map_definition.blue_spawn
+
+func _replace_map(map_id: StringName) -> void:
+	if _current_map_id == map_id and _current_map != null:
+		return
+	if _current_map != null:
+		_current_map.queue_free()
+	_current_map = null
+	var scene: PackedScene = MAP_SCENES.get(map_id)
+	if scene == null:
+		_current_map_id = &""
+		_island_polygon = PackedVector2Array()
+		return
+	_current_map = scene.instantiate()
+	map_root.add_child(_current_map)
+	_current_map_id = map_id
+	_island_polygon = _read_island_polygon()
+
+func _read_island_polygon() -> PackedVector2Array:
+	if _current_map == null:
+		return PackedVector2Array()
+	var island := _current_map.get_node_or_null("Island") as Polygon2D
+	return island.polygon if island != null else PackedVector2Array()
 
 func _with_map_revision(payload: Dictionary) -> Dictionary:
 	var result := payload.duplicate(true)
@@ -317,29 +401,12 @@ func _on_network_peer_left(peer_id: int) -> void:
 	if not players.has(peer_id):
 		return
 	var player: IslandPlayer = players[peer_id]
-	if peer_id <= 2:
+	if peer_id == 1:
 		player.set_active_in_match(false)
 		return
 	players.erase(peer_id)
 	if is_instance_valid(player):
 		player.queue_free()
-
-func _ensure_network_player(peer_id: int, team: int) -> IslandPlayer:
-	if peer_id <= 0:
-		return null
-	if players.has(peer_id):
-		return players[peer_id]
-	var player := PLAYER_SCENE.instantiate() as IslandPlayer
-	if player == null:
-		return null
-	player.player_id = peer_id
-	player.team = team
-	player.is_host_authority = _network_manager != null and _network_manager.is_host()
-	player.global_position = map_definition.red_spawn if team == 0 else map_definition.blue_spawn
-	network_players.add_child(player)
-	register_player(player)
-	_refresh_local_views()
-	return player
 
 func _on_network_state_received(snapshot: Dictionary, _server_tick: int) -> void:
 	if _network_manager != null and _network_manager.is_host():
@@ -434,8 +501,6 @@ func _activate_lobby_players() -> void:
 		return
 	if players.has(1):
 		players[1].set_active_in_match(true)
-	if players.has(2):
-		players[2].set_active_in_match(false)
 	_refresh_local_views()
 
 func _refresh_local_views() -> void:
@@ -461,7 +526,7 @@ func _apply_players_wind() -> void:
 				continue
 			other.last_attacker_id = player.player_id
 			other.velocity += player.wind_at(other.global_position) * (player.push_force / maxf(player.wind_force, 1.0)) * 0.02
-			if not map_definition.island_rect.has_point(other.global_position):
+			if not _is_on_island(other.global_position):
 				other.mark_fallen(player.player_id)
 
 func _on_match_timeout() -> void:

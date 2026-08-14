@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://dfquvgr5up80m"]
 
+[ext_resource type="Script" uid="uid://q28hjxp3wx3t" path="res://scripts/ui/gui_hud.gd" id="1_hywd1"]
 [ext_resource type="PackedScene" uid="uid://rstvody2ho11" path="res://scenes/gacha_option.tscn" id="1_jbthi"]
 [ext_resource type="Texture2D" uid="uid://br5lh4tiqbvwx" path="res://assets/Character.png" id="2_5j4t3"]
+[ext_resource type="Script" uid="uid://bd2rmgjrbe1lh" path="res://scripts/ui/gacha_option.gd" id="3_cws7i"]
 [ext_resource type="Texture2D" uid="uid://crkdbvfldjgdg" path="res://assets/button/ButtonNormal.png" id="3_shsct"]
 [ext_resource type="Texture2D" uid="uid://du56bckj8txdb" path="res://assets/button/ButtonDown.png" id="4_tqy5q"]
 
@@ -71,6 +73,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_hywd1")
 
 [node name="ControlBar" type="HBoxContainer" parent="." unique_id=296536564]
 layout_mode = 1
@@ -90,6 +93,10 @@ offset_transform_enabled = true
 offset_transform_visual_only = false
 joystick_mode = 2
 joystick_size = 85.0
+action_left = &"move_left"
+action_right = &"move_right"
+action_up = &"move_up"
+action_down = &"move_down"
 
 [node name="BlowButton" type="Button" parent="ControlBar" unique_id=321169023]
 unique_name_in_owner = true
@@ -139,12 +146,15 @@ size_flags_vertical = 3
 
 [node name="GachaOption1" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=297633718 instance=ExtResource("1_jbthi")]
 layout_mode = 2
+script = ExtResource("3_cws7i")
 
 [node name="GachaOption2" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=924842280 instance=ExtResource("1_jbthi")]
 layout_mode = 2
+script = ExtResource("3_cws7i")
 
 [node name="GachaOption3" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=1044337968 instance=ExtResource("1_jbthi")]
 layout_mode = 2
+script = ExtResource("3_cws7i")
 
 [node name="Button" type="Button" parent="GachaPanel/PanelContainer/VBoxContainer" unique_id=1102124815]
 layout_mode = 2
@@ -440,3 +450,11 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 text = "抽奖!!!"
 horizontal_alignment = 1
+
+[connection signal="button_down" from="ControlBar/BlowButton" to="." method="_on_blow_button_down"]
+[connection signal="button_up" from="ControlBar/BlowButton" to="." method="_on_blow_button_up"]
+[connection signal="option_pressed" from="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption1" to="." method="_on_gacha_option_pressed"]
+[connection signal="option_pressed" from="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption2" to="." method="_on_gacha_option_pressed"]
+[connection signal="option_pressed" from="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption3" to="." method="_on_gacha_option_pressed"]
+[connection signal="pressed" from="GachaPanel/PanelContainer/VBoxContainer/Button" to="." method="_on_gacha_skip_pressed"]
+[connection signal="pressed" from="Gacha/GachaButton" to="." method="_open_gacha"]
