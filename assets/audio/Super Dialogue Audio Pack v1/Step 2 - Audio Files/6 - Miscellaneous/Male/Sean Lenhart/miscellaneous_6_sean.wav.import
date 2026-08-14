@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c050i4brb05rv"
+path="res://.godot/imported/miscellaneous_6_sean.wav-26daf1b1fe6c39076fe36fd362c8a34b.sample"
+
+[deps]
+
+source_file="res://assets/audio/Super Dialogue Audio Pack v1/Step 2 - Audio Files/6 - Miscellaneous/Male/Sean Lenhart/miscellaneous_6_sean.wav"
+dest_files=["res://.godot/imported/miscellaneous_6_sean.wav-26daf1b1fe6c39076fe36fd362c8a34b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

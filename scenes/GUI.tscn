@@ -6,10 +6,19 @@
 [ext_resource type="PackedScene" uid="uid://d1chr4glpxxqp" path="res://scenes/ui/single_killing_broadcast.tscn" id="3_hywd1"]
 [ext_resource type="Texture2D" uid="uid://crkdbvfldjgdg" path="res://assets/button/ButtonNormal.png" id="3_shsct"]
 [ext_resource type="Texture2D" uid="uid://du56bckj8txdb" path="res://assets/button/ButtonDown.png" id="4_tqy5q"]
-[ext_resource type="AudioStream" uid="uid://csgm3pvgdun8l" path="res://assets/audio/blow_tap.tres" id="7_1i4pd"]
-[ext_resource type="AudioStream" uid="uid://b518hui3s7xgv" path="res://assets/audio/kill.tres" id="8_y0luo"]
-[ext_resource type="AudioStream" uid="uid://bxlsfhw13wb3q" path="res://assets/audio/coin.tres" id="9_tyhcs"]
-[ext_resource type="AudioStream" uid="uid://ci57d837u8js4" path="res://assets/audio/fall.tres" id="10_dcyui"]
+[ext_resource type="AudioStream" uid="uid://cy7gjk82gkory" path="res://assets/audio/400soundspack/Items/air_pump.wav" id="7_gm6g3"]
+[ext_resource type="AudioStream" uid="uid://bi1xyj3m3ck6o" path="res://assets/audio/400soundspack/Musical Effects/synth_bass_chime_quick.wav" id="8_adr5q"]
+[ext_resource type="AudioStream" uid="uid://uimayr1ftxfb" path="res://assets/audio/400soundspack/Items/coin_collect.wav" id="9_ajnbq"]
+[ext_resource type="AudioStream" uid="uid://dj3rqn4dbocmr" path="res://assets/audio/400soundspack/Retro/fall_quick.wav" id="10_kdart"]
+[ext_resource type="AudioStream" uid="uid://b8gnge11ovq5t" path="res://assets/audio/400soundspack/Machines/hairdryer.wav" id="11_2yx18"]
+[ext_resource type="AudioStream" uid="uid://coqn6bcobxeof" path="res://assets/audio/400soundspack/Environment/clock_tick_only.wav" id="12_2o6e4"]
+[ext_resource type="AudioStream" uid="uid://jgsyli7ovir4" path="res://assets/audio/400soundspack/Musical Effects/brass_level_start.wav" id="13_topw0"]
+[ext_resource type="AudioStream" uid="uid://bobgoh5wdg8ty" path="res://assets/audio/400soundspack/Card and Board/card_fan_2.wav" id="14_ysvud"]
+[ext_resource type="AudioStream" uid="uid://bbrmmvm75rclw" path="res://assets/audio/400soundspack/Items/item_equip.wav" id="15_p8w5y"]
+[ext_resource type="AudioStream" uid="uid://dc2cymko3i8lm" path="res://assets/audio/400soundspack/UI/cancel.wav" id="16_llryh"]
+[ext_resource type="AudioStream" uid="uid://cbnsj5xup4c71" path="res://assets/audio/400soundspack/UI/sci_fi_error.wav" id="17_v4rwy"]
+[ext_resource type="AudioStream" uid="uid://qnb6yptb3k6" path="res://assets/audio/400soundspack/UI/synth_process_complete.wav" id="18_b3g3y"]
+[ext_resource type="AudioStream" uid="uid://bsgkgmgfoij8u" path="res://assets/audio/400soundspack/Musical Effects/brass_negative_quick.wav" id="19_6hhfy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cekc3"]
 bg_color = Color(0.025, 0.12, 0.16, 0.94)
@@ -607,26 +616,26 @@ mouse_filter = 2
 
 [node name="BlowTapSfx" type="AudioStreamPlayer" parent="." unique_id=1573558863]
 unique_name_in_owner = true
-stream = ExtResource("7_1i4pd")
+stream = ExtResource("7_gm6g3")
 volume_db = -7.0
 max_polyphony = 6
 
 [node name="KillSfx" type="AudioStreamPlayer" parent="." unique_id=421552610]
 unique_name_in_owner = true
-stream = ExtResource("8_y0luo")
-volume_db = -5.0
+stream = ExtResource("8_adr5q")
+volume_db = -6.0
 max_polyphony = 2
 
 [node name="CoinSfx" type="AudioStreamPlayer" parent="." unique_id=2014708787]
 unique_name_in_owner = true
-stream = ExtResource("9_tyhcs")
-volume_db = -5.0
+stream = ExtResource("9_ajnbq")
+volume_db = -7.0
 max_polyphony = 2
 
 [node name="FallSfx" type="AudioStreamPlayer" parent="." unique_id=351543474]
 unique_name_in_owner = true
-stream = ExtResource("10_dcyui")
-volume_db = -6.0
+stream = ExtResource("10_kdart")
+volume_db = -7.0
 max_polyphony = 2
 
 [node name="CountdownOverlay" type="Control" parent="." unique_id=1181920909]
@@ -685,6 +694,51 @@ theme_override_font_sizes/font_size = 64
 text = "3"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="BlowLoopSfx" type="AudioStreamPlayer" parent="." unique_id=2127204333]
+unique_name_in_owner = true
+stream = ExtResource("11_2yx18")
+volume_db = -24.0
+
+[node name="CountdownTickSfx" type="AudioStreamPlayer" parent="." unique_id=123255968]
+unique_name_in_owner = true
+stream = ExtResource("12_2o6e4")
+volume_db = -12.0
+
+[node name="MatchStartSfx" type="AudioStreamPlayer" parent="." unique_id=858616976]
+unique_name_in_owner = true
+stream = ExtResource("13_topw0")
+volume_db = -7.0
+
+[node name="GachaOpenSfx" type="AudioStreamPlayer" parent="." unique_id=53413555]
+unique_name_in_owner = true
+stream = ExtResource("14_ysvud")
+volume_db = -8.0
+
+[node name="GachaSelectSfx" type="AudioStreamPlayer" parent="." unique_id=2116625837]
+unique_name_in_owner = true
+stream = ExtResource("15_p8w5y")
+volume_db = -6.0
+
+[node name="UiCancelSfx" type="AudioStreamPlayer" parent="." unique_id=330467984]
+unique_name_in_owner = true
+stream = ExtResource("16_llryh")
+volume_db = -7.0
+
+[node name="SkillFailSfx" type="AudioStreamPlayer" parent="." unique_id=1319090730]
+unique_name_in_owner = true
+stream = ExtResource("17_v4rwy")
+volume_db = -10.0
+
+[node name="VictorySfx" type="AudioStreamPlayer" parent="." unique_id=499804384]
+unique_name_in_owner = true
+stream = ExtResource("18_b3g3y")
+volume_db = -7.0
+
+[node name="DefeatSfx" type="AudioStreamPlayer" parent="." unique_id=773416221]
+unique_name_in_owner = true
+stream = ExtResource("19_6hhfy")
+volume_db = -7.0
 
 [connection signal="button_down" from="ControlBar/BlowButton" to="." method="_on_blow_button_down"]
 [connection signal="button_up" from="ControlBar/BlowButton" to="." method="_on_blow_button_up"]

@@ -32,6 +32,7 @@ signal player_eliminated(killer_id: int, victim_id: int, reward: int)
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
 @onready var network_players: Node2D = $NetworkPlayers
 @onready var countdown_camera: Camera2D = $CountdownCamera
+@onready var ambient_wind_sfx: AudioStreamPlayer = %AmbientWindSfx
 
 var phase: StringName = &"menu"
 var red_score: int = 0
@@ -99,6 +100,18 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	_results_return_generation += 1
+
+func _on_audio_phase_changed(next_phase: StringName) -> void:
+	var should_play := next_phase == &"countdown" or next_phase == &"playing" or next_phase == &"score_lock"
+	if should_play:
+		if not ambient_wind_sfx.playing:
+			ambient_wind_sfx.play()
+	elif ambient_wind_sfx.playing:
+		ambient_wind_sfx.stop()
+
+func _on_ambient_wind_finished() -> void:
+	if phase == &"countdown" or phase == &"playing" or phase == &"score_lock":
+		ambient_wind_sfx.play()
 
 func _process(delta: float) -> void:
 	if phase == &"playing":

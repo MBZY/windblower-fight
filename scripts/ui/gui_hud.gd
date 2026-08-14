@@ -28,6 +28,15 @@ const NEUTRAL := Color(0.86, 0.9, 0.94)
 @onready var kill_sfx: AudioStreamPlayer = %KillSfx
 @onready var coin_sfx: AudioStreamPlayer = %CoinSfx
 @onready var fall_sfx: AudioStreamPlayer = %FallSfx
+@onready var blow_loop_sfx: AudioStreamPlayer = %BlowLoopSfx
+@onready var countdown_tick_sfx: AudioStreamPlayer = %CountdownTickSfx
+@onready var match_start_sfx: AudioStreamPlayer = %MatchStartSfx
+@onready var gacha_open_sfx: AudioStreamPlayer = %GachaOpenSfx
+@onready var gacha_select_sfx: AudioStreamPlayer = %GachaSelectSfx
+@onready var ui_cancel_sfx: AudioStreamPlayer = %UiCancelSfx
+@onready var skill_fail_sfx: AudioStreamPlayer = %SkillFailSfx
+@onready var victory_sfx: AudioStreamPlayer = %VictorySfx
+@onready var defeat_sfx: AudioStreamPlayer = %DefeatSfx
 @onready var countdown_overlay: Control = %CountdownOverlay
 @onready var countdown_card: PanelContainer = %CountdownCard
 @onready var countdown_title: Label = %CountdownTitle
@@ -100,6 +109,8 @@ func _on_skill_points_changed(_player_id: int, _points: int) -> void:
 func _on_phase_changed(phase: StringName) -> void:
 	if phase != &"countdown" and _countdown_kind == &"match":
 		_hide_center_countdown()
+	if phase != &"playing" and blow_loop_sfx.playing:
+		blow_loop_sfx.stop()
 	match phase:
 		&"playing", &"countdown", &"score_lock":
 			gacha_panel.visible = false
@@ -110,10 +121,17 @@ func _on_phase_changed(phase: StringName) -> void:
 			$Gacha.visible = false
 			gacha_panel.visible = false
 
-func _on_match_finished(_winner: int, red: int, blue: int) -> void:
+func _on_match_finished(winner: int, red: int, blue: int) -> void:
 	rest_time_label.text = "结束"
 	rest_time_progress.value = 100.0
 	_hide_center_countdown()
+	var local := _local_player()
+	if winner >= 0 and local != null and local.team == winner:
+		victory_sfx.play()
+	elif winner >= 0:
+		defeat_sfx.play()
+	else:
+		ui_cancel_sfx.play()
 
 func _on_respawn_countdown_started(player_id: int, seconds: float) -> void:
 	if _session == null or player_id != _session.local_player_id():
@@ -173,6 +191,11 @@ func _hide_center_countdown() -> void:
 func _set_center_count(seconds_left: int) -> void:
 	_last_center_count = seconds_left
 	countdown_value.text = "GO!" if seconds_left <= 0 and _countdown_kind == &"match" else str(maxi(seconds_left, 0))
+	if seconds_left > 0:
+		countdown_tick_sfx.pitch_scale = lerpf(1.0, 1.16, clampf(1.0 - float(seconds_left - 1) / 4.0, 0.0, 1.0))
+		countdown_tick_sfx.play()
+	elif _countdown_kind == &"match":
+		match_start_sfx.play()
 	if _countdown_pulse_tween != null:
 		_countdown_pulse_tween.kill()
 	countdown_value.pivot_offset = countdown_value.size * 0.5
@@ -230,13 +253,16 @@ func _local_player() -> IslandPlayer:
 func _open_gacha() -> void:
 	var player := _local_player()
 	if player == null or _session == null or _session.phase != &"playing":
+		skill_fail_sfx.play()
 		return
 	if player.skill_points < _price:
 		gacha_alarm.text = "金币不足!"
+		skill_fail_sfx.play()
 		return
 	var available := _session.enhancement_catalog.available(player.enhancement_stacks) if _session.enhancement_catalog != null else []
 	if available.is_empty():
 		gacha_alarm.text = "已全部强化!"
+		skill_fail_sfx.play()
 		return
 	var picks := _weighted_picks(available, 3)
 	for index in range(gacha_options.size()):
@@ -248,6 +274,7 @@ func _open_gacha() -> void:
 		else:
 			option.visible = false
 	gacha_panel.visible = true
+	gacha_open_sfx.play()
 
 func _weighted_picks(pool: Array, count: int) -> Array:
 	var candidates: Array = pool.duplicate()
@@ -277,11 +304,14 @@ func _on_gacha_option_pressed(option: GachaOption) -> void:
 	if result.get("ok", false):
 		gacha_panel.visible = false
 		gacha_alarm.text = "%d$" % _local_player().skill_points
+		gacha_select_sfx.play()
 	else:
 		gacha_alarm.text = String(result.get("reason", "失败"))
+		skill_fail_sfx.play()
 
 func _on_gacha_skip_pressed() -> void:
 	gacha_panel.visible = false
+	ui_cancel_sfx.play()
 
 func _on_blow_button_down() -> void:
 	if _session == null:
@@ -308,6 +338,14 @@ func _update_fan(delta: float) -> void:
 	_fan_rotation_speed = move_toward(_fan_rotation_speed, target_speed, delta * 28.0)
 	if fan_rotor != null:
 		fan_rotor.rotation += _fan_rotation_speed * delta
+	var wind_audio_active := _session != null and _session.phase == &"playing" and intensity > 0.04
+	if wind_audio_active:
+		blow_loop_sfx.volume_db = lerpf(-25.0, -14.0, intensity)
+		blow_loop_sfx.pitch_scale = lerpf(0.84, 1.24, intensity)
+		if not blow_loop_sfx.playing:
+			blow_loop_sfx.play()
+	elif blow_loop_sfx.playing:
+		blow_loop_sfx.stop()
 
 func _show_blow_feedback(combo: int, gain: float, intensity: float) -> void:
 	var feedback := BLOW_TAP_FEEDBACK_SCENE.instantiate() as BlowTapFeedback

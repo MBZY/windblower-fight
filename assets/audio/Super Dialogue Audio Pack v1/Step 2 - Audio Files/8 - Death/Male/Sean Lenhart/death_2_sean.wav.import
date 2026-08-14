@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bgceb32vyi6fx"
+path="res://.godot/imported/death_2_sean.wav-a177ab64c80f49faeb4e061d38e9dc02.sample"
+
+[deps]
+
+source_file="res://assets/audio/Super Dialogue Audio Pack v1/Step 2 - Audio Files/8 - Death/Male/Sean Lenhart/death_2_sean.wav"
+dest_files=["res://.godot/imported/death_2_sean.wav-a177ab64c80f49faeb4e061d38e9dc02.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

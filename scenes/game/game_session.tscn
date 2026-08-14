@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ccn1pv32h5fc1"]
 
 [ext_resource type="Script" uid="uid://uh708rvp5cxy" path="res://scripts/game/game_session.gd" id="1_session"]
+[ext_resource type="AudioStream" uid="uid://d3wh43bops12w" path="res://assets/audio/400soundspack/Environment/ambient_wind.wav" id="5_gel81"]
 [ext_resource type="PackedScene" uid="uid://dfquvgr5up80m" path="res://scenes/GUI.tscn" id="8_outig"]
 [ext_resource type="Resource" uid="uid://baq7d5mmaaje7" path="res://resources/balance/default_balance.tres" id="9_balance"]
 [ext_resource type="Resource" uid="uid://b3l3p048efpgb" path="res://resources/maps/medium.tres" id="10_map"]
@@ -101,7 +102,14 @@ polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, 
 [node name="CountdownCamera" type="Camera2D" parent="." unique_id=324602977]
 enabled = false
 
+[node name="AmbientWindSfx" type="AudioStreamPlayer" parent="." unique_id=1922162275]
+unique_name_in_owner = true
+stream = ExtResource("5_gel81")
+volume_db = -27.0
+
+[connection signal="phase_changed" from="." to="." method="_on_audio_phase_changed"]
 [connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timeout"]
 [connection signal="timeout" from="MatchTimer" to="." method="_on_match_timeout"]
 [connection signal="timeout" from="RespawnTimer" to="." method="_on_respawn_timeout"]
 [connection signal="timeout" from="ScoreLockTimer" to="." method="_on_score_lock_timeout"]
+[connection signal="finished" from="AmbientWindSfx" to="." method="_on_ambient_wind_finished"]

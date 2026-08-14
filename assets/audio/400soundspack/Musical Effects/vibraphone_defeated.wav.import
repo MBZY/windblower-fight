@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://1s4iwdx482ae"
+path="res://.godot/imported/vibraphone_defeated.wav-79757058c613dd9c302e105b86cf3559.sample"
+
+[deps]
+
+source_file="res://assets/audio/400soundspack/Musical Effects/vibraphone_defeated.wav"
+dest_files=["res://.godot/imported/vibraphone_defeated.wav-79757058c613dd9c302e105b86cf3559.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

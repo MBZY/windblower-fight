@@ -5,18 +5,35 @@ const MAIN_MENU := preload("res://scenes/main/main_menu.tscn")
 const ROOM_BROWSER := preload("res://scenes/ui/room_browser.tscn")
 const LOBBY := preload("res://scenes/ui/lobby.tscn")
 
+@onready var menu_bgm: AudioStreamPlayer = $MenuBgm
+@onready var lobby_bgm: AudioStreamPlayer = $LobbyBgm
+@onready var match_bgm: AudioStreamPlayer = $MatchBgm
+@onready var ui_confirm_sfx: AudioStreamPlayer = $UiConfirmSfx
+@onready var ui_back_sfx: AudioStreamPlayer = $UiBackSfx
+@onready var ui_team_sfx: AudioStreamPlayer = $UiTeamSfx
+@onready var ui_error_sfx: AudioStreamPlayer = $UiErrorSfx
+
 var current_session: GameSession
 var current_menu: MainMenu
 var current_browser: RoomBrowser
 var current_lobby: LobbyView
 var _network_manager: NetworkManager
 var _network_signals_bound := false
+var _current_bgm: AudioStreamPlayer
+var _bgm_tween: Tween
+var _bgm_base_volumes: Dictionary = {}
 
 func _ready() -> void:
 	_network_manager = get_node_or_null("NetworkManager") as NetworkManager
+	_bgm_base_volumes = {
+		menu_bgm: menu_bgm.volume_db,
+		lobby_bgm: lobby_bgm.volume_db,
+		match_bgm: match_bgm.volume_db,
+	}
 	show_menu()
 
 func show_menu() -> void:
+	_switch_bgm(menu_bgm)
 	_clear_flow_views()
 	if current_session:
 		current_session.leave_room()
@@ -65,6 +82,7 @@ func _start_session() -> GameSession:
 	return current_session
 
 func _show_browser() -> void:
+	_switch_bgm(menu_bgm)
 	_clear_flow_views()
 	if current_menu:
 		if current_menu.get_parent() == self:
@@ -73,18 +91,19 @@ func _show_browser() -> void:
 		current_menu = null
 	current_browser = ROOM_BROWSER.instantiate()
 	add_child(current_browser)
-	current_browser.back_requested.connect(show_menu)
-	current_browser.refresh_requested.connect(_refresh_rooms)
+	current_browser.back_requested.connect(_on_browser_back)
+	current_browser.refresh_requested.connect(_on_browser_refresh)
 	current_browser.join_ip_requested.connect(_on_join_ip)
 	current_browser.join_room_requested.connect(_on_join_room)
 	_refresh_rooms()
 
 func _show_lobby(session: GameSession) -> void:
+	_switch_bgm(lobby_bgm)
 	_clear_flow_views()
 	current_lobby = LOBBY.instantiate()
 	add_child(current_lobby)
 	current_lobby.set_host(_network_manager == null or _network_manager.is_host())
-	current_lobby.leave_requested.connect(show_menu)
+	current_lobby.leave_requested.connect(_on_lobby_leave)
 	current_lobby.start_requested.connect(_on_lobby_start)
 	current_lobby.team_requested.connect(_on_team_requested)
 	if _network_manager != null:
@@ -123,9 +142,14 @@ func _on_network_lobby_changed(_snapshot: Dictionary) -> void:
 
 func _on_network_room_closed(_reason: String) -> void:
 	if current_lobby:
+		ui_error_sfx.play()
 		show_menu()
 
-func _on_session_phase_changed(_phase: StringName) -> void:
+func _on_session_phase_changed(next_phase: StringName) -> void:
+	if next_phase == &"lobby":
+		_switch_bgm(lobby_bgm)
+	elif next_phase == &"countdown" or next_phase == &"playing" or next_phase == &"score_lock" or next_phase == &"results":
+		_switch_bgm(match_bgm)
 	if current_session and (current_session.phase == &"countdown" or current_session.phase == &"playing" or current_session.phase == &"score_lock" or current_session.phase == &"results"):
 		_clear_flow_views()
 	elif current_session and current_session.phase == &"lobby" and current_lobby == null:
@@ -137,9 +161,13 @@ func _on_session_event(_message: String) -> void:
 func _on_create_room(room_name: String) -> void:
 	var session := _start_session()
 	if session.host_room(room_name):
+		ui_confirm_sfx.play()
 		_show_lobby(session)
+	else:
+		ui_error_sfx.play()
 
 func _on_browse_rooms() -> void:
+	ui_confirm_sfx.play()
 	var session := _start_session()
 	session.phase = &"lobby"
 	session.phase_changed.emit(session.phase)
@@ -148,10 +176,14 @@ func _on_browse_rooms() -> void:
 func _on_join_ip(host_ip: String) -> void:
 	var endpoint := _parse_host_endpoint(host_ip)
 	if endpoint.is_empty():
+		ui_error_sfx.play()
 		return
 	var session := _start_session()
 	if session.join_room(String(endpoint.get("host", "")), int(endpoint.get("port", -1))):
+		ui_confirm_sfx.play()
 		_show_lobby(session)
+	else:
+		ui_error_sfx.play()
 
 func _parse_host_endpoint(value: String) -> Dictionary:
 	var endpoint := value.strip_edges()
@@ -194,7 +226,10 @@ func _on_join_room(room: Dictionary) -> void:
 	var host_ip := String(room.get("host_ip", ""))
 	var host_port := int(room.get("game_port", -1))
 	if session.join_room(host_ip, host_port):
+		ui_confirm_sfx.play()
 		_show_lobby(session)
+	else:
+		ui_error_sfx.play()
 
 func _bind_network_signals() -> void:
 	if _network_manager == null or _network_signals_bound:
@@ -211,12 +246,14 @@ func _on_network_room_list_changed(rooms: Array) -> void:
 
 func _on_lobby_start() -> void:
 	if current_session:
+		ui_confirm_sfx.play()
 		if _network_manager != null and _network_manager.has_connection():
 			_network_manager.request_match_start()
 		else:
 			current_session.begin_countdown()
 
 func _on_team_requested(team: int) -> void:
+	ui_team_sfx.play()
 	if _network_manager != null and _network_manager.has_connection():
 		_network_manager.request_team_change(team)
 		return
@@ -224,3 +261,53 @@ func _on_team_requested(team: int) -> void:
 		var player: IslandPlayer = current_session.players[1]
 		player.team = team
 		_update_lobby()
+
+func _on_browser_back() -> void:
+	ui_back_sfx.play()
+	show_menu()
+
+func _on_browser_refresh() -> void:
+	ui_confirm_sfx.play()
+	_refresh_rooms()
+
+func _on_lobby_leave() -> void:
+	ui_back_sfx.play()
+	show_menu()
+
+func _switch_bgm(next_bgm: AudioStreamPlayer) -> void:
+	if next_bgm == null:
+		return
+	if _current_bgm == next_bgm:
+		if not next_bgm.playing:
+			next_bgm.play()
+		return
+	if _bgm_tween != null:
+		_bgm_tween.kill()
+	var previous := _current_bgm
+	_current_bgm = next_bgm
+	var target_volume := float(_bgm_base_volumes.get(next_bgm, next_bgm.volume_db))
+	next_bgm.volume_db = -36.0
+	next_bgm.play()
+	_bgm_tween = create_tween().set_parallel(true)
+	_bgm_tween.tween_property(next_bgm, "volume_db", target_volume, 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	if previous != null:
+		var previous_volume := float(_bgm_base_volumes.get(previous, previous.volume_db))
+		_bgm_tween.tween_property(previous, "volume_db", -36.0, 0.32).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		_bgm_tween.chain().tween_callback(func() -> void:
+			if previous != _current_bgm:
+				previous.stop()
+			previous.volume_db = previous_volume
+		)
+
+func _replay_bgm(player: AudioStreamPlayer) -> void:
+	if player == _current_bgm:
+		player.play()
+
+func _on_menu_bgm_finished() -> void:
+	_replay_bgm(menu_bgm)
+
+func _on_lobby_bgm_finished() -> void:
+	_replay_bgm(lobby_bgm)
+
+func _on_match_bgm_finished() -> void:
+	_replay_bgm(match_bgm)

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://1aqglyh2b4c6"
+path="res://.godot/imported/death_4_meghan.wav-596cb19c71b4a3243658ed9a3acebe01.sample"
+
+[deps]
+
+source_file="res://assets/audio/Super Dialogue Audio Pack v1/Step 2 - Audio Files/8 - Death/Female/Meghan Christian/death_4_meghan.wav"
+dest_files=["res://.godot/imported/death_4_meghan.wav-596cb19c71b4a3243658ed9a3acebe01.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

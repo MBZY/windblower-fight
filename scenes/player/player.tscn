@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://b8og816n3ue5q" path="res://scripts/game/player_controller.gd" id="1_dovo2"]
 [ext_resource type="Texture2D" uid="uid://br5lh4tiqbvwx" path="res://assets/Character.png" id="2_gmlin"]
 [ext_resource type="PackedScene" uid="uid://c4sbpujs70k0d" path="res://scenes/wind_blower.tscn" id="3_blower"]
+[ext_resource type="AudioStream" uid="uid://ctl5ajlgdkfog" path="res://assets/audio/400soundspack/Other/whoosh_2.wav" id="4_0owmy"]
+[ext_resource type="AudioStream" uid="uid://rsb7a0g4f0u8" path="res://assets/audio/400soundspack/Human/man_2.wav" id="5_qek5x"]
+[ext_resource type="AudioStream" uid="uid://dpc00gi28ebj7" path="res://assets/audio/400soundspack/Other/whoosh_1.wav" id="6_5gtgg"]
+[ext_resource type="AudioStream" uid="uid://bbnh7ij14pdc5" path="res://assets/audio/400soundspack/Materials/cardboard_drop.wav" id="7_h17s1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dovo2"]
 size = Vector2(16, 7)
@@ -449,5 +453,33 @@ libraries/ = SubResource("AnimationLibrary_0owmy")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BeBlowedArea" unique_id=1630192641]
 position = Vector2(-1, 5)
 shape = SubResource("CapsuleShape2D_ovrkh")
+
+[node name="FallWhooshSfx" type="AudioStreamPlayer2D" parent="." unique_id=1646397693]
+unique_name_in_owner = true
+stream = ExtResource("4_0owmy")
+volume_db = -3.0
+max_distance = 900.0
+attenuation = 0.7
+
+[node name="FallVoiceSfx" type="AudioStreamPlayer2D" parent="." unique_id=662552619]
+unique_name_in_owner = true
+stream = ExtResource("5_qek5x")
+volume_db = -7.0
+max_distance = 900.0
+attenuation = 0.7
+
+[node name="RespawnSfx" type="AudioStreamPlayer2D" parent="." unique_id=355119332]
+unique_name_in_owner = true
+stream = ExtResource("6_5gtgg")
+volume_db = -3.0
+max_distance = 900.0
+attenuation = 0.7
+
+[node name="LandSfx" type="AudioStreamPlayer2D" parent="." unique_id=430518011]
+unique_name_in_owner = true
+stream = ExtResource("7_h17s1")
+volume_db = -5.0
+max_distance = 900.0
+attenuation = 0.7
 
 [connection signal="animation_finished" from="RespawnAnimationPlayer" to="." method="_on_respawn_animation_finished"]

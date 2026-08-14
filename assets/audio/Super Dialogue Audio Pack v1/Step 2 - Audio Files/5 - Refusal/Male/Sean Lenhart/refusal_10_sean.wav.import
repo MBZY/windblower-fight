@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://52vigkoqvb2f"
+path="res://.godot/imported/refusal_10_sean.wav-c5e0d15715a9e938b5962ca0e3c9e711.sample"
+
+[deps]
+
+source_file="res://assets/audio/Super Dialogue Audio Pack v1/Step 2 - Audio Files/5 - Refusal/Male/Sean Lenhart/refusal_10_sean.wav"
+dest_files=["res://.godot/imported/refusal_10_sean.wav-c5e0d15715a9e938b5962ca0e3c9e711.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

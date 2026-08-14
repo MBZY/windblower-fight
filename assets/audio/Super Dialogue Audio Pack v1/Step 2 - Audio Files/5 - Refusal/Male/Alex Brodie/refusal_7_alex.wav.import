@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c8k2d6x3nm8p1"
+path="res://.godot/imported/refusal_7_alex.wav-85157c377eb42fd90a8b0b9aa165f55a.sample"
+
+[deps]
+
+source_file="res://assets/audio/Super Dialogue Audio Pack v1/Step 2 - Audio Files/5 - Refusal/Male/Alex Brodie/refusal_7_alex.wav"
+dest_files=["res://.godot/imported/refusal_7_alex.wav-85157c377eb42fd90a8b0b9aa165f55a.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

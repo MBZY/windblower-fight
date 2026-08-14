@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dgrk15ytc2x1i"
+path="res://.godot/imported/farewell_2_ian.wav-169e0b9175312ffd696022734d10439b.sample"
+
+[deps]
+
+source_file="res://assets/audio/Super Dialogue Audio Pack v1/Step 2 - Audio Files/4 - Farewell/Male/Ian Lampert/farewell_2_ian.wav"
+dest_files=["res://.godot/imported/farewell_2_ian.wav-169e0b9175312ffd696022734d10439b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

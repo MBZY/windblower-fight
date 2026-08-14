@@ -58,6 +58,10 @@ var _display_name := "Player"
 @onready var respawn_animation_player: AnimationPlayer = %RespawnAnimationPlayer
 @onready var player_shadow: Polygon2D = %PlayerShadow
 @onready var name_label: Label = %NameLabel
+@onready var fall_whoosh_sfx: AudioStreamPlayer2D = %FallWhooshSfx
+@onready var fall_voice_sfx: AudioStreamPlayer2D = %FallVoiceSfx
+@onready var respawn_sfx: AudioStreamPlayer2D = %RespawnSfx
+@onready var land_sfx: AudioStreamPlayer2D = %LandSfx
 
 func _ready() -> void:
 	add_to_group("players")
@@ -304,6 +308,9 @@ func _refresh_body_presence() -> void:
 func _play_fall_animation() -> void:
 	if not is_node_ready() or fall_animation_player == null:
 		return
+	fall_whoosh_sfx.play()
+	fall_voice_sfx.pitch_scale = 0.94 + float(player_id % 4) * 0.03
+	fall_voice_sfx.play()
 	fall_animation_player.stop()
 	fall_animation_player.play(&"fall")
 
@@ -320,6 +327,7 @@ func _play_respawn_animation() -> void:
 		return
 	is_landing = true
 	_refresh_body_presence()
+	respawn_sfx.play()
 	respawn_animation_player.stop()
 	respawn_animation_player.play(&"respawn_drop")
 
@@ -336,6 +344,7 @@ func _on_respawn_animation_finished(animation_name: StringName) -> void:
 		return
 	is_landing = false
 	_refresh_body_presence()
+	land_sfx.play()
 	state_changed.emit(player_id)
 
 func set_display_name(value: String) -> void:

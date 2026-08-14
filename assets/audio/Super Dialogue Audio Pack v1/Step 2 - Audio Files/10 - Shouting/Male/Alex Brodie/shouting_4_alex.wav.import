@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ds07jwn6h53y4"
+path="res://.godot/imported/shouting_4_alex.wav-bd3ac9d6678f3b9f6e1b0b99f8f994a1.sample"
+
+[deps]
+
+source_file="res://assets/audio/Super Dialogue Audio Pack v1/Step 2 - Audio Files/10 - Shouting/Male/Alex Brodie/shouting_4_alex.wav"
+dest_files=["res://.godot/imported/shouting_4_alex.wav-bd3ac9d6678f3b9f6e1b0b99f8f994a1.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
