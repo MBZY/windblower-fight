@@ -38,6 +38,66 @@ spawn_limit = 8
 
 [node name="NetworkPlayers" type="Node2D" parent="." unique_id=832057933]
 
+[node name="BackgroundCanvas" type="CanvasLayer" parent="." unique_id=172464377]
+layer = -10
+
+[node name="SkyBackground" type="Polygon2D" parent="BackgroundCanvas" unique_id=1082089021]
+z_index = -100
+color = Color(0.31, 0.74, 0.96, 1)
+polygon = PackedVector2Array(-3000, -3000, 3000, -3000, 3000, 3000, -3000, 3000)
+
+[node name="FarClouds" type="Parallax2D" parent="BackgroundCanvas" unique_id=1991165004]
+z_index = -90
+scroll_scale = Vector2(0.16, 0.1)
+repeat_size = Vector2(650, 0)
+autoscroll = Vector2(8, 0)
+repeat_times = 4
+ignore_camera_scroll = true
+
+[node name="CloudA" type="Polygon2D" parent="BackgroundCanvas/FarClouds" unique_id=1356635823]
+position = Vector2(70, 140)
+scale = Vector2(0.75, 0.75)
+color = Color(0.89, 0.96, 1, 0.48)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="CloudB" type="Polygon2D" parent="BackgroundCanvas/FarClouds" unique_id=369864774]
+position = Vector2(350, 340)
+scale = Vector2(0.55, 0.55)
+color = Color(0.89, 0.96, 1, 0.48)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="CloudC" type="Polygon2D" parent="BackgroundCanvas/FarClouds" unique_id=452812649]
+position = Vector2(590, 650)
+scale = Vector2(0.68, 0.68)
+color = Color(0.89, 0.96, 1, 0.48)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="NearClouds" type="Parallax2D" parent="BackgroundCanvas" unique_id=636614836]
+z_index = -80
+scroll_scale = Vector2(0.34, 0.22)
+repeat_size = Vector2(760, 0)
+autoscroll = Vector2(18, 0)
+repeat_times = 4
+ignore_camera_scroll = true
+
+[node name="CloudA" type="Polygon2D" parent="BackgroundCanvas/NearClouds" unique_id=666553855]
+position = Vector2(140, 210)
+scale = Vector2(1.1, 1.1)
+color = Color(1, 1, 1, 0.72)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="CloudB" type="Polygon2D" parent="BackgroundCanvas/NearClouds" unique_id=2046703765]
+position = Vector2(450, 470)
+scale = Vector2(0.9, 0.9)
+color = Color(1, 1, 1, 0.72)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
+[node name="CloudC" type="Polygon2D" parent="BackgroundCanvas/NearClouds" unique_id=457791498]
+position = Vector2(700, 740)
+scale = Vector2(1.25, 1.25)
+color = Color(1, 1, 1, 0.72)
+polygon = PackedVector2Array(-52, 12, -49, 2, -43, -7, -34, -12, -24, -12, -18, -22, -8, -29, 4, -30, 15, -24, 21, -14, 34, -16, 45, -10, 52, -1, 54, 8, 48, 15, -43, 15)
+
 [connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timeout"]
 [connection signal="timeout" from="MatchTimer" to="." method="_on_match_timeout"]
 [connection signal="timeout" from="RespawnTimer" to="." method="_on_respawn_timeout"]

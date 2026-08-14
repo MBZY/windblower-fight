@@ -4,3 +4,6 @@
 
 [resource]
 script = ExtResource("1_balance")
+respawn_base_sec = 2.5
+respawn_increment_sec = 0.75
+respawn_max_sec = 5.0
