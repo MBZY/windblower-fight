@@ -65,6 +65,7 @@ text = "房间：Sky Leaf Room  |  等待玩家"
 horizontal_alignment = 1
 
 [node name="MapPanel" type="PanelContainer" parent="SafeMargin/Content" unique_id=290774700]
+visible = false
 layout_mode = 2
 
 [node name="MapContents" type="VBoxContainer" parent="SafeMargin/Content/MapPanel" unique_id=1275091950]

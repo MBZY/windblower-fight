@@ -4,7 +4,7 @@
 
 [node name="Island" type="Polygon2D" parent="." unique_id=779346352]
 position = Vector2(4.9999995, -26.999996)
-scale = Vector2(0.39794168, 0.40294117)
+scale = Vector2(0.55, 0.55)
 color = Color(0.18, 0.55, 0.33, 1)
 polygon = PackedVector2Array(20, 80, 549, 80, 579, 158, 579, 711, 534, 760, 50, 760, -4, 711, 0, 150)
 
@@ -13,5 +13,5 @@ collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="FallBoundary" unique_id=957115695]
 position = Vector2(4.345193, -27.733654)
-scale = Vector2(0.39879933, 0.404288)
+scale = Vector2(0.55, 0.55)
 polygon = PackedVector2Array(20, 80, 549, 80, 579, 158, 579, 711, 534, 760, 50, 760, -4, 711, 0, 150)

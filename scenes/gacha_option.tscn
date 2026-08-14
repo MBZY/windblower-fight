@@ -52,12 +52,14 @@ corner_radius_bottom_left = 8
 
 [node name="GachaOption" type="PanelContainer" unique_id=297633718]
 custom_minimum_size = Vector2(108, 250)
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_bek3j")
 script = ExtResource("1_bek3j")
 
@@ -96,6 +98,7 @@ scroll_active = false
 
 [node name="SelectButton" type="Button" parent="." unique_id=1556818120]
 layout_mode = 2
+mouse_filter = 1
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_iseec")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_8nhbg")

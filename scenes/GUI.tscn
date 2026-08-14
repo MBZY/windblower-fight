@@ -3,15 +3,49 @@
 [ext_resource type="Script" uid="uid://q28hjxp3wx3t" path="res://scripts/ui/gui_hud.gd" id="1_hywd1"]
 [ext_resource type="PackedScene" uid="uid://rstvody2ho11" path="res://scenes/gacha_option.tscn" id="1_jbthi"]
 [ext_resource type="Texture2D" uid="uid://br5lh4tiqbvwx" path="res://assets/Character.png" id="2_5j4t3"]
-[ext_resource type="Script" uid="uid://bd2rmgjrbe1lh" path="res://scripts/ui/gacha_option.gd" id="3_cws7i"]
+[ext_resource type="PackedScene" uid="uid://d1chr4glpxxqp" path="res://scenes/ui/single_killing_broadcast.tscn" id="3_hywd1"]
 [ext_resource type="Texture2D" uid="uid://crkdbvfldjgdg" path="res://assets/button/ButtonNormal.png" id="3_shsct"]
 [ext_resource type="Texture2D" uid="uid://du56bckj8txdb" path="res://assets/button/ButtonDown.png" id="4_tqy5q"]
+[ext_resource type="AudioStream" uid="uid://csgm3pvgdun8l" path="res://assets/audio/blow_tap.tres" id="7_1i4pd"]
+[ext_resource type="AudioStream" uid="uid://b518hui3s7xgv" path="res://assets/audio/kill.tres" id="8_y0luo"]
+[ext_resource type="AudioStream" uid="uid://bxlsfhw13wb3q" path="res://assets/audio/coin.tres" id="9_tyhcs"]
+[ext_resource type="AudioStream" uid="uid://ci57d837u8js4" path="res://assets/audio/fall.tres" id="10_dcyui"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atrmx"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cekc3"]
+bg_color = Color(0.025, 0.12, 0.16, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.26, 0.78, 0.92, 0.86)
+corner_radius_top_left = 56
+corner_radius_top_right = 56
+corner_radius_bottom_right = 56
+corner_radius_bottom_left = 56
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1i4pd"]
+bg_color = Color(0.16, 0.48, 0.55, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.56, 0.94, 1, 1)
+corner_radius_top_left = 56
+corner_radius_top_right = 56
+corner_radius_bottom_right = 56
+corner_radius_bottom_left = 56
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y0luo"]
+bg_color = Color(0.06, 0.29, 0.35, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.56, 0.94, 1, 1)
+corner_radius_top_left = 56
+corner_radius_top_right = 56
+corner_radius_bottom_right = 56
+corner_radius_bottom_left = 56
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqy5q"]
 bg_color = Color(9.62615e-07, 0.6694189, 0.7945624, 1)
@@ -23,7 +57,7 @@ border_color = Color(9.62615e-07, 0.6694189, 0.7945624, 1)
 border_blend = true
 shadow_offset = Vector2(-1, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovrkh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hywd1"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -66,6 +100,36 @@ curve_z = SubResource("Curve_yg60b")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1sxap"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cy3o4"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i86v8"]
+content_margin_left = 8.0
+content_margin_right = 8.0
+bg_color = Color(0.02, 0.06, 0.09, 0.86)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.38, 0.78, 0.95, 0.55)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atrmx"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovrkh"]
+
 [node name="Control" type="Control" unique_id=1794550821]
 layout_mode = 3
 anchors_preset = 15
@@ -100,10 +164,16 @@ action_down = &"move_down"
 
 [node name="BlowButton" type="Button" parent="ControlBar" unique_id=321169023]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 112)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_cekc3")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1i4pd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_y0luo")
 
 [node name="TextureRect" type="TextureRect" parent="ControlBar/BlowButton" unique_id=1504841512]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -117,48 +187,44 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GachaPanel" type="MarginContainer" parent="." unique_id=127268958]
-visible = false
-custom_minimum_size = Vector2(0, 300)
-layout_mode = 1
-anchors_preset = 14
+[node name="FanVisual" type="Control" parent="ControlBar/BlowButton" unique_id=1642259223]
+anchors_preset = 0
+anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -150.0
-offset_bottom = 150.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
+offset_left = -48.0
+offset_top = -48.0
+offset_right = 48.0
+offset_bottom = 48.0
+mouse_filter = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="GachaPanel" unique_id=1458503838]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_atrmx")
+[node name="FanRotor" type="Node2D" parent="ControlBar/BlowButton/FanVisual" unique_id=13673104]
+unique_name_in_owner = true
+position = Vector2(48, 48)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GachaPanel/PanelContainer" unique_id=1390952805]
-layout_mode = 2
-theme_override_constants/separation = 5
+[node name="Blade0" type="Polygon2D" parent="ControlBar/BlowButton/FanVisual/FanRotor" unique_id=1266116115]
+color = Color(0.48, 0.9, 1, 1)
+polygon = PackedVector2Array(7, -8, 42, -20, 47, -4, 15, 11)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GachaPanel/PanelContainer/VBoxContainer" unique_id=90715344]
-layout_mode = 2
-size_flags_vertical = 3
+[node name="Blade1" type="Polygon2D" parent="ControlBar/BlowButton/FanVisual/FanRotor" unique_id=628841659]
+rotation = 1.5707964
+color = Color(0.48, 0.9, 1, 1)
+polygon = PackedVector2Array(7, -8, 42, -20, 47, -4, 15, 11)
 
-[node name="GachaOption1" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=297633718 instance=ExtResource("1_jbthi")]
-layout_mode = 2
-script = ExtResource("3_cws7i")
+[node name="Blade2" type="Polygon2D" parent="ControlBar/BlowButton/FanVisual/FanRotor" unique_id=1028147771]
+rotation = 3.1415927
+color = Color(0.48, 0.9, 1, 1)
+polygon = PackedVector2Array(7, -8, 42, -20, 47, -4, 15, 11)
 
-[node name="GachaOption2" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=924842280 instance=ExtResource("1_jbthi")]
-layout_mode = 2
-script = ExtResource("3_cws7i")
+[node name="Blade3" type="Polygon2D" parent="ControlBar/BlowButton/FanVisual/FanRotor" unique_id=343672962]
+rotation = 4.712389
+color = Color(0.48, 0.9, 1, 1)
+polygon = PackedVector2Array(7, -8, 42, -20, 47, -4, 15, 11)
 
-[node name="GachaOption3" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=1044337968 instance=ExtResource("1_jbthi")]
-layout_mode = 2
-script = ExtResource("3_cws7i")
-
-[node name="Button" type="Button" parent="GachaPanel/PanelContainer/VBoxContainer" unique_id=1102124815]
-layout_mode = 2
-text = "跳过"
+[node name="Hub" type="Polygon2D" parent="ControlBar/BlowButton/FanVisual/FanRotor" unique_id=115611629]
+color = Color(0.95, 0.98, 1, 1)
+polygon = PackedVector2Array(-11, 0, -7, -8, 0, -11, 8, -7, 11, 0, 7, 8, 0, 11, -8, 7)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2002082546]
 custom_minimum_size = Vector2(0, 500)
@@ -195,7 +261,7 @@ layout_mode = 2
 [node name="PlayerDisplayUnit" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListA" unique_id=72134479]
 custom_minimum_size = Vector2(96, 32)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hywd1")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit" unique_id=1528936845]
 layout_mode = 2
@@ -218,7 +284,7 @@ horizontal_alignment = 2
 [node name="PlayerDisplayUnit2" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListA" unique_id=1592428032]
 custom_minimum_size = Vector2(96, 32)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hywd1")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit2" unique_id=1905509043]
 layout_mode = 2
@@ -241,7 +307,7 @@ horizontal_alignment = 2
 [node name="PlayerDisplayUnit3" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListA" unique_id=892285449]
 custom_minimum_size = Vector2(96, 32)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hywd1")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListA/PlayerDisplayUnit3" unique_id=728746630]
 layout_mode = 2
@@ -340,7 +406,7 @@ layout_mode = 2
 [node name="PlayerDisplayUnit" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListB" unique_id=896931532]
 custom_minimum_size = Vector2(96, 32)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hywd1")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit" unique_id=1806895755]
 layout_mode = 2
@@ -364,7 +430,7 @@ text = "50$"
 [node name="PlayerDisplayUnit2" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListB" unique_id=93918745]
 custom_minimum_size = Vector2(96, 32)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hywd1")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit2" unique_id=1486984041]
 layout_mode = 2
@@ -388,7 +454,7 @@ text = "50$"
 [node name="PlayerDisplayUnit3" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PlayerListB" unique_id=634382633]
 custom_minimum_size = Vector2(96, 32)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hywd1")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerListB/PlayerDisplayUnit3" unique_id=552909430]
 layout_mode = 2
@@ -409,8 +475,31 @@ size_flags_vertical = 8
 theme_override_colors/font_color = Color(1, 1, 0, 1)
 text = "50$"
 
-[node name="Gacha" type="VBoxContainer" parent="." unique_id=1320212017]
+[node name="KillingBroadcastBoard" type="PanelContainer" parent="." unique_id=218818571]
+custom_minimum_size = Vector2(150, 100)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 250.0
+grow_vertical = 2
+offset_transform_enabled = true
+offset_transform_position_ratio = Vector2(0, -0.77)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cy3o4")
+
+[node name="KillingBroadcastList" type="VBoxContainer" parent="KillingBroadcastBoard" unique_id=936166046]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SingleKillingBroadcast" parent="KillingBroadcastBoard/KillingBroadcastList" unique_id=1828833068 instance=ExtResource("3_hywd1")]
 visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_i86v8")
+
+[node name="Gacha" type="VBoxContainer" parent="." unique_id=1320212017]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
@@ -451,10 +540,84 @@ theme_override_constants/outline_size = 5
 text = "抽奖!!!"
 horizontal_alignment = 1
 
+[node name="GachaPanel" type="MarginContainer" parent="." unique_id=127268958]
+visible = false
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -150.0
+offset_right = 8.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="GachaPanel" unique_id=1458503838]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_atrmx")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GachaPanel/PanelContainer" unique_id=1390952805]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GachaPanel/PanelContainer/VBoxContainer" unique_id=90715344]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GachaOption1" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=297633718 groups=["gacha_options"] instance=ExtResource("1_jbthi")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="GachaOption2" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=924842280 groups=["gacha_options"] instance=ExtResource("1_jbthi")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="GachaOption3" parent="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer" unique_id=1044337968 groups=["gacha_options"] instance=ExtResource("1_jbthi")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ovrkh")
+
+[node name="Button" type="Button" parent="GachaPanel/PanelContainer/VBoxContainer" unique_id=1102124815]
+layout_mode = 2
+text = "跳过"
+
+[node name="TapFeedbackLayer" type="Control" parent="." unique_id=1675173535]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="BlowTapSfx" type="AudioStreamPlayer" parent="." unique_id=1573558863]
+unique_name_in_owner = true
+stream = ExtResource("7_1i4pd")
+volume_db = -7.0
+max_polyphony = 6
+
+[node name="KillSfx" type="AudioStreamPlayer" parent="." unique_id=421552610]
+unique_name_in_owner = true
+stream = ExtResource("8_y0luo")
+volume_db = -5.0
+max_polyphony = 2
+
+[node name="CoinSfx" type="AudioStreamPlayer" parent="." unique_id=2014708787]
+unique_name_in_owner = true
+stream = ExtResource("9_tyhcs")
+volume_db = -5.0
+max_polyphony = 2
+
+[node name="FallSfx" type="AudioStreamPlayer" parent="." unique_id=351543474]
+unique_name_in_owner = true
+stream = ExtResource("10_dcyui")
+volume_db = -6.0
+max_polyphony = 2
+
 [connection signal="button_down" from="ControlBar/BlowButton" to="." method="_on_blow_button_down"]
 [connection signal="button_up" from="ControlBar/BlowButton" to="." method="_on_blow_button_up"]
+[connection signal="pressed" from="Gacha/GachaButton" to="." method="_open_gacha"]
 [connection signal="option_pressed" from="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption1" to="." method="_on_gacha_option_pressed"]
 [connection signal="option_pressed" from="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption2" to="." method="_on_gacha_option_pressed"]
 [connection signal="option_pressed" from="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption3" to="." method="_on_gacha_option_pressed"]
 [connection signal="pressed" from="GachaPanel/PanelContainer/VBoxContainer/Button" to="." method="_on_gacha_skip_pressed"]
-[connection signal="pressed" from="Gacha/GachaButton" to="." method="_open_gacha"]

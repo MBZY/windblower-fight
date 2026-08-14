@@ -39,7 +39,7 @@ const DEFAULT_DISCOVERY_PORT := 47777
 const DEFAULT_MAX_PLAYERS := 8
 const DEFAULT_BEACON_INTERVAL_SEC := 1.0
 const DEFAULT_ROOM_TIMEOUT_SEC := 3.0
-const DEFAULT_PROTOCOL_VERSION := "1.2.0"
+const DEFAULT_PROTOCOL_VERSION := "1.3.0"
 
 const INPUT_CHANNEL := 1
 const STATE_CHANNEL := 2
@@ -603,6 +603,9 @@ func _sanitize_action_payload(action: StringName, payload: Dictionary) -> Dictio
 			if entry_id.is_empty() or entry_id.length() > MAX_ENTRY_ID_LENGTH:
 				return {}
 			return {"entry_id": entry_id}
+		&"wind_pump":
+			var count := clampi(int(payload.get("count", 0)), 0, 2)
+			return {} if count < 1 else {"count": count}
 		&"set_ready":
 			return {"ready": bool(payload.get("ready", false))}
 	return {}

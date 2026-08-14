@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://d1chr4glpxxqp"]
+
+[ext_resource type="Script" uid="uid://b5j1lua7jgnaf" path="res://scripts/ui/single_killing_broadcast.gd" id="1_dn6i8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i86v8"]
+content_margin_left = 8.0
+content_margin_right = 8.0
+bg_color = Color(0.02, 0.06, 0.09, 0.86)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.38, 0.78, 0.95, 0.55)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="SingleKillingBroadcast" type="PanelContainer" unique_id=1828833068]
+custom_minimum_size = Vector2(0, 28)
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_i86v8")
+script = ExtResource("1_dn6i8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=168542115]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Killer" type="Label" parent="HBoxContainer" unique_id=1555310897]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "Player1"
+
+[node name="x" type="Label" parent="HBoxContainer" unique_id=710371518]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "X"
+
+[node name="BeKilled" type="Label" parent="HBoxContainer" unique_id=1324110848]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "Player2"
+
+[node name="LifetimeTimer" type="Timer" parent="." unique_id=1829572236]
+one_shot = true
+
+[connection signal="timeout" from="LifetimeTimer" to="." method="_on_lifetime_timer_timeout"]

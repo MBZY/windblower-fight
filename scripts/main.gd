@@ -33,6 +33,8 @@ func show_menu() -> void:
 	current_menu.create_room_requested.connect(_on_create_room)
 	current_menu.browse_rooms_requested.connect(_on_browse_rooms)
 	current_menu.join_ip_requested.connect(_on_join_ip)
+	current_menu.profile_submitted.connect(_on_profile_submitted)
+	_on_profile_submitted(current_menu.profile_name())
 
 
 func _clear_flow_views() -> void:
@@ -148,6 +150,10 @@ func _on_join_ip(host_ip: String) -> void:
 	var session := _start_session()
 	if session.join_room(host_ip):
 		_show_lobby(session)
+
+func _on_profile_submitted(display_name: String) -> void:
+	if _network_manager != null:
+		_network_manager.set_local_profile(display_name)
 
 func _on_join_room(room: Dictionary) -> void:
 	var session := _start_session()

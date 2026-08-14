@@ -1,6 +1,13 @@
 class_name GuiHud
 extends Control
 
+const BLOW_TAP_FEEDBACK_SCENE := preload("res://scenes/ui/blow_tap_feedback.tscn")
+const COIN_REWARD_FEEDBACK_SCENE := preload("res://scenes/ui/coin_reward_feedback.tscn")
+const KILL_BROADCAST_SCENE := preload("res://scenes/ui/single_killing_broadcast.tscn")
+const TEAM_RED := Color(1.0, 0.32, 0.4)
+const TEAM_BLUE := Color(0.36, 0.76, 1.0)
+const NEUTRAL := Color(0.86, 0.9, 0.94)
+
 @onready var rest_time_label: Label = $VBoxContainer/RestTime
 @onready var rest_time_progress: ProgressBar = $VBoxContainer/RestTimeProgress
 @onready var winning_progress: TextureProgressBar = $VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/WiningProgress
@@ -13,18 +20,27 @@ extends Control
 @onready var gacha_alarm: Label = $Gacha/GachaAlarm
 @onready var gacha_button: TextureButton = $Gacha/GachaButton
 @onready var gacha_panel: MarginContainer = $GachaPanel
-@onready var gacha_options: Array[GachaOption] = [
-	$GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption1,
-	$GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption2,
-	$GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption3,
-]
+@onready var blow_button: Button = %BlowButton
+@onready var fan_rotor: Node2D = %FanRotor
+@onready var tap_feedback_layer: Control = %TapFeedbackLayer
+@onready var broadcast_list: VBoxContainer = %KillingBroadcastList
+@onready var blow_tap_sfx: AudioStreamPlayer = %BlowTapSfx
+@onready var kill_sfx: AudioStreamPlayer = %KillSfx
+@onready var coin_sfx: AudioStreamPlayer = %CoinSfx
+@onready var fall_sfx: AudioStreamPlayer = %FallSfx
+var gacha_options: Array[GachaOption] = []
 
 var _session: GameSession
 var _local_player_id := 1
 var _price := 50
+var _fan_rotation_speed := 0.0
+var _fan_boost_speed := 0.0
+var _shake_tween: Tween
 
 func _ready() -> void:
-	gacha_panel.visible = false
+	gacha_options.assign(get_tree().get_nodes_in_group("gacha_options"))
+	if gacha_options.is_empty():
+		gacha_options.assign([get_node("GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption1"), get_node("GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption2"), get_node("GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption3")])
 
 func bind_session(session: GameSession) -> void:
 	_session = session
@@ -35,12 +51,14 @@ func bind_session(session: GameSession) -> void:
 	session.skill_points_changed.connect(_on_skill_points_changed)
 	session.phase_changed.connect(_on_phase_changed)
 	session.match_finished.connect(_on_match_finished)
+	session.player_eliminated.connect(_on_player_eliminated)
 	_on_score_changed(session.red_score, session.blue_score)
 	_on_phase_changed(session.phase)
 	_refresh_player_lists()
 	_update_money_labels()
 
 func _process(_delta: float) -> void:
+	_update_fan(_delta)
 	if _session == null:
 		return
 	if _session.phase == &"playing" and _session.match_timer != null:
@@ -116,7 +134,7 @@ func _fill_player_list(list_container: VBoxContainer, team_players: Array) -> vo
 		if index < team_players.size():
 			var player: IslandPlayer = team_players[index]
 			unit.visible = true
-			unit.get_node("PlayerName").text = "玩家%d" % player.player_id
+			unit.get_node("PlayerName").text = _session.player_display_name(player.player_id)
 			unit.get_node("PlayerMoney").text = "%d$" % player.skill_points
 		else:
 			unit.visible = false
@@ -184,9 +202,86 @@ func _on_gacha_skip_pressed() -> void:
 	gacha_panel.visible = false
 
 func _on_blow_button_down() -> void:
-	if _session != null:
-		_session.set_local_blowing(true)
+	if _session == null:
+		return
+	var result: Dictionary = _session.pump_local_wind()
+	if result.is_empty():
+		return
+	_show_blow_feedback(int(result.get("combo", 1)), float(result.get("gain", 0.0)), float(result.get("intensity", 0.0)))
+	_fan_boost_speed = maxf(_fan_boost_speed, 18.0 + float(result.get("combo", 1)) * 0.8)
+	_shake_screen(1.2 + float(result.get("intensity", 0.0)) * 2.2)
+	blow_tap_sfx.pitch_scale = lerpf(0.9, 1.3, float(result.get("intensity", 0.0)))
+	blow_tap_sfx.play()
 
 func _on_blow_button_up() -> void:
-	if _session != null:
-		_session.set_local_blowing(false)
+	return
+
+func _update_fan(delta: float) -> void:
+	var intensity := 0.0
+	var local_player := _local_player()
+	if local_player != null:
+		intensity = local_player.wind_intensity
+	_fan_boost_speed = move_toward(_fan_boost_speed, 0.0, delta * 20.0)
+	var target_speed := TAU * 8.5 * intensity + _fan_boost_speed
+	_fan_rotation_speed = move_toward(_fan_rotation_speed, target_speed, delta * 28.0)
+	if fan_rotor != null:
+		fan_rotor.rotation += _fan_rotation_speed * delta
+
+func _show_blow_feedback(combo: int, gain: float, intensity: float) -> void:
+	var feedback := BLOW_TAP_FEEDBACK_SCENE.instantiate() as BlowTapFeedback
+	var layer_inverse := tap_feedback_layer.get_global_transform_with_canvas().affine_inverse()
+	feedback.position = layer_inverse * blow_button.get_global_rect().get_center() + Vector2(-40.0, -56.0)
+	tap_feedback_layer.add_child(feedback)
+	feedback.configure(combo, gain, intensity)
+
+func _on_player_eliminated(killer_id: int, victim_id: int, reward: int) -> void:
+	if _session == null:
+		return
+	_show_kill_broadcast(killer_id, victim_id)
+	kill_sfx.play()
+	if killer_id == _session.local_player_id() and reward > 0:
+		_show_coin_feedback(reward)
+		coin_sfx.play()
+	elif victim_id == _session.local_player_id():
+		fall_sfx.play()
+
+func _show_kill_broadcast(killer_id: int, victim_id: int) -> void:
+	var max_entries := _session.balance.kill_broadcast_max_entries if _session.balance != null else 4
+	var visible_entries: Array[SingleKillingBroadcast] = []
+	for child in broadcast_list.get_children():
+		if child is SingleKillingBroadcast and child.visible:
+			visible_entries.append(child)
+	while visible_entries.size() >= max_entries:
+		var oldest: SingleKillingBroadcast = visible_entries.pop_front()
+		oldest.dismiss()
+	var killer := _session.players.get(killer_id) as IslandPlayer
+	var victim := _session.players.get(victim_id) as IslandPlayer
+	var entry := KILL_BROADCAST_SCENE.instantiate() as SingleKillingBroadcast
+	var killer_name := _session.player_display_name(killer_id) if killer != null else "边界"
+	var victim_name := _session.player_display_name(victim_id) if victim != null else "Player %d" % victim_id
+	var lifetime := _session.balance.kill_broadcast_lifetime_sec if _session.balance != null else 3.5
+	broadcast_list.add_child(entry)
+	entry.configure(killer_name, _team_color(killer), victim_name, _team_color(victim), lifetime)
+
+func _show_coin_feedback(amount: int) -> void:
+	var feedback := COIN_REWARD_FEEDBACK_SCENE.instantiate() as CoinRewardFeedback
+	var layer_inverse := tap_feedback_layer.get_global_transform_with_canvas().affine_inverse()
+	feedback.position = layer_inverse * gacha_button.get_global_rect().get_center() + Vector2(-38.0, -30.0)
+	tap_feedback_layer.add_child(feedback)
+	feedback.configure(amount)
+
+func _team_color(player: IslandPlayer) -> Color:
+	if player == null:
+		return NEUTRAL
+	return TEAM_RED if player.team == 0 else TEAM_BLUE
+
+func _shake_screen(strength: float) -> void:
+	var canvas_layer := get_parent() as CanvasLayer
+	if canvas_layer == null:
+		return
+	if _shake_tween != null:
+		_shake_tween.kill()
+	canvas_layer.offset = Vector2(strength, -strength * 0.5)
+	_shake_tween = create_tween()
+	_shake_tween.tween_property(canvas_layer, "offset", Vector2(-strength, strength * 0.35), 0.045)
+	_shake_tween.tween_property(canvas_layer, "offset", Vector2.ZERO, 0.07).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
