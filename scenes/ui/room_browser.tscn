@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://dkec6xukd74tm"]
+
+[ext_resource type="Script" uid="uid://bn2pa424mif6e" path="res://scripts/ui/room_browser.gd" id="1_20nt0"]
+
+[node name="room_browser" type="Control" unique_id=1161094587]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_20nt0")
+
+[node name="Background" type="Panel" parent="." unique_id=742885480]
+modulate = Color(0.0627451, 0.15686275, 0.22745098, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SafeMargin" type="MarginContainer" parent="." unique_id=567524537]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 20.0
+offset_right = -16.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin" unique_id=1606500253]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="HBoxContainer" parent="SafeMargin/Content" unique_id=2092765135]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BackButton" type="Button" parent="SafeMargin/Content/Header" unique_id=1348718167]
+custom_minimum_size = Vector2(68, 36)
+layout_mode = 2
+text = "返回"
+
+[node name="Title" type="Label" parent="SafeMargin/Content/Header" unique_id=1503316422]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "局域网房间"
+horizontal_alignment = 1
+
+[node name="RefreshButton" type="Button" parent="SafeMargin/Content/Header" unique_id=203352879]
+custom_minimum_size = Vector2(68, 36)
+layout_mode = 2
+text = "刷新"
+
+[node name="StatusLabel" type="Label" parent="SafeMargin/Content" unique_id=529307535]
+layout_mode = 2
+text = "正在扫描同一局域网内的房间..."
+horizontal_alignment = 1
+
+[node name="RoomScroll" type="ScrollContainer" parent="SafeMargin/Content" unique_id=406726597]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RoomList" type="VBoxContainer" parent="SafeMargin/Content/RoomScroll" unique_id=895334717]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="ManualJoin" type="HBoxContainer" parent="SafeMargin/Content" unique_id=1027997103]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IpInput" type="LineEdit" parent="SafeMargin/Content/ManualJoin" unique_id=665027435]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "127.0.0.1"
+placeholder_text = "输入主机 IP"
+
+[node name="JoinButton" type="Button" parent="SafeMargin/Content/ManualJoin" unique_id=1146449523]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "加入"
+
+[connection signal="pressed" from="SafeMargin/Content/Header/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="SafeMargin/Content/Header/RefreshButton" to="." method="_on_refresh_button_pressed"]
+[connection signal="pressed" from="SafeMargin/Content/ManualJoin/JoinButton" to="." method="_on_join_button_pressed"]

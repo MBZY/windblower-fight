@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://csgsbgsdjlig3"]
+
+[ext_resource type="Script" uid="uid://b8og816n3ue5q" path="res://scripts/game/player_controller.gd" id="1_dovo2"]
+[ext_resource type="Texture2D" uid="uid://br5lh4tiqbvwx" path="res://assets/Character.png" id="2_gmlin"]
+[ext_resource type="PackedScene" uid="uid://c4sbpujs70k0d" path="res://scenes/wind_blower.tscn" id="3_blower"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dovo2"]
+size = Vector2(24, 32)
+
+[node name="player" type="CharacterBody2D" unique_id=79155242]
+unique_name_in_owner = true
+script = ExtResource("1_dovo2")
+
+[node name="Visual" type="Sprite2D" parent="." unique_id=872778447]
+texture = ExtResource("2_gmlin")
+
+[node name="WindBlower" parent="." unique_id=1164471445 instance=ExtResource("3_blower")]
+position = Vector2(10, 6)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1192082658]
+shape = SubResource("RectangleShape2D_dovo2")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1192767698]
+position_smoothing_enabled = true

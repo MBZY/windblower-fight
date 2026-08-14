@@ -1,0 +1,163 @@
+[gd_scene format=3 uid="uid://bdnetpcl146yt"]
+
+[ext_resource type="Script" uid="uid://cogkxk3u18rdm" path="res://scripts/ui/game_hud.gd" id="2_hud"]
+
+[sub_resource type="StyleBoxFlat" id="RedPanel"]
+bg_color = Color(0.78, 0.17, 0.18, 0.92)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="Panel"]
+content_margin_left = 8.0
+content_margin_top = 5.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
+bg_color = Color(0.03, 0.08, 0.12, 0.84)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="BluePanel"]
+bg_color = Color(0.12, 0.42, 0.9, 0.92)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="GameHUD" type="Control" unique_id=287828140]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_hud")
+
+[node name="TopMargin" type="MarginContainer" parent="." unique_id=1582900062]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 54.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 4
+
+[node name="TopRow" type="HBoxContainer" parent="TopMargin" unique_id=1587661102]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RedScore" type="PanelContainer" parent="TopMargin/TopRow" unique_id=312985678]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("RedPanel")
+
+[node name="Value" type="Label" parent="TopMargin/TopRow/RedScore" unique_id=176504574]
+layout_mode = 2
+text = "RED 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Timer" type="PanelContainer" parent="TopMargin/TopRow" unique_id=1630167094]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Panel")
+
+[node name="Value" type="Label" parent="TopMargin/TopRow/Timer" unique_id=95832703]
+layout_mode = 2
+text = "READY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BlueScore" type="PanelContainer" parent="TopMargin/TopRow" unique_id=557256442]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("BluePanel")
+
+[node name="Value" type="Label" parent="TopMargin/TopRow/BlueScore" unique_id=89485602]
+layout_mode = 2
+text = "BLUE 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TouchLayer" type="Control" parent="." unique_id=224676908]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VirtualJoystick" type="VirtualJoystick" parent="TouchLayer" unique_id=377488299]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+offset_transform_enabled = true
+offset_transform_visual_only = false
+joystick_mode = 2
+joystick_size = 128.0
+action_left = &"move_left"
+action_right = &"move_right"
+action_up = &"move_up"
+action_down = &"move_down"
+
+[node name="Skills" type="Button" parent="TouchLayer" unique_id=1794087419]
+custom_minimum_size = Vector2(78, 44)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -88.0
+offset_top = -22.0
+offset_right = -10.0
+offset_bottom = 22.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "技能"
+
+[node name="RespawnNotice" type="Label" parent="." unique_id=359692460]
+layout_mode = 0
+
+[node name="SkillOverlay" type="Control" parent="." unique_id=1117161750]
+anchors_preset = 0
+
+[node name="Panel" type="PanelContainer" parent="SkillOverlay" unique_id=1053748557]
+layout_mode = 0
+
+[node name="Margin" type="MarginContainer" parent="SkillOverlay/Panel" unique_id=1394676174]
+layout_mode = 2
+
+[node name="Content" type="VBoxContainer" parent="SkillOverlay/Panel/Margin" unique_id=2105359772]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="SkillOverlay/Panel/Margin/Content" unique_id=1469983908]
+layout_mode = 2
+text = "升级技能"
+
+[node name="Options" type="HBoxContainer" parent="SkillOverlay/Panel/Margin/Content" unique_id=1964061324]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="SkillOverlay/Panel/Margin/Content" unique_id=1646228279]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+text = "关闭"
+
+[node name="EventLabel" type="Label" parent="." unique_id=948557101]
+layout_mode = 0
+
+[node name="PersonalSkillPoints" type="Label" parent="." unique_id=1438512261]
+layout_mode = 0

@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://ccn1pv32h5fc1"]
+
+[ext_resource type="Script" uid="uid://uh708rvp5cxy" path="res://scripts/game/game_session.gd" id="1_session"]
+[ext_resource type="PackedScene" uid="uid://lm10lvdtejac" path="res://scenes/game/map_medium.tscn" id="3_map_medium"]
+[ext_resource type="PackedScene" uid="uid://dfquvgr5up80m" path="res://scenes/GUI.tscn" id="8_outig"]
+[ext_resource type="Resource" uid="uid://baq7d5mmaaje7" path="res://resources/balance/default_balance.tres" id="9_balance"]
+[ext_resource type="Resource" uid="uid://b3l3p048efpgb" path="res://resources/maps/medium.tres" id="10_map"]
+
+[node name="GameSession" type="Node2D" unique_id=577843428]
+script = ExtResource("1_session")
+balance = ExtResource("9_balance")
+map_definition = ExtResource("10_map")
+
+[node name="MapMedium" parent="." unique_id=1722573756 instance=ExtResource("3_map_medium")]
+
+[node name="CountdownTimer" type="Timer" parent="." unique_id=1674153782]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="MatchTimer" type="Timer" parent="." unique_id=28110017]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="RespawnTimer" type="Timer" parent="." unique_id=1052621164]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="ScoreLockTimer" type="Timer" parent="." unique_id=860275086]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1254830462]
+
+[node name="Control" parent="CanvasLayer" unique_id=1794550821 instance=ExtResource("8_outig")]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1326079227]
+spawn_path = NodePath("../NetworkPlayers")
+spawn_limit = 8
+
+[node name="NetworkPlayers" type="Node2D" parent="." unique_id=832057933]
+
+[connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timeout"]
+[connection signal="timeout" from="MatchTimer" to="." method="_on_match_timeout"]
+[connection signal="timeout" from="RespawnTimer" to="." method="_on_respawn_timeout"]
+[connection signal="timeout" from="ScoreLockTimer" to="." method="_on_score_lock_timeout"]
+
+[editable path="MapMedium"]

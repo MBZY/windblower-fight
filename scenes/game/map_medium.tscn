@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://lm10lvdtejac"]
+
+[node name="MapMedium" type="Node2D" unique_id=1436650673]
+
+[node name="Island" type="Polygon2D" parent="." unique_id=779346352]
+color = Color(0.18, 0.55, 0.33, 1)
+polygon = PackedVector2Array(20, 80, 549, 80, 579, 158, 579, 711, 534, 760, 50, 760, -4, 711, 0, 150)
+
+[node name="FallBoundary" type="Area2D" parent="." unique_id=1430101901]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="FallBoundary" unique_id=957115695]
+polygon = PackedVector2Array(20, 80, 549, 80, 579, 158, 579, 711, 534, 760, 50, 760, -4, 711, 0, 150)

@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/room_entry.gd" id="1_entry"]
+
+[node name="RoomEntry" type="HBoxContainer"]
+theme_override_constants/separation = 8
+script = ExtResource("1_entry")
+
+[node name="Summary" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_alignment = 1
+
+[node name="JoinButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "Join"
+
+[connection signal="pressed" from="JoinButton" to="." method="_on_join_pressed"]

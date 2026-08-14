@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dfr7qrlv8ij7v"]
+
+[ext_resource type="Script" uid="uid://uh708rvp5cxy" path="res://scripts/game/game_session.gd" id="1_ktp5e"]
+[ext_resource type="PackedScene" uid="uid://lm10lvdtejac" path="res://scenes/game/map_medium.tscn" id="2_er374"]
+
+[node name="TestRoot" type="Node2D" unique_id=1804518578]
+script = ExtResource("1_ktp5e")
+
+[node name="CountdownTimer" type="Timer" parent="." unique_id=1425574028]
+
+[node name="MapMedium" type="Node2D" parent="." unique_id=1436650673 instance=ExtResource("2_er374")]
+
+[connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timeout"]

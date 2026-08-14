@@ -72,19 +72,43 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VirtualJoystick" type="VirtualJoystick" parent="." unique_id=1619658484]
-custom_minimum_size = Vector2(300, 300)
+[node name="ControlBar" type="HBoxContainer" parent="." unique_id=296536564]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -300.0
 grow_horizontal = 2
 grow_vertical = 0
+
+[node name="VirtualJoystick" type="VirtualJoystick" parent="ControlBar" unique_id=1619658484]
+custom_minimum_size = Vector2(200, 300)
+layout_mode = 2
+size_flags_horizontal = 3
 offset_transform_enabled = true
 offset_transform_visual_only = false
 joystick_mode = 2
-joystick_size = 128.0
+joystick_size = 85.0
+
+[node name="BlowButton" type="Button" parent="ControlBar" unique_id=321169023]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="ControlBar/BlowButton" unique_id=1504841512]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="GachaPanel" type="MarginContainer" parent="." unique_id=127268958]
 visible = false
@@ -154,6 +178,7 @@ show_percentage = false
 layout_mode = 2
 
 [node name="PlayerListA" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1735224342]
+visible = false
 custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 
@@ -250,7 +275,32 @@ nine_patch_stretch = true
 texture_under = SubResource("CurveXYZTexture_ovrkh")
 texture_progress = SubResource("CurveXYZTexture_1sxap")
 
+[node name="HBoxContainer2" type="PanelContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1788049068]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_1sxap")
+
+[node name="Score1" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1288478082]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "15"
+horizontal_alignment = 2
+
+[node name="Score2" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=612977459]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.92066664, 1, 0.32, 1)
+theme_override_font_sizes/font_size = 32
+text = "5"
+horizontal_alignment = 2
+
 [node name="HBoxContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer" unique_id=70548935]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_1sxap")
 
@@ -273,6 +323,7 @@ text = "150$"
 horizontal_alignment = 2
 
 [node name="PlayerListB" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1483668952]
+visible = false
 custom_minimum_size = Vector2(64, 500)
 layout_mode = 2
 
@@ -349,6 +400,7 @@ theme_override_colors/font_color = Color(1, 1, 0, 1)
 text = "50$"
 
 [node name="Gacha" type="VBoxContainer" parent="." unique_id=1320212017]
+visible = false
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0

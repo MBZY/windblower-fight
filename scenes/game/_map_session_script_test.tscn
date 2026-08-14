@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://ddyhy00kob1iw"]
+
+[ext_resource type="Script" uid="uid://uh708rvp5cxy" path="res://scripts/game/game_session.gd" id="1_hl0ro"]
+[ext_resource type="PackedScene" uid="uid://lm10lvdtejac" path="res://scenes/game/map_medium.tscn" id="2_o8oe0"]
+[ext_resource type="PackedScene" uid="uid://cestuggfwba42" path="res://scenes/game/map_small.tscn" id="3_j6lye"]
+
+[node name="TestRoot" type="Node2D" unique_id=725381326]
+script = ExtResource("1_hl0ro")
+
+[node name="MapMedium" type="Node2D" parent="." unique_id=1436650673 instance=ExtResource("2_o8oe0")]
+
+[node name="MapSmall" type="Node2D" parent="." unique_id=618082753 instance=ExtResource("3_j6lye")]
+visible = false

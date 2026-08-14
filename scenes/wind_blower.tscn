@@ -1,3 +1,24 @@
 [gd_scene format=3 uid="uid://c4sbpujs70k0d"]
 
-[node name="Node2D" type="Node2D" unique_id=1311417212]
+[sub_resource type="StyleBoxFlat" id="WindGlow"]
+bg_color = Color(0.78, 0.93, 1, 0.28)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="WindBlower" type="Node2D" unique_id=1311417212]
+
+[node name="Body" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-8, -6, 10, -6, 20, -3, 20, 3, 10, 6, -8, 6)
+color = Color(0.83, 0.9, 0.95, 1)
+
+[node name="Nozzle" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(18, -4, 34, -3, 34, 3, 18, 4)
+color = Color(0.42, 0.73, 0.88, 1)
+
+[node name="WindBand" type="Panel" parent="."]
+position = Vector2(34, -12)
+size = Vector2(92, 24)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("WindGlow")

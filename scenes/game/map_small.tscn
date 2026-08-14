@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cestuggfwba42"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xpe22"]
+size = Vector2(300, 500)
+
+[node name="MapSmall" type="Node2D" unique_id=618082753]
+
+[node name="Island" type="Polygon2D" parent="." unique_id=1755697944]
+color = Color(0.22, 0.62, 0.37, 1)
+polygon = PackedVector2Array(46, 145, 354, 145, 380, 195, 364, 645, 320, 705, 80, 705, 36, 645, 20, 195)
+
+[node name="FallBoundary" type="Area2D" parent="." unique_id=264273600]
+monitoring = false
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FallBoundary" unique_id=2068331878]
+position = Vector2(200, 425)
+shape = SubResource("RectangleShape2D_xpe22")

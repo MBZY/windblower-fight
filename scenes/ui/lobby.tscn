@@ -1,0 +1,152 @@
+[gd_scene format=3 uid="uid://c52ssldnjs2wp"]
+
+[ext_resource type="Script" uid="uid://cajif44bc6g5c" path="res://scripts/ui/lobby.gd" id="1_6oakf"]
+
+[node name="lobby" type="Control" unique_id=202601119]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6oakf")
+
+[node name="Background" type="Panel" parent="." unique_id=925328969]
+modulate = Color(0.0627451, 0.15686275, 0.22745098, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SafeMargin" type="MarginContainer" parent="." unique_id=353266413]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 20.0
+offset_right = -16.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin" unique_id=1230788544]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="HBoxContainer" parent="SafeMargin/Content" unique_id=193408213]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LeaveButton" type="Button" parent="SafeMargin/Content/Header" unique_id=376656226]
+custom_minimum_size = Vector2(68, 36)
+layout_mode = 2
+text = "离开"
+
+[node name="Title" type="Label" parent="SafeMargin/Content/Header" unique_id=1915580479]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "准备大厅"
+horizontal_alignment = 1
+
+[node name="HostBadge" type="Label" parent="SafeMargin/Content/Header" unique_id=561087320]
+custom_minimum_size = Vector2(68, 36)
+layout_mode = 2
+text = "房主"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RoomStatus" type="Label" parent="SafeMargin/Content" unique_id=114997881]
+layout_mode = 2
+text = "房间：Sky Leaf Room  |  等待玩家"
+horizontal_alignment = 1
+
+[node name="MapPanel" type="PanelContainer" parent="SafeMargin/Content" unique_id=290774700]
+layout_mode = 2
+
+[node name="MapContents" type="VBoxContainer" parent="SafeMargin/Content/MapPanel" unique_id=1275091950]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="MapTitle" type="Label" parent="SafeMargin/Content/MapPanel/MapContents" unique_id=1781313972]
+layout_mode = 2
+text = "地图"
+
+[node name="MapSelect" type="OptionButton" parent="SafeMargin/Content/MapPanel/MapContents" unique_id=1367035806]
+layout_mode = 2
+selected = 1
+item_count = 3
+popup/item_0/text = "Small Island | 300 Leaves"
+popup/item_0/id = 0
+popup/item_1/text = "Medium Island | 500 Leaves"
+popup/item_1/id = 1
+popup/item_2/text = "Large Island | 800 Leaves"
+popup/item_2/id = 2
+
+[node name="Teams" type="HBoxContainer" parent="SafeMargin/Content" unique_id=629037634]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="RedTeam" type="PanelContainer" parent="SafeMargin/Content/Teams" unique_id=301914798]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Contents" type="VBoxContainer" parent="SafeMargin/Content/Teams/RedTeam" unique_id=1130456703]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="Label" parent="SafeMargin/Content/Teams/RedTeam/Contents" unique_id=767266705]
+layout_mode = 2
+text = "红队"
+horizontal_alignment = 1
+
+[node name="Roster" type="Label" parent="SafeMargin/Content/Teams/RedTeam/Contents" unique_id=414943279]
+layout_mode = 2
+size_flags_vertical = 3
+text = "玩家 1\\n\\n等待加入"
+
+[node name="JoinButton" type="Button" parent="SafeMargin/Content/Teams/RedTeam/Contents" unique_id=1802217228]
+layout_mode = 2
+text = "加入红队"
+
+[node name="BlueTeam" type="PanelContainer" parent="SafeMargin/Content/Teams" unique_id=1326895294]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Contents" type="VBoxContainer" parent="SafeMargin/Content/Teams/BlueTeam" unique_id=55470653]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="Label" parent="SafeMargin/Content/Teams/BlueTeam/Contents" unique_id=1697097281]
+layout_mode = 2
+text = "蓝队"
+horizontal_alignment = 1
+
+[node name="Roster" type="Label" parent="SafeMargin/Content/Teams/BlueTeam/Contents" unique_id=1502285754]
+layout_mode = 2
+size_flags_vertical = 3
+text = "玩家 2\\n\\n等待加入"
+
+[node name="JoinButton" type="Button" parent="SafeMargin/Content/Teams/BlueTeam/Contents" unique_id=131186006]
+layout_mode = 2
+text = "加入蓝队"
+
+[node name="Hint" type="Label" parent="SafeMargin/Content" unique_id=1863234932]
+layout_mode = 2
+text = "房主可选择地图并手动开局"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="SafeMargin/Content" unique_id=1998976474]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "开始对局"
+
+[connection signal="pressed" from="SafeMargin/Content/Header/LeaveButton" to="." method="_on_leave_button_pressed"]
+[connection signal="item_selected" from="SafeMargin/Content/MapPanel/MapContents/MapSelect" to="." method="_on_map_select_item_selected"]
+[connection signal="pressed" from="SafeMargin/Content/Teams/RedTeam/Contents/JoinButton" to="." method="_on_red_join_pressed"]
+[connection signal="pressed" from="SafeMargin/Content/Teams/BlueTeam/Contents/JoinButton" to="." method="_on_blue_join_pressed"]
+[connection signal="pressed" from="SafeMargin/Content/StartButton" to="." method="_on_start_button_pressed"]

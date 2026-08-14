@@ -1,0 +1,3 @@
+{
+  "code": "var root := Node2D.new()\nroot.name = \"TestRoot\"\nroot.owner = root\nroot.set_script(load(\"res://scripts/game/game_session.gd\"))\nvar medium := (load(\"res://scenes/game/map_medium.tscn\") as PackedScene).instantiate()\nmedium.name = \"MapMedium\"\nroot.add_child(medium)\nmedium.owner = root\nvar small := (load(\"res://scenes/game/map_small.tscn\") as PackedScene).instantiate()\nsmall.name = \"MapSmall\"\nsmall.visible = false\nroot.add_child(small)\nsmall.owner = root\nvar packed := PackedScene.new()\nvar pack_error := packed.pack(root)\nvar save_error := ResourceSaver.save(packed, \"res://scenes/game/_map_session_script_test.tscn\")\nroot.free()\n_custom_print(\"script_test %s %s\" % [error_string(pack_error), error_string(save_error)])"
+}

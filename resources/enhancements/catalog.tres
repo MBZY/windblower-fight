@@ -1,0 +1,56 @@
+﻿[gd_resource type="Resource" script_class="EnhancementCatalog" format=3 uid="uid://dy32m8c1ogiox"]
+
+[ext_resource type="Script" uid="uid://dokk5wxso3ow3" path="res://scripts/config/enhancement_catalog.gd" id="1_catalog"]
+[ext_resource type="Script" uid="uid://w5ywhm2ust4a" path="res://scripts/config/enhancement_entry.gd" id="2_entry"]
+
+[sub_resource type="Resource" id="EntryMotor"]
+script = ExtResource("2_entry")
+id = &"motor"
+display_name = "强化电机"
+description = "风速提升 15%"
+weight = 30
+value_per_stack = 0.15
+
+[sub_resource type="Resource" id="EntryFocus"]
+script = ExtResource("2_entry")
+id = &"focus"
+display_name = "聚"
+description = "风力衰减降低 20%"
+weight = 20
+max_stack = 3
+value_per_stack = 0.2
+target_stat = &"blower_falloff"
+exclusive_group = &"wind_shape"
+
+[sub_resource type="Resource" id="EntryScatter"]
+script = ExtResource("2_entry")
+id = &"scatter"
+display_name = "散"
+description = "近距离推力提升 25%"
+max_stack = 3
+value_per_stack = 0.25
+target_stat = &"blower_push_force"
+exclusive_group = &"wind_shape"
+
+[sub_resource type="Resource" id="EntrySand"]
+script = ExtResource("2_entry")
+id = &"sand"
+display_name = "加入沙子"
+description = "对玩家冲击力提升 20%"
+weight = 25
+value_per_stack = 0.2
+target_stat = &"blower_push_force"
+
+[sub_resource type="Resource" id="EntryAngle"]
+script = ExtResource("2_entry")
+id = &"angle"
+display_name = "修改出风口"
+description = "扇形角度扩大"
+weight = 15
+max_stack = 2
+value_per_stack = 15.0
+target_stat = &"blower_angle_deg"
+
+[resource]
+script = ExtResource("1_catalog")
+entries = Array[ExtResource("2_entry")]([SubResource("EntryMotor"), SubResource("EntryFocus"), SubResource("EntryScatter"), SubResource("EntrySand"), SubResource("EntryAngle")])

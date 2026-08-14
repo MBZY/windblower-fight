@@ -1,9 +1,5 @@
-[gd_scene format=3 uid="uid://biknmqqtm2jsu"]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="PackedScene" uid="uid://dfquvgr5up80m" path="res://scenes/GUI.tscn" id="1_uwrxv"]
+[ext_resource type="PackedScene" path="res://scenes/game/game_session.tscn" id="1_game"]
 
-[node name="Game" type="Node2D" unique_id=521620226]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=159537856]
-
-[node name="Control" parent="CanvasLayer" unique_id=1794550821 instance=ExtResource("1_uwrxv")]
+[node name="Game" instance=ExtResource("1_game")]

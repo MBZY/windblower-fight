@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="MapDefinition" format=3 uid="uid://b3l3p048efpgb"]
+
+[ext_resource type="Script" uid="uid://075s71evoilf" path="res://scripts/config/map_definition.gd" id="1_map"]
+
+[resource]
+script = ExtResource("1_map")
+red_spawn = Vector2(95, 400)
+blue_spawn = Vector2(305, 400)

@@ -1,0 +1,1 @@
+{"expression":"[get_node(\"GameSession\").phase, get_node(\"GameSession\").red_score, get_node(\"GameSession\").blue_score]"}
