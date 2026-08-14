@@ -3,6 +3,7 @@
 [node name="MapMedium" type="Node2D" unique_id=1436650673]
 
 [node name="Island" type="Polygon2D" parent="." unique_id=779346352]
+z_index = -10
 position = Vector2(4.9999995, -26.999996)
 scale = Vector2(0.55, 0.55)
 color = Color(0.18, 0.55, 0.33, 1)

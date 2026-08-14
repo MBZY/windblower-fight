@@ -147,9 +147,44 @@ func _on_browse_rooms() -> void:
 	_show_browser()
 
 func _on_join_ip(host_ip: String) -> void:
+	var endpoint := _parse_host_endpoint(host_ip)
+	if endpoint.is_empty():
+		return
 	var session := _start_session()
-	if session.join_room(host_ip):
+	if session.join_room(String(endpoint.get("host", "")), int(endpoint.get("port", -1))):
 		_show_lobby(session)
+
+func _parse_host_endpoint(value: String) -> Dictionary:
+	var endpoint := value.strip_edges()
+	if endpoint.is_empty():
+		return {}
+
+	var host := endpoint
+	var port := -1
+	if endpoint.begins_with("["):
+		var bracket_end := endpoint.find("]")
+		if bracket_end <= 1:
+			return {}
+		host = endpoint.substr(1, bracket_end - 1).strip_edges()
+		var suffix := endpoint.substr(bracket_end + 1)
+		if not suffix.is_empty():
+			if not suffix.begins_with(":"):
+				return {}
+			var port_text := suffix.substr(1)
+			if not port_text.is_valid_int():
+				return {}
+			port = int(port_text)
+	elif endpoint.count(":") == 1:
+		var separator := endpoint.rfind(":")
+		var port_text := endpoint.substr(separator + 1)
+		if not port_text.is_valid_int():
+			return {}
+		host = endpoint.substr(0, separator).strip_edges()
+		port = int(port_text)
+
+	if host.is_empty() or (port != -1 and (port < 1 or port > 65535)):
+		return {}
+	return {"host": host, "port": port}
 
 func _on_profile_submitted(display_name: String) -> void:
 	if _network_manager != null:

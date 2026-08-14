@@ -36,6 +36,7 @@ var _price := 50
 var _fan_rotation_speed := 0.0
 var _fan_boost_speed := 0.0
 var _shake_tween: Tween
+var _camera_shake_tween: Tween
 
 func _ready() -> void:
 	gacha_options.assign(get_tree().get_nodes_in_group("gacha_options"))
@@ -277,11 +278,21 @@ func _team_color(player: IslandPlayer) -> Color:
 
 func _shake_screen(strength: float) -> void:
 	var canvas_layer := get_parent() as CanvasLayer
-	if canvas_layer == null:
+	if canvas_layer != null:
+		if _shake_tween != null:
+			_shake_tween.kill()
+		canvas_layer.offset = Vector2(strength, -strength * 0.5)
+		_shake_tween = create_tween()
+		_shake_tween.tween_property(canvas_layer, "offset", Vector2(-strength, strength * 0.35), 0.045)
+		_shake_tween.tween_property(canvas_layer, "offset", Vector2.ZERO, 0.07).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+	var local_player := _local_player()
+	if local_player == null or local_player.player_camera == null or not local_player.player_camera.enabled:
 		return
-	if _shake_tween != null:
-		_shake_tween.kill()
-	canvas_layer.offset = Vector2(strength, -strength * 0.5)
-	_shake_tween = create_tween()
-	_shake_tween.tween_property(canvas_layer, "offset", Vector2(-strength, strength * 0.35), 0.045)
-	_shake_tween.tween_property(canvas_layer, "offset", Vector2.ZERO, 0.07).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	if _camera_shake_tween != null:
+		_camera_shake_tween.kill()
+	var camera_strength := strength * 1.4
+	local_player.player_camera.offset = Vector2(-camera_strength, camera_strength * 0.45)
+	_camera_shake_tween = create_tween()
+	_camera_shake_tween.tween_property(local_player.player_camera, "offset", Vector2(camera_strength, -camera_strength * 0.35), 0.045)
+	_camera_shake_tween.tween_property(local_player.player_camera, "offset", Vector2.ZERO, 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
