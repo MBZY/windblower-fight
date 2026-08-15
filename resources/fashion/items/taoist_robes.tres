@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://npt8iqs8jcsp"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_vwmi7"]
+[ext_resource type="Texture2D" uid="uid://gfan1w5jcfy5" path="res://assets/dress_up/assets/armor/daopao.png" id="2_u1no8"]
+
+[resource]
+script = ExtResource("1_vwmi7")
+id = &"taoist_robes"
+display_name = "道袍"
+slot = "body"
+texture = ExtResource("2_u1no8")

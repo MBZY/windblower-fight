@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://vrpi7023voqw"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_ccwps"]
+[ext_resource type="Texture2D" uid="uid://b45b8ddobuk62" path="res://assets/dress_up/assets/armor/suit.png" id="2_0k45j"]
+
+[resource]
+script = ExtResource("1_ccwps")
+id = &"suit"
+display_name = "正装"
+slot = "body"
+texture = ExtResource("2_0k45j")

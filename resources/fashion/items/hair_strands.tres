@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://c1knhl5mj6bx3"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_kcfh3"]
+[ext_resource type="Texture2D" uid="uid://b1dyiaxpi5shb" path="res://assets/dress_up/assets/armor/shufa.png" id="2_d8pa0"]
+
+[resource]
+script = ExtResource("1_kcfh3")
+id = &"hair_strands"
+display_name = "飘逸发束"
+texture = ExtResource("2_d8pa0")

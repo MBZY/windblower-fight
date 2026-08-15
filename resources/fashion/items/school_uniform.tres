@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://s6etw53m58l3"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_4737t"]
+[ext_resource type="Texture2D" uid="uid://24vfhas4swjy" path="res://assets/dress_up/assets/armor/xiaofu.png" id="2_37fjt"]
+
+[resource]
+script = ExtResource("1_4737t")
+id = &"school_uniform"
+display_name = "校服"
+slot = "body"
+texture = ExtResource("2_37fjt")

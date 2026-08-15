@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://di5uheanq5om4"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_g5o0a"]
+[ext_resource type="Texture2D" uid="uid://dxaal0ns724i1" path="res://assets/dress_up/assets/armor/Backpack.png" id="2_mc2ae"]
+
+[resource]
+script = ExtResource("1_g5o0a")
+id = &"backpack"
+display_name = "背包"
+slot = "back"
+texture = ExtResource("2_mc2ae")

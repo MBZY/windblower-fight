@@ -17,6 +17,7 @@ signal player_respawned(player_id: int)
 signal match_finished(winner_team: int, red_score: int, blue_score: int)
 signal event_announced(message: String)
 signal player_eliminated(killer_id: int, victim_id: int, reward: int)
+signal return_to_menu_requested
 
 @export var balance: BalanceConfig
 @export var map_definition: MapDefinition
@@ -56,6 +57,7 @@ var _current_map_id: StringName = &""
 var _island_polygon: PackedVector2Array = PackedVector2Array()
 var _spawn_rng := RandomNumberGenerator.new()
 var _network_match_time_left := 0.0
+var _local_input_blocked := false
 
 func _ready() -> void:
 	_spawn_rng.randomize()
@@ -118,13 +120,13 @@ func _process(delta: float) -> void:
 		var network_connected := _network_ready and _network_manager != null and _network_manager.has_connection()
 		if network_connected and not _network_manager.is_host():
 			_network_match_time_left = maxf(_network_match_time_left - delta, 0.0)
-			var local_input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+			var local_input := Vector2.ZERO if _local_input_blocked else Input.get_vector("move_left", "move_right", "move_up", "move_down")
 			_preview_local_input(local_input)
 			_network_manager.submit_local_input(local_input, local_input)
 			return
 		_network_sync_due = false
 		if network_connected and _network_manager.is_host():
-			var host_input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+			var host_input := Vector2.ZERO if _local_input_blocked else Input.get_vector("move_left", "move_right", "move_up", "move_down")
 			_network_manager.submit_local_input(host_input, host_input)
 			_network_state_accumulator += delta
 			var state_interval := 1.0 / maxf(balance.network_state_hz, 1.0)
@@ -203,6 +205,8 @@ func _spawn_player_node(data: Variant) -> Node:
 	player.name = "Player_%d" % peer_id
 	player.player_id = peer_id
 	player.team = int(info.get("team", 0))
+	var fashion_variant: Variant = info.get("fashion", {})
+	player.set_fashion_loadout(fashion_variant if fashion_variant is Dictionary else {})
 	player.set_display_name(player_display_name(peer_id))
 	player.global_position = _preferred_spawn_for(player)
 	player.set_multiplayer_authority(NetworkManager.SERVER_PEER_ID)
@@ -230,14 +234,14 @@ func _ensure_local_players() -> void:
 	if multiplayer.has_multiplayer_peer() and multiplayer.get_unique_id() != 1:
 		local_peer_id = multiplayer.get_unique_id()
 	if not players.has(local_peer_id):
-		_register_spawned_player(local_peer_id, 0)
+		_register_spawned_player(local_peer_id, 0, FashionProfile.load_loadout(load("res://resources/fashion/catalog.tres") as FashionCatalog))
 
-func _register_spawned_player(peer_id: int, team: int) -> IslandPlayer:
+func _register_spawned_player(peer_id: int, team: int, fashion: Dictionary = {}) -> IslandPlayer:
 	if players.has(peer_id):
 		return players[peer_id]
 	if multiplayer.has_multiplayer_peer() and not multiplayer.is_server():
 		return null
-	var player := player_spawner.spawn({"peer_id": peer_id, "team": team}) as IslandPlayer
+	var player := player_spawner.spawn({"peer_id": peer_id, "team": team, "fashion": fashion.duplicate(true)}) as IslandPlayer
 	if player != null:
 		if not player.fell.is_connected(_on_player_fell):
 			player.fell.connect(_on_player_fell)
@@ -248,14 +252,17 @@ func _register_spawned_player(peer_id: int, team: int) -> IslandPlayer:
 		player.set_active_in_match(phase == &"playing" or phase == &"score_lock")
 	return players.get(peer_id)
 
-func _ensure_network_player(peer_id: int, team: int) -> IslandPlayer:
+func _ensure_network_player(peer_id: int, team: int, fashion: Dictionary = {}) -> IslandPlayer:
 	if peer_id <= 0:
 		return null
 	if players.has(peer_id):
-		return players[peer_id]
+		var existing := players[peer_id] as IslandPlayer
+		if existing != null:
+			existing.set_fashion_loadout(fashion)
+		return existing
 	if _network_manager != null and _network_manager.has_connection() and not _network_manager.is_host():
 		return null
-	return _register_spawned_player(peer_id, team)
+	return _register_spawned_player(peer_id, team, fashion)
 
 func host_room(room_title: String = "鼓风机大乱斗房间", _map_id: String = "medium") -> bool:
 	select_map(&"medium")
@@ -264,6 +271,9 @@ func host_room(room_title: String = "鼓风机大乱斗房间", _map_id: String 
 		if network_error != OK:
 			return false
 		phase = &"lobby"
+		# Hosting completes synchronously. Apply the authoritative roster here as
+		# well as through the signal so the host player always exists immediately.
+		_on_network_lobby_snapshot(_network_manager.lobby_snapshot())
 		phase_changed.emit(phase)
 		return true
 	_enet_peer = ENetMultiplayerPeer.new()
@@ -465,13 +475,15 @@ func _on_network_lobby_snapshot(snapshot: Dictionary) -> void:
 			continue
 		var player_data: Dictionary = player_variant
 		var player_id := int(player_data.get("peer_id", 0))
-		var player := _ensure_network_player(player_id, int(player_data.get("team", 0)))
+		var fashion_variant: Variant = player_data.get("fashion", {})
+		var player := _ensure_network_player(player_id, int(player_data.get("team", 0)), fashion_variant if fashion_variant is Dictionary else {})
 		if player == null:
 			continue
 		active_player_ids[player_id] = true
 		if players.has(player_id):
 			players[player_id].team = int(player_data.get("team", players[player_id].team))
 			players[player_id].set_display_name(String(player_data.get("display_name", player_display_name(player_id))))
+			players[player_id].set_fashion_loadout(fashion_variant if fashion_variant is Dictionary else {})
 		player.set_active_in_match(should_activate)
 	for player_id_variant in players.keys():
 		var player_id := int(player_id_variant)
@@ -490,7 +502,8 @@ func _apply_network_map(map_id: StringName) -> void:
 		_apply_map_definition()
 
 func _on_network_peer_joined(peer_id: int, player_data: Dictionary) -> void:
-	var player := _ensure_network_player(peer_id, int(player_data.get("team", 1)))
+	var fashion_variant: Variant = player_data.get("fashion", {})
+	var player := _ensure_network_player(peer_id, int(player_data.get("team", 1)), fashion_variant if fashion_variant is Dictionary else {})
 	if player != null:
 		player.set_display_name(String(player_data.get("display_name", player_display_name(peer_id))))
 		player.set_active_in_match(phase == &"playing" or phase == &"score_lock")
@@ -619,7 +632,10 @@ func _refresh_local_views() -> void:
 	var local_player_id := local_player_id()
 	for player_variant in players.values():
 		var player: IslandPlayer = player_variant
-		player.set_local_view(player.player_id == local_player_id)
+		var is_local := player.player_id == local_player_id
+		player.set_local_view(is_local)
+		if is_local:
+			player.set_local_input_blocked(_local_input_blocked)
 
 func local_player_id() -> int:
 	if _network_ready and _network_manager != null and _network_manager.has_connection():
@@ -671,7 +687,7 @@ func _apply_players_wind(delta: float) -> void:
 				other.mark_fallen(player.player_id)
 
 func pump_local_wind() -> Dictionary:
-	if phase != &"playing":
+	if phase != &"playing" or _local_input_blocked:
 		return {}
 	var local_player := players.get(local_player_id()) as IslandPlayer
 	if local_player == null:
@@ -695,6 +711,18 @@ func _preview_local_input(direction: Vector2) -> void:
 	var local_player := players.get(_network_manager.local_peer_id()) as IslandPlayer
 	if local_player != null:
 		local_player.set_input(direction, direction)
+
+func set_local_input_blocked(value: bool) -> void:
+	_local_input_blocked = value
+	var local_player := players.get(local_player_id()) as IslandPlayer
+	if local_player != null:
+		local_player.set_local_input_blocked(value)
+		if value:
+			local_player.set_input(Vector2.ZERO, Vector2.ZERO)
+
+func request_return_to_menu() -> void:
+	set_local_input_blocked(true)
+	return_to_menu_requested.emit()
 
 func _on_match_timeout() -> void:
 	if _network_ready and _network_manager != null and _network_manager.has_connection() and not _network_manager.is_host():

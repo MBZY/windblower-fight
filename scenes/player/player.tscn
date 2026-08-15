@@ -631,6 +631,27 @@ script = ExtResource("1_dovo2")
 [node name="Visual" type="Sprite2D" parent="." unique_id=872778447]
 texture = ExtResource("2_gmlin")
 
+[node name="FashionBack" type="Sprite2D" parent="Visual" unique_id=1173614639]
+unique_name_in_owner = true
+show_behind_parent = true
+z_index = -1
+
+[node name="FashionBody" type="Sprite2D" parent="Visual" unique_id=1833760684]
+unique_name_in_owner = true
+z_index = 1
+
+[node name="FashionHands" type="Sprite2D" parent="Visual" unique_id=1171588562]
+unique_name_in_owner = true
+z_index = 2
+
+[node name="FashionFace" type="Sprite2D" parent="Visual" unique_id=1693140943]
+unique_name_in_owner = true
+z_index = 3
+
+[node name="FashionHead" type="Sprite2D" parent="Visual" unique_id=809421497]
+unique_name_in_owner = true
+z_index = 4
+
 [node name="WindBlower" parent="." unique_id=1164471445 instance=ExtResource("3_blower")]
 position = Vector2(10, 6)
 

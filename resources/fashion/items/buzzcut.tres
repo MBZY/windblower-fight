@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://6fn7iwwi256w"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_jgkrf"]
+[ext_resource type="Texture2D" uid="uid://cfsy1rvcuj0yt" path="res://assets/dress_up/assets/armor/Buzzcut.png" id="2_8arno"]
+
+[resource]
+script = ExtResource("1_jgkrf")
+id = &"buzzcut"
+display_name = "短寸"
+texture = ExtResource("2_8arno")

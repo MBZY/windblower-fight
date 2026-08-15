@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://cio42du52xovy"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_e8chm"]
+[ext_resource type="Texture2D" uid="uid://c2etseih4wg0k" path="res://assets/dress_up/assets/armor/FakeHair.png" id="2_it2ax"]
+
+[resource]
+script = ExtResource("1_e8chm")
+id = &"fake_hair"
+display_name = "蓬松假发"
+texture = ExtResource("2_it2ax")

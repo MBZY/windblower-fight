@@ -5,9 +5,11 @@ signal create_room_requested(room_name: String)
 signal browse_rooms_requested
 signal join_ip_requested(host_ip: String)
 signal profile_submitted(display_name: String)
+signal fashion_changed(loadout: Dictionary)
 
 @onready var ip_input: LineEdit = %IpInput
 @onready var name_input: LineEdit = %NameInput
+@onready var fashion_panel: FashionPanel = %FashionPanel
 
 const PROFILE_PATH := "user://player_profile.cfg"
 const PROFILE_SECTION := "profile"
@@ -18,6 +20,9 @@ func _ready() -> void:
 
 func profile_name() -> String:
 	return _sanitize_name(name_input.text)
+
+func fashion_loadout() -> Dictionary:
+	return fashion_panel.current_loadout() if fashion_panel != null else FashionProfile.load_loadout()
 
 func _on_create_room_pressed() -> void:
 	_submit_profile()
@@ -32,6 +37,13 @@ func _on_join_ip_pressed() -> void:
 		_submit_profile()
 		join_ip_requested.emit(host)
 
+func _on_fashion_pressed() -> void:
+	if fashion_panel != null:
+		fashion_panel.open()
+
+func _on_fashion_loadout_changed(loadout: Dictionary) -> void:
+	fashion_changed.emit(loadout.duplicate(true))
+
 func _on_name_input_text_submitted(_value: String) -> void:
 	_submit_profile()
 
@@ -42,6 +54,7 @@ func _submit_profile() -> void:
 	var display_name := profile_name()
 	name_input.text = display_name
 	var config := ConfigFile.new()
+	config.load(PROFILE_PATH)
 	config.set_value(PROFILE_SECTION, PROFILE_NAME_KEY, display_name)
 	config.save(PROFILE_PATH)
 	profile_submitted.emit(display_name)

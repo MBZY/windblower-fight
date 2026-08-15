@@ -42,6 +42,9 @@ const NEUTRAL := Color(0.86, 0.9, 0.94)
 @onready var countdown_card: PanelContainer = %CountdownCard
 @onready var countdown_title: Label = %CountdownTitle
 @onready var countdown_value: Label = %CountdownValue
+@onready var pause_button: Button = %PauseButton
+@onready var pause_overlay: Control = %PauseOverlay
+@onready var control_bar: HBoxContainer = $ControlBar
 var gacha_options: Array[GachaOption] = []
 
 var _session: GameSession
@@ -62,6 +65,11 @@ func _ready() -> void:
 	gacha_options.assign(get_tree().get_nodes_in_group("gacha_options"))
 	if gacha_options.is_empty():
 		gacha_options.assign([get_node("GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption1"), get_node("GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption2"), get_node("GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption3")])
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") and _session != null and _can_pause():
+		_set_pause_visible(not pause_overlay.visible)
+		get_viewport().set_input_as_handled()
 
 func bind_session(session: GameSession) -> void:
 	_session = session
@@ -113,6 +121,9 @@ func _on_phase_changed(phase: StringName) -> void:
 		_hide_center_countdown()
 	if phase != &"playing" and blow_loop_sfx.playing:
 		blow_loop_sfx.stop()
+	if phase != &"playing" and phase != &"countdown" and phase != &"score_lock":
+		_set_pause_visible(false, false)
+	pause_button.visible = phase == &"playing" or phase == &"countdown" or phase == &"score_lock"
 	match phase:
 		&"playing", &"countdown", &"score_lock":
 			gacha_panel.visible = false
@@ -147,6 +158,7 @@ func _on_player_respawned(player_id: int) -> void:
 	_respawn_deadline_msec = 0
 	if _countdown_kind == &"respawn":
 		_hide_center_countdown()
+	HapticFeedback.medium()
 
 func _update_center_countdown() -> void:
 	var seconds_left := -1
@@ -198,6 +210,7 @@ func _set_center_count(seconds_left: int) -> void:
 		countdown_tick_sfx.play()
 	elif _countdown_kind == &"match":
 		match_start_sfx.play()
+		HapticFeedback.medium()
 	if _countdown_pulse_tween != null:
 		_countdown_pulse_tween.kill()
 	countdown_value.pivot_offset = countdown_value.size * 0.5
@@ -326,6 +339,7 @@ func _on_blow_button_down() -> void:
 	_shake_screen(1.2 + float(result.get("intensity", 0.0)) * 2.2)
 	blow_tap_sfx.pitch_scale = lerpf(0.9, 1.3, float(result.get("intensity", 0.0)))
 	blow_tap_sfx.play()
+	HapticFeedback.wind_tap(float(result.get("intensity", 0.0)))
 
 func _on_blow_button_up() -> void:
 	return
@@ -365,6 +379,7 @@ func _on_player_eliminated(killer_id: int, victim_id: int, reward: int) -> void:
 		_show_coin_feedback(reward)
 	elif victim_id == _session.local_player_id():
 		fall_sfx.play()
+		HapticFeedback.heavy()
 
 func _show_kill_broadcast(killer_id: int, victim_id: int) -> void:
 	var max_entries := _session.balance.kill_broadcast_max_entries if _session.balance != null else 4
@@ -395,6 +410,7 @@ func _show_coin_feedback(amount: int) -> void:
 
 func _on_coin_feedback_arrived() -> void:
 	coin_sfx.play()
+	HapticFeedback.medium()
 	if _gacha_pulse_tween != null:
 		_gacha_pulse_tween.kill()
 	gacha_button.pivot_offset = gacha_button.size * 0.5
@@ -428,3 +444,29 @@ func _shake_screen(strength: float) -> void:
 	_camera_shake_tween = create_tween()
 	_camera_shake_tween.tween_property(local_player.player_camera, "offset", Vector2(camera_strength, -camera_strength * 0.35), 0.045)
 	_camera_shake_tween.tween_property(local_player.player_camera, "offset", Vector2.ZERO, 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+func _can_pause() -> bool:
+	return _session != null and (_session.phase == &"playing" or _session.phase == &"countdown" or _session.phase == &"score_lock")
+
+func _on_pause_pressed() -> void:
+	if _can_pause():
+		_set_pause_visible(true)
+
+func _on_resume_pressed() -> void:
+	_set_pause_visible(false)
+
+func _on_return_to_menu_pressed() -> void:
+	if _session != null:
+		_session.request_return_to_menu()
+	HapticFeedback.medium()
+
+func _set_pause_visible(value: bool, with_feedback: bool = true) -> void:
+	if pause_overlay == null:
+		return
+	pause_overlay.visible = value
+	if _session != null:
+		_session.set_local_input_blocked(value)
+	if control_bar != null:
+		control_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE if value else Control.MOUSE_FILTER_PASS
+	if with_feedback:
+		HapticFeedback.light()

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://bobjc6lfuc6v2"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_vvwt6"]
+[ext_resource type="Texture2D" uid="uid://dhkgy8lrk1sku" path="res://assets/dress_up/assets/armor/FlakJacket.png" id="2_3fr3q"]
+
+[resource]
+script = ExtResource("1_vvwt6")
+id = &"flak_jacket"
+display_name = "防护背心"
+slot = "body"
+texture = ExtResource("2_3fr3q")

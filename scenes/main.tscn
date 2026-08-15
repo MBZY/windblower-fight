@@ -48,6 +48,73 @@ stream = ExtResource("9_jkv2x")
 volume_db = -10.0
 max_polyphony = 2
 
+[node name="SystemNoticeLayer" type="CanvasLayer" parent="." unique_id=1723735958]
+layer = 100
+
+[node name="SystemNotice" type="Control" parent="SystemNoticeLayer" unique_id=1601658931]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Dim" type="ColorRect" parent="SystemNoticeLayer/SystemNotice" unique_id=1470990472]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.01, 0.035, 0.07, 0.82)
+
+[node name="Center" type="CenterContainer" parent="SystemNoticeLayer/SystemNotice" unique_id=343459986]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="SystemNoticeLayer/SystemNotice/Center" unique_id=955232562]
+custom_minimum_size = Vector2(340, 250)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="SystemNoticeLayer/SystemNotice/Center/Panel" unique_id=1821268908]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 26
+
+[node name="Contents" type="VBoxContainer" parent="SystemNoticeLayer/SystemNotice/Center/Panel/Margin" unique_id=627987045]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="SystemNoticeTitle" type="Label" parent="SystemNoticeLayer/SystemNotice/Center/Panel/Margin/Contents" unique_id=1708258958]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "连接已中断"
+horizontal_alignment = 1
+
+[node name="SystemNoticeMessage" type="Label" parent="SystemNoticeLayer/SystemNotice/Center/Panel/Margin/Contents" unique_id=1851813778]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "与主机的连接已断开，本局已停止。"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ReturnButton" type="Button" parent="SystemNoticeLayer/SystemNotice/Center/Panel/Margin/Contents" unique_id=1064667752]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "返回首页"
+
+[connection signal="connection_failed" from="NetworkManager" to="." method="_on_network_connection_failed"]
+[connection signal="lobby_changed" from="NetworkManager" to="." method="_on_network_lobby_changed"]
+[connection signal="room_closed" from="NetworkManager" to="." method="_on_network_room_closed"]
+[connection signal="room_list_changed" from="NetworkManager" to="." method="_on_network_room_list_changed"]
 [connection signal="finished" from="MenuBgm" to="." method="_on_menu_bgm_finished"]
 [connection signal="finished" from="LobbyBgm" to="." method="_on_lobby_bgm_finished"]
 [connection signal="finished" from="MatchBgm" to="." method="_on_match_bgm_finished"]
+[connection signal="pressed" from="SystemNoticeLayer/SystemNotice/Center/Panel/Margin/Contents/ReturnButton" to="." method="_on_system_notice_return_pressed"]

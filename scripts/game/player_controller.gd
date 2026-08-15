@@ -27,7 +27,9 @@ var wind_intensity: float = 0.0
 var wind_combo: int = 0
 var last_attacker_id: int = 0
 var enhancement_stacks: Dictionary = {}
+var fashion_loadout: Dictionary = FashionProfile.empty_loadout()
 var _is_local_view: bool = false
+var _local_input_blocked := false
 var _wind_velocity := Vector2.ZERO
 var _network_target_position := Vector2.ZERO
 var _has_network_target := false
@@ -55,6 +57,13 @@ var _visual_facing_left := false
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var player_camera: Camera2D = $Camera2D
 @onready var visual: Sprite2D = $Visual
+@onready var fashion_layers: Dictionary = {
+	"back": %FashionBack,
+	"body": %FashionBody,
+	"hands": %FashionHands,
+	"face": %FashionFace,
+	"head": %FashionHead,
+}
 @onready var fall_animation_player: AnimationPlayer = %FallAnimationPlayer
 @onready var respawn_animation_player: AnimationPlayer = %RespawnAnimationPlayer
 @onready var movement_animation_player: AnimationPlayer = %MovementAnimationPlayer
@@ -76,6 +85,8 @@ func _ready() -> void:
 	_base_wind_falloff = wind_falloff
 	_visual_facing_left = facing.x < 0.0
 	visual.flip_h = _visual_facing_left
+	_apply_fashion_loadout()
+	_sync_fashion_facing()
 	wind_blower.rotation = facing.angle()
 	_refresh_name_label()
 	_refresh_wind_visual()
@@ -89,7 +100,7 @@ func _physics_process(delta: float) -> void:
 	if multiplayer.has_multiplayer_peer() and (not multiplayer.is_server() or not is_multiplayer_authority()):
 		return
 	if not multiplayer.has_multiplayer_peer():
-		input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+		input_vector = Vector2.ZERO if _local_input_blocked else Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if input_vector.length_squared() > 0.0001:
 		_set_facing_direction(input_vector)
 	velocity = input_vector * move_speed + _wind_velocity
@@ -104,6 +115,37 @@ func set_input(direction: Vector2, aim: Vector2 = Vector2.ZERO) -> void:
 	var next_facing := aim if aim.length_squared() > 0.0001 else input_vector
 	if next_facing.length_squared() > 0.0001:
 		_set_facing_direction(next_facing)
+
+func set_local_input_blocked(value: bool) -> void:
+	_local_input_blocked = value
+	if value:
+		input_vector = Vector2.ZERO
+
+func set_fashion_loadout(value: Dictionary) -> void:
+	var catalog := load("res://resources/fashion/catalog.tres") as FashionCatalog
+	fashion_loadout = catalog.sanitize_loadout(value) if catalog != null else FashionProfile.sanitize_loadout(value)
+	if is_node_ready():
+		_apply_fashion_loadout()
+		_sync_fashion_facing()
+
+func _apply_fashion_loadout() -> void:
+	var catalog := load("res://resources/fashion/catalog.tres") as FashionCatalog
+	if catalog == null:
+		return
+	for slot_name in FashionCatalog.SLOTS:
+		var layer := fashion_layers.get(slot_name) as Sprite2D
+		if layer == null:
+			continue
+		var item := catalog.item_by_id(StringName(String(fashion_loadout.get(slot_name, ""))))
+		layer.texture = item.texture if item != null else null
+
+func _sync_fashion_facing() -> void:
+	if visual == null:
+		return
+	for layer_variant in fashion_layers.values():
+		var layer := layer_variant as Sprite2D
+		if layer != null:
+			layer.flip_h = visual.flip_h
 
 func _set_facing_direction(direction: Vector2, animate_flip: bool = true) -> void:
 	if direction.length_squared() <= 0.0001:
@@ -301,6 +343,7 @@ func respawn(at: Vector2, invulnerability_sec: float) -> void:
 	state_changed.emit(player_id)
 
 func _process(delta: float) -> void:
+	_sync_fashion_facing()
 	if not is_active_in_match:
 		return
 	if multiplayer.has_multiplayer_peer() and not multiplayer.is_server() and _has_network_target:

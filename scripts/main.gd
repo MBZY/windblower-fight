@@ -12,19 +12,22 @@ const LOBBY := preload("res://scenes/ui/lobby.tscn")
 @onready var ui_back_sfx: AudioStreamPlayer = $UiBackSfx
 @onready var ui_team_sfx: AudioStreamPlayer = $UiTeamSfx
 @onready var ui_error_sfx: AudioStreamPlayer = $UiErrorSfx
+@onready var system_notice: Control = %SystemNotice
+@onready var system_notice_title: Label = %SystemNoticeTitle
+@onready var system_notice_message: Label = %SystemNoticeMessage
 
 var current_session: GameSession
 var current_menu: MainMenu
 var current_browser: RoomBrowser
 var current_lobby: LobbyView
 var _network_manager: NetworkManager
-var _network_signals_bound := false
 var _current_bgm: AudioStreamPlayer
 var _bgm_tween: Tween
 var _bgm_base_volumes: Dictionary = {}
 var _match_playlist: Array[AudioStreamPlayer] = []
 var _match_playlist_index := 0
 var _match_playlist_active := false
+var _suppress_disconnect_notice := false
 
 func _ready() -> void:
 	_network_manager = get_node_or_null("NetworkManager") as NetworkManager
@@ -39,9 +42,12 @@ func _ready() -> void:
 func show_menu() -> void:
 	_match_playlist_active = false
 	_switch_bgm(menu_bgm)
+	_hide_system_notice()
 	_clear_flow_views()
 	if current_session:
+		_suppress_disconnect_notice = true
 		current_session.leave_room()
+		_suppress_disconnect_notice = false
 		if current_session.get_parent() == self:
 			remove_child(current_session)
 		current_session.queue_free()
@@ -56,7 +62,9 @@ func show_menu() -> void:
 	current_menu.browse_rooms_requested.connect(_on_browse_rooms)
 	current_menu.join_ip_requested.connect(_on_join_ip)
 	current_menu.profile_submitted.connect(_on_profile_submitted)
+	current_menu.fashion_changed.connect(_on_fashion_changed)
 	_on_profile_submitted(current_menu.profile_name())
+	_on_fashion_changed(current_menu.fashion_loadout())
 
 
 func _clear_flow_views() -> void:
@@ -84,6 +92,7 @@ func _start_session() -> GameSession:
 	current_session = GAME_SESSION.instantiate()
 	current_session.auto_start_single_player = false
 	add_child(current_session)
+	current_session.return_to_menu_requested.connect(_on_session_return_to_menu_requested)
 	return current_session
 
 func _show_browser() -> void:
@@ -113,8 +122,6 @@ func _show_lobby(session: GameSession) -> void:
 	current_lobby.leave_requested.connect(_on_lobby_leave)
 	current_lobby.start_requested.connect(_on_lobby_start)
 	current_lobby.team_requested.connect(_on_team_requested)
-	if _network_manager != null:
-		_bind_network_signals()
 	if not session.phase_changed.is_connected(_on_session_phase_changed):
 		session.phase_changed.connect(_on_session_phase_changed)
 	if not session.event_announced.is_connected(_on_session_event):
@@ -127,7 +134,6 @@ func _refresh_rooms() -> void:
 	if not current_browser:
 		return
 	if _network_manager != null:
-		_bind_network_signals()
 		_network_manager.start_room_scan()
 		current_browser.show_rooms(_network_manager.rooms())
 
@@ -147,10 +153,14 @@ func _update_lobby() -> void:
 func _on_network_lobby_changed(_snapshot: Dictionary) -> void:
 	_update_lobby()
 
-func _on_network_room_closed(_reason: String) -> void:
-	if current_lobby:
-		ui_error_sfx.play()
-		show_menu()
+func _on_network_room_closed(reason: String) -> void:
+	if _suppress_disconnect_notice or reason == "left_room":
+		return
+	if current_session != null:
+		current_session.set_local_input_blocked(true)
+	ui_error_sfx.play()
+	HapticFeedback.alert()
+	_show_system_notice("连接已中断", _connection_message(reason))
 
 func _on_session_phase_changed(next_phase: StringName) -> void:
 	if next_phase == &"lobby":
@@ -232,6 +242,10 @@ func _on_profile_submitted(display_name: String) -> void:
 	if _network_manager != null:
 		_network_manager.set_local_profile(display_name)
 
+func _on_fashion_changed(loadout: Dictionary) -> void:
+	if _network_manager != null:
+		_network_manager.set_local_fashion(loadout)
+
 func _on_join_room(room: Dictionary) -> void:
 	var session := _start_session()
 	var host_ip := String(room.get("host_ip", ""))
@@ -241,14 +255,6 @@ func _on_join_room(room: Dictionary) -> void:
 		_show_lobby(session)
 	else:
 		ui_error_sfx.play()
-
-func _bind_network_signals() -> void:
-	if _network_manager == null or _network_signals_bound:
-		return
-	_network_manager.lobby_changed.connect(_on_network_lobby_changed)
-	_network_manager.room_closed.connect(_on_network_room_closed)
-	_network_manager.room_list_changed.connect(_on_network_room_list_changed)
-	_network_signals_bound = true
 
 func _on_network_room_list_changed(rooms: Array) -> void:
 	if current_browser:
@@ -284,6 +290,49 @@ func _on_browser_refresh() -> void:
 func _on_lobby_leave() -> void:
 	ui_back_sfx.play()
 	show_menu()
+
+func _on_session_return_to_menu_requested() -> void:
+	ui_back_sfx.play()
+	show_menu()
+
+func _on_network_connection_failed(reason: String) -> void:
+	if _suppress_disconnect_notice:
+		return
+	if current_session != null:
+		current_session.set_local_input_blocked(true)
+	ui_error_sfx.play()
+	HapticFeedback.alert()
+	_show_system_notice("无法连接", _connection_message(reason))
+
+func _show_system_notice(title: String, message: String) -> void:
+	if system_notice == null:
+		return
+	system_notice_title.text = title
+	system_notice_message.text = message
+	system_notice.visible = true
+
+func _hide_system_notice() -> void:
+	if system_notice != null:
+		system_notice.visible = false
+
+func _on_system_notice_return_pressed() -> void:
+	HapticFeedback.light()
+	show_menu()
+
+func _connection_message(reason: String) -> String:
+	match reason:
+		"host_disconnected":
+			return "与主机的连接已断开，本局已停止。"
+		"ENet connection failed":
+			return "无法连接到主机，请检查 IP、端口和网络状态。"
+		_:
+			if reason.contains("listen for LAN rooms"):
+				return "无法搜索局域网房间，请检查网络权限后重试。"
+			if reason.contains("host ENet"):
+				return "创建房间失败，端口可能被其他程序占用。"
+			if reason.contains("connect"):
+				return "连接失败，请检查 IP、端口和网络状态。"
+	return "网络连接出现问题，请返回首页后重试。"
 
 func _switch_bgm(next_bgm: AudioStreamPlayer) -> void:
 	if next_bgm == null:

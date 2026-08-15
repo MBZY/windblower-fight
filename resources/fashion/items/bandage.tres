@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://cld2w5kica768"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_h5sxu"]
+[ext_resource type="Texture2D" uid="uid://c6ff72b50cejf" path="res://assets/dress_up/assets/armor/bengdai.png" id="2_r5gdw"]
+
+[resource]
+script = ExtResource("1_h5sxu")
+id = &"bandage"
+display_name = "绷带"
+slot = "hands"
+texture = ExtResource("2_r5gdw")

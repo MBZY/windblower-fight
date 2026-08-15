@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://trmva3ramduv"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_duhvc"]
+[ext_resource type="Texture2D" uid="uid://cutxk4v3n2uxd" path="res://assets/dress_up/assets/armor/quantao.png" id="2_3hs2f"]
+
+[resource]
+script = ExtResource("1_duhvc")
+id = &"gloves"
+display_name = "手套"
+slot = "hands"
+texture = ExtResource("2_3hs2f")

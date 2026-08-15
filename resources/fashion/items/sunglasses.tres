@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://dsm1thgmpakub"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_xe5k7"]
+[ext_resource type="Texture2D" uid="uid://b70am0q3puu2c" path="res://assets/dress_up/assets/armor/Sunglasses.png" id="2_rsc13"]
+
+[resource]
+script = ExtResource("1_xe5k7")
+id = &"sunglasses"
+display_name = "太阳镜"
+slot = "face"
+texture = ExtResource("2_rsc13")

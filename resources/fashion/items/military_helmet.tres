@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://b4sd406yyflkm"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_pyici"]
+[ext_resource type="Texture2D" uid="uid://kjyp8d2kg3rl" path="res://assets/dress_up/assets/armor/junkui.png" id="2_iq8wa"]
+
+[resource]
+script = ExtResource("1_pyici")
+id = &"military_helmet"
+display_name = "军用头盔"
+texture = ExtResource("2_iq8wa")

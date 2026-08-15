@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://dbd6bx81hlh0p"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_ejfkr"]
+[ext_resource type="Texture2D" uid="uid://8uy10e27jpx7" path="res://assets/dress_up/assets/armor/jixiebiao.png" id="2_l1gjp"]
+
+[resource]
+script = ExtResource("1_ejfkr")
+id = &"watch"
+display_name = "机械表"
+slot = "hands"
+texture = ExtResource("2_l1gjp")

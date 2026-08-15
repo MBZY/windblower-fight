@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="FashionCatalog" format=3 uid="uid://ces6ix0aygagx"]
+
+[ext_resource type="Script" uid="uid://c4k54e53ku6gm" path="res://scripts/config/fashion_item.gd" id="1_psigo"]
+[ext_resource type="Script" uid="uid://d4mpx2h64x2hy" path="res://scripts/config/fashion_catalog.gd" id="1_yqr7c"]
+[ext_resource type="Resource" uid="uid://6fn7iwwi256w" path="res://resources/fashion/items/buzzcut.tres" id="2_wskot"]
+[ext_resource type="Resource" uid="uid://cio42du52xovy" path="res://resources/fashion/items/fake_hair.tres" id="3_yhwag"]
+[ext_resource type="Resource" uid="uid://c1knhl5mj6bx3" path="res://resources/fashion/items/hair_strands.tres" id="4_q3nk8"]
+[ext_resource type="Resource" uid="uid://mbiydwjmve2r" path="res://resources/fashion/items/hat.tres" id="5_mhtqa"]
+[ext_resource type="Resource" uid="uid://b4sd406yyflkm" path="res://resources/fashion/items/military_helmet.tres" id="6_8laso"]
+[ext_resource type="Resource" uid="uid://dsm1thgmpakub" path="res://resources/fashion/items/sunglasses.tres" id="7_xkmgr"]
+[ext_resource type="Resource" uid="uid://bjdbuxugg0jeq" path="res://resources/fashion/items/fatigues.tres" id="8_7tx6g"]
+[ext_resource type="Resource" uid="uid://bobjc6lfuc6v2" path="res://resources/fashion/items/flak_jacket.tres" id="9_xl4cw"]
+[ext_resource type="Resource" uid="uid://dkrpr40u04psm" path="res://resources/fashion/items/muscle_dress.tres" id="10_dljkj"]
+[ext_resource type="Resource" uid="uid://vrpi7023voqw" path="res://resources/fashion/items/suit.tres" id="11_ri5k1"]
+[ext_resource type="Resource" uid="uid://s6etw53m58l3" path="res://resources/fashion/items/school_uniform.tres" id="12_x5c2q"]
+[ext_resource type="Resource" uid="uid://npt8iqs8jcsp" path="res://resources/fashion/items/taoist_robes.tres" id="13_4s33n"]
+[ext_resource type="Resource" uid="uid://cld2w5kica768" path="res://resources/fashion/items/bandage.tres" id="14_sesqj"]
+[ext_resource type="Resource" uid="uid://trmva3ramduv" path="res://resources/fashion/items/gloves.tres" id="15_a707h"]
+[ext_resource type="Resource" uid="uid://d1eldtesj24pl" path="res://resources/fashion/items/military_gloves.tres" id="16_v3ot3"]
+[ext_resource type="Resource" uid="uid://bo4mrbgy65umi" path="res://resources/fashion/items/palm.tres" id="17_pltor"]
+[ext_resource type="Resource" uid="uid://dbd6bx81hlh0p" path="res://resources/fashion/items/watch.tres" id="18_ceaqf"]
+[ext_resource type="Resource" uid="uid://di5uheanq5om4" path="res://resources/fashion/items/backpack.tres" id="19_v8us3"]
+
+[resource]
+script = ExtResource("1_yqr7c")
+items = Array[ExtResource("1_psigo")]([ExtResource("2_wskot"), ExtResource("3_yhwag"), ExtResource("4_q3nk8"), ExtResource("5_mhtqa"), ExtResource("6_8laso"), ExtResource("7_xkmgr"), ExtResource("8_7tx6g"), ExtResource("9_xl4cw"), ExtResource("10_dljkj"), ExtResource("11_ri5k1"), ExtResource("12_x5c2q"), ExtResource("13_4s33n"), ExtResource("14_sesqj"), ExtResource("15_a707h"), ExtResource("16_v3ot3"), ExtResource("17_pltor"), ExtResource("18_ceaqf"), ExtResource("19_v8us3")])

@@ -108,6 +108,8 @@ curve_y = SubResource("Curve_xyq0g")
 curve_z = SubResource("Curve_yg60b")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1sxap"]
+content_margin_left = 20.0
+content_margin_right = 20.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cy3o4"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -740,6 +742,82 @@ unique_name_in_owner = true
 stream = ExtResource("19_6hhfy")
 volume_db = -7.0
 
+[node name="PauseButton" type="Button" parent="." unique_id=394053994]
+unique_name_in_owner = true
+visible = false
+z_index = 90
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -72.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 72.0
+tooltip_text = "暂停"
+theme_override_font_sizes/font_size = 24
+text = "Ⅱ"
+
+[node name="PauseOverlay" type="Control" parent="." unique_id=2068964871]
+unique_name_in_owner = true
+visible = false
+z_index = 100
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Dim" type="ColorRect" parent="PauseOverlay" unique_id=1254180270]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.01, 0.04, 0.08, 0.72)
+
+[node name="Center" type="CenterContainer" parent="PauseOverlay" unique_id=1925320703]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="PauseOverlay/Center" unique_id=31112686]
+custom_minimum_size = Vector2(320, 260)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="PauseOverlay/Center/Panel" unique_id=1203587648]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="Contents" type="VBoxContainer" parent="PauseOverlay/Center/Panel/Margin" unique_id=1751399360]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="PauseOverlay/Center/Panel/Margin/Contents" unique_id=1359272144]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "已暂停"
+horizontal_alignment = 1
+
+[node name="NetworkNote" type="Label" parent="PauseOverlay/Center/Panel/Margin/Contents" unique_id=178400360]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "仅暂停本机操作，比赛仍会继续"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ResumeButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/Contents" unique_id=377709968]
+custom_minimum_size = Vector2(0, 54)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "继续游戏"
+
+[node name="ReturnMenuButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/Contents" unique_id=1006296494]
+custom_minimum_size = Vector2(0, 54)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "返回首页"
+
 [connection signal="button_down" from="ControlBar/BlowButton" to="." method="_on_blow_button_down"]
 [connection signal="button_up" from="ControlBar/BlowButton" to="." method="_on_blow_button_up"]
 [connection signal="pressed" from="Gacha/GachaButton" to="." method="_open_gacha"]
@@ -747,3 +825,6 @@ volume_db = -7.0
 [connection signal="option_pressed" from="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption2" to="." method="_on_gacha_option_pressed"]
 [connection signal="option_pressed" from="GachaPanel/PanelContainer/VBoxContainer/HBoxContainer/GachaOption3" to="." method="_on_gacha_option_pressed"]
 [connection signal="pressed" from="GachaPanel/PanelContainer/VBoxContainer/Button" to="." method="_on_gacha_skip_pressed"]
+[connection signal="pressed" from="PauseButton" to="." method="_on_pause_pressed"]
+[connection signal="pressed" from="PauseOverlay/Center/Panel/Margin/Contents/ResumeButton" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="PauseOverlay/Center/Panel/Margin/Contents/ReturnMenuButton" to="." method="_on_return_to_menu_pressed"]

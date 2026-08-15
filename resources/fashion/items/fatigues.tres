@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://bjdbuxugg0jeq"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_mdv2d"]
+[ext_resource type="Texture2D" uid="uid://cpy1jvdbvgihh" path="res://assets/dress_up/assets/armor/junyongmicai.png" id="2_d4jvn"]
+
+[resource]
+script = ExtResource("1_mdv2d")
+id = &"fatigues"
+display_name = "迷彩服"
+slot = "body"
+texture = ExtResource("2_d4jvn")

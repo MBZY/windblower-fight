@@ -58,6 +58,7 @@ var protocol_version: String = DEFAULT_PROTOCOL_VERSION
 
 var local_display_name: String = "Player"
 var local_team: int = 0
+var local_fashion: Dictionary = FashionProfile.empty_loadout()
 
 var _connection_state: int = 0
 var _peer: ENetMultiplayerPeer = null
@@ -114,6 +115,16 @@ func set_local_profile(display_name: String, preferred_team: int = 0) -> void:
 		if not host_player.is_empty():
 			host_player["display_name"] = local_display_name
 			host_player["team"] = local_team
+			_lobby_players[SERVER_PEER_ID] = host_player
+			_broadcast_lobby_snapshot()
+
+
+func set_local_fashion(loadout: Dictionary) -> void:
+	local_fashion = _sanitize_fashion(loadout)
+	if is_host():
+		var host_player: Dictionary = _lobby_players.get(SERVER_PEER_ID, {})
+		if not host_player.is_empty():
+			host_player["fashion"] = local_fashion.duplicate(true)
 			_lobby_players[SERVER_PEER_ID] = host_player
 			_broadcast_lobby_snapshot()
 
@@ -333,6 +344,8 @@ func _request_lobby_join(profile: Dictionary) -> void:
 	var player: Dictionary = _lobby_players[sender_id]
 	player["display_name"] = _sanitize_display_name(String(profile.get("display_name", "")))
 	player["team"] = _sanitize_team(int(profile.get("team", 0)))
+	var fashion_variant: Variant = profile.get("fashion", {})
+	player["fashion"] = _sanitize_fashion(fashion_variant if fashion_variant is Dictionary else {})
 	_lobby_players[sender_id] = player
 	_broadcast_lobby_snapshot()
 
@@ -434,7 +447,7 @@ func _on_connected_to_server() -> void:
 		return
 	_connection_state = ConnectionState.CONNECTED
 	_connection_state_changed()
-	_request_lobby_join.rpc_id(SERVER_PEER_ID, {"display_name": local_display_name, "team": local_team})
+	_request_lobby_join.rpc_id(SERVER_PEER_ID, {"display_name": local_display_name, "team": local_team, "fashion": local_fashion.duplicate(true)})
 	connected_to_host.emit(room_snapshot())
 
 
@@ -492,6 +505,8 @@ func _apply_lobby_snapshot(snapshot: Dictionary) -> void:
 		var player: Dictionary = player_variant
 		var peer_id := int(player.get("peer_id", 0))
 		if peer_id > 0:
+			var fashion_variant: Variant = player.get("fashion", {})
+			player["fashion"] = _sanitize_fashion(fashion_variant if fashion_variant is Dictionary else {})
 			_lobby_players[peer_id] = player.duplicate(true)
 	lobby_changed.emit(lobby_snapshot())
 
@@ -573,7 +588,8 @@ func _apply_discovery_configuration() -> void:
 
 
 func _make_player(peer_id: int, display_name: String, team: int) -> Dictionary:
-	return {"peer_id": peer_id, "display_name": _sanitize_display_name(display_name), "team": _sanitize_team(team), "connected": true}
+	var fashion := local_fashion if peer_id == SERVER_PEER_ID else FashionProfile.empty_loadout()
+	return {"peer_id": peer_id, "display_name": _sanitize_display_name(display_name), "team": _sanitize_team(team), "fashion": fashion.duplicate(true), "connected": true}
 
 
 func _sanitize_display_name(value: String) -> String:
@@ -588,6 +604,10 @@ func _sanitize_room_name(value: String) -> String:
 
 func _sanitize_team(team: int) -> int:
 	return 0 if team <= 0 else 1
+
+
+func _sanitize_fashion(value: Dictionary) -> Dictionary:
+	return FashionProfile.sanitize_loadout(value)
 
 
 func _sanitize_direction(direction: Vector2) -> Vector2:

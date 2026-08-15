@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://mbiydwjmve2r"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_fhkx6"]
+[ext_resource type="Texture2D" uid="uid://kdd1xt6cqnq0" path="res://assets/dress_up/assets/armor/Hat.png" id="2_520ta"]
+
+[resource]
+script = ExtResource("1_fhkx6")
+id = &"hat"
+display_name = "休闲帽"
+texture = ExtResource("2_520ta")

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://bo4mrbgy65umi"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_4q5ur"]
+[ext_resource type="Texture2D" uid="uid://b8o7bh6dm26x" path="res://assets/dress_up/assets/armor/zhang.png" id="2_biqrn"]
+
+[resource]
+script = ExtResource("1_4q5ur")
+id = &"palm"
+display_name = "掌部装饰"
+slot = "hands"
+texture = ExtResource("2_biqrn")

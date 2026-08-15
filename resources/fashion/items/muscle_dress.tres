@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FashionItem" format=3 uid="uid://dkrpr40u04psm"]
+
+[ext_resource type="Script" path="res://scripts/config/fashion_item.gd" id="1_0wghq"]
+[ext_resource type="Texture2D" uid="uid://bdkvjtgwxj7e" path="res://assets/dress_up/assets/armor/MuscleDress.png" id="2_s3k7m"]
+
+[resource]
+script = ExtResource("1_0wghq")
+id = &"muscle_dress"
+display_name = "力量背心"
+slot = "body"
+texture = ExtResource("2_s3k7m")

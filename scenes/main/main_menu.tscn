@@ -1,6 +1,9 @@
 [gd_scene format=3 uid="uid://xkac5jw7gqg4"]
 
 [ext_resource type="Script" uid="uid://b2wj1uyl2milu" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+[ext_resource type="Script" uid="uid://0jy1h6fj4tcn" path="res://scripts/ui/fashion_panel.gd" id="2_w6ykx"]
+[ext_resource type="Resource" uid="uid://ces6ix0aygagx" path="res://resources/fashion/catalog.tres" id="3_hiibk"]
+[ext_resource type="Texture2D" uid="uid://br5lh4tiqbvwx" path="res://assets/Character.png" id="4_swlpu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sd5it"]
 content_margin_left = 20.0
@@ -244,6 +247,13 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_75pso")
 theme_override_styles/hover = SubResource("StyleBoxFlat_cnht7")
 text = "加入房间"
 
+[node name="FashionButton" type="Button" parent="CenterContainer/VBoxContainer/Panel/Contents" unique_id=17707086]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "时装搭配"
+
 [node name="Sky" type="ColorRect" parent="." unique_id=385722367]
 z_index = -20
 layout_mode = 0
@@ -314,8 +324,183 @@ position = Vector2(200, 708)
 color = Color(0.12, 0.49, 0.3, 0.94)
 polygon = PackedVector2Array(-118, 0, 118, 0, 108, 18, 82, 36, 42, 51, -8, 55, -58, 42, -96, 24)
 
+[node name="FashionPanel" type="Control" parent="." unique_id=330089512]
+unique_name_in_owner = true
+visible = false
+z_index = 30
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("2_w6ykx")
+catalog = ExtResource("3_hiibk")
+
+[node name="Dim" type="ColorRect" parent="FashionPanel" unique_id=850724437]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.02, 0.07, 0.12, 0.82)
+
+[node name="SafeMargin" type="MarginContainer" parent="FashionPanel" unique_id=1231066833]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="Panel" type="PanelContainer" parent="FashionPanel/SafeMargin" unique_id=321929668]
+layout_mode = 2
+
+[node name="InnerMargin" type="MarginContainer" parent="FashionPanel/SafeMargin/Panel" unique_id=1960934930]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 16
+
+[node name="Contents" type="VBoxContainer" parent="FashionPanel/SafeMargin/Panel/InnerMargin" unique_id=1522319143]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents" unique_id=22785925]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/Header" unique_id=812777629]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "时装衣柜"
+
+[node name="HeaderSpacer" type="Control" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/Header" unique_id=2060878352]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseButton" type="Button" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/Header" unique_id=590779841]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+tooltip_text = "关闭衣柜"
+theme_override_font_sizes/font_size = 24
+text = "×"
+
+[node name="PreviewCenter" type="CenterContainer" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents" unique_id=1939947188]
+custom_minimum_size = Vector2(0, 190)
+layout_mode = 2
+
+[node name="PreviewFrame" type="PanelContainer" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/PreviewCenter" unique_id=84364345]
+custom_minimum_size = Vector2(176, 176)
+layout_mode = 2
+
+[node name="PreviewStack" type="Control" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/PreviewCenter/PreviewFrame" unique_id=614313572]
+custom_minimum_size = Vector2(168, 168)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PreviewBack" type="TextureRect" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/PreviewCenter/PreviewFrame/PreviewStack" unique_id=472598214]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PreviewBase" type="TextureRect" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/PreviewCenter/PreviewFrame/PreviewStack" unique_id=618662398]
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("4_swlpu")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PreviewBody" type="TextureRect" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/PreviewCenter/PreviewFrame/PreviewStack" unique_id=520116659]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PreviewHands" type="TextureRect" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/PreviewCenter/PreviewFrame/PreviewStack" unique_id=756513061]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PreviewFace" type="TextureRect" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/PreviewCenter/PreviewFrame/PreviewStack" unique_id=1103708783]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PreviewHead" type="TextureRect" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/PreviewCenter/PreviewFrame/PreviewStack" unique_id=1629310719]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FashionTabs" type="TabBar" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents" unique_id=800251660]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+current_tab = 0
+tab_count = 5
+tab_0/title = "头部"
+tab_1/title = "面部"
+tab_2/title = "服装"
+tab_3/title = "手部"
+tab_4/title = "背部"
+
+[node name="FashionItemList" type="ItemList" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents" unique_id=1367075318]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 230)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+max_text_lines = 2
+max_columns = 0
+fixed_column_width = 132
+fixed_icon_size = Vector2i(48, 48)
+
+[node name="FashionSelectionLabel" type="Label" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents" unique_id=258510822]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "头部：无"
+horizontal_alignment = 1
+
+[node name="DoneButton" type="Button" parent="FashionPanel/SafeMargin/Panel/InnerMargin/Contents" unique_id=982904252]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "保存并返回"
+
 [connection signal="focus_exited" from="CenterContainer/VBoxContainer/Panel/Contents/NameInput" to="." method="_on_name_input_focus_exited"]
 [connection signal="text_submitted" from="CenterContainer/VBoxContainer/Panel/Contents/NameInput" to="." method="_on_name_input_text_submitted"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/Panel/Contents/CreateRoom" to="." method="_on_create_room_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/Panel/Contents/FindRooms" to="." method="_on_find_rooms_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/Panel/Contents/JoinIp" to="." method="_on_join_ip_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Panel/Contents/FashionButton" to="." method="_on_fashion_pressed"]
+[connection signal="loadout_changed" from="FashionPanel" to="." method="_on_fashion_loadout_changed"]
+[connection signal="pressed" from="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/Header/CloseButton" to="FashionPanel" method="_on_close_pressed"]
+[connection signal="tab_changed" from="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/FashionTabs" to="FashionPanel" method="_on_tab_changed"]
+[connection signal="item_selected" from="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/FashionItemList" to="FashionPanel" method="_on_item_selected"]
+[connection signal="pressed" from="FashionPanel/SafeMargin/Panel/InnerMargin/Contents/DoneButton" to="FashionPanel" method="_on_close_pressed"]
