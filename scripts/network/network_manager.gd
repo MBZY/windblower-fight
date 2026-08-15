@@ -117,6 +117,8 @@ func set_local_profile(display_name: String, preferred_team: int = 0) -> void:
 			host_player["team"] = local_team
 			_lobby_players[SERVER_PEER_ID] = host_player
 			_broadcast_lobby_snapshot()
+	elif _connection_state == ConnectionState.CONNECTED:
+		_submit_local_lobby_profile()
 
 
 func set_local_fashion(loadout: Dictionary) -> void:
@@ -127,6 +129,16 @@ func set_local_fashion(loadout: Dictionary) -> void:
 			host_player["fashion"] = local_fashion.duplicate(true)
 			_lobby_players[SERVER_PEER_ID] = host_player
 			_broadcast_lobby_snapshot()
+	elif _connection_state == ConnectionState.CONNECTED:
+		_submit_local_lobby_profile()
+
+
+func _submit_local_lobby_profile() -> void:
+	_request_lobby_join.rpc_id(SERVER_PEER_ID, {
+		"display_name": local_display_name,
+		"team": local_team,
+		"fashion": local_fashion.duplicate(true),
+	})
 
 
 func start_room_scan() -> Error:
@@ -447,7 +459,7 @@ func _on_connected_to_server() -> void:
 		return
 	_connection_state = ConnectionState.CONNECTED
 	_connection_state_changed()
-	_request_lobby_join.rpc_id(SERVER_PEER_ID, {"display_name": local_display_name, "team": local_team, "fashion": local_fashion.duplicate(true)})
+	_submit_local_lobby_profile()
 	connected_to_host.emit(room_snapshot())
 
 
